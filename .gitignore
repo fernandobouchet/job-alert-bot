@@ -1,0 +1,22 @@
+# Entorno virtual
+venv/
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Variables de entorno
+.env
+.env.*
+
+# Archivos generados por el bot
+update_json.json
+*.log
+
+# IDEs / sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
