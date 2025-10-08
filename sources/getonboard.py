@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime, timezone
 
 # Categorías relevantes de IT
 CATEGORIES_IT = [
@@ -43,6 +44,12 @@ def fetch_getonboard():
                 continue
             seniority = "Trainee" if seniority_id == 1 else "Junior"
 
+            published_at_ts = a.get("published_at")
+            if not published_at_ts:
+                continue
+
+            published_at = datetime.fromtimestamp(published_at_ts, tz=timezone.utc)
+            published_at_iso = published_at.isoformat()
 
             min_s = a.get("min_salary")
             max_s = a.get("max_salary")
@@ -72,7 +79,7 @@ def fetch_getonboard():
                 "seniority": seniority,
                 "salary": salary,
                 "url": url,
-                "published_at": a.get("published_at" "")
+                "published_at": published_at_iso
             })
 
     return all_jobs

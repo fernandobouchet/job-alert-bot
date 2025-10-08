@@ -3,6 +3,7 @@ import asyncio
 from dotenv import load_dotenv
 from telegram import Bot, constants
 from sources.getonboard import fetch_getonboard
+from sources.educacionit import fetch_educacionit
 from utils import clean_text, filter_last_24h
 from update_json import update_json
 
@@ -12,7 +13,7 @@ TELE_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 bot = Bot(TELE_TOKEN)
 
-SOURCES = [fetch_getonboard]
+SOURCES = [fetch_getonboard, fetch_educacionit]
 
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
