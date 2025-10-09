@@ -1,10 +1,10 @@
 import os
 import asyncio
 from dotenv import load_dotenv
-from sources.jobspy import fetch_jobspy
 from telegram import Bot, constants
-from sources.getonboard import fetch_getonboard
-from sources.educacionit import fetch_educacionit
+from sources.getonboard_fetcher import fetch_getonboard
+from sources.educacionit_fetcher import fetch_educacionit
+from sources.jobspy_fetcher import fetch_jobspy
 from utils import clean_text, filter_last_24h
 from update_json import update_json
 
