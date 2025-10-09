@@ -21,7 +21,7 @@ def fetch_getonboard():
             r = requests.get(
                 BASE.format(category=category),
                 params={
-                    "per_page": 10,                    
+                    "per_page": 5,                    
                     "page": 1,
                     "expand": '["company"]',
                 },
@@ -43,6 +43,12 @@ def fetch_getonboard():
             if seniority_id not in [1, 2]:
                 continue
             seniority = "Trainee" if seniority_id == 1 else "Junior"
+
+            if a.get("remote") is False:
+                continue
+
+            if a.get("remote_modality") not in ["fully_remote"]:
+                continue
 
             published_at_ts = a.get("published_at")
             if not published_at_ts:
