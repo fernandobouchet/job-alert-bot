@@ -1,6 +1,7 @@
 import os
 import asyncio
 from dotenv import load_dotenv
+from sources.jobspy import fetch_jobspy
 from telegram import Bot, constants
 from sources.getonboard import fetch_getonboard
 from sources.educacionit import fetch_educacionit
@@ -13,7 +14,7 @@ TELE_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 bot = Bot(TELE_TOKEN)
 
-SOURCES = [fetch_getonboard, fetch_educacionit]
+SOURCES = [fetch_getonboard, fetch_educacionit, fetch_jobspy]
 
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
@@ -22,7 +23,7 @@ async def send_jobs(bot, chat_id, jobs):
             f"🏢 {clean_text(job['company'])}\n"
             f"🏅 {clean_text(job['seniority'])}\n"
             f"💰 {clean_text(job['salary'])}\n"
-            f"📝 {clean_text(job['description'])[:400]}...\n"
+            f"📝 {clean_text(job['description'])[:200]}...\n"
             f"🔗 <a href='{clean_text(job['url'])}'>Link</a>"
         )
         try:

@@ -3,3 +3,5 @@ python-telegram-bot
 requests
 beautifulsoup4
 lxml
+pandas
+jobspy
