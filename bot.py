@@ -39,8 +39,11 @@ async def run_bot():
         
     recent_jobs = filter_last_24h(all_jobs)
     new_jobs = update_json(recent_jobs)
-    await send_jobs(bot, CHAT_ID, new_jobs)
 
+    if new_jobs:
+        await send_jobs(bot, CHAT_ID, new_jobs)
+    else:
+        print("No hay jobs nuevos para enviar.")
 
 if __name__ == "__main__":
     asyncio.run(run_bot())
