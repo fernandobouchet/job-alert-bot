@@ -38,8 +38,9 @@ async def run_bot():
         all_jobs.extend(jobs)
         
     recent_jobs = filter_last_24h(all_jobs)
-    update_json(recent_jobs)
-    await send_jobs(bot, CHAT_ID, recent_jobs)
+    new_jobs = update_json(recent_jobs)
+    await send_jobs(bot, CHAT_ID, new_jobs)
+
 
 if __name__ == "__main__":
     asyncio.run(run_bot())
