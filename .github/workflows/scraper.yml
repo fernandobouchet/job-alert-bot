@@ -2,8 +2,8 @@ name: Job Alert Bot
 
 on:
   schedule:
-    - cron: "0 */6 * * *"    # cada 6 horas
-  workflow_dispatch:
+    - cron: "0 */6 * * *" # Cada 6 horas
+  workflow_dispatch: # Permite ejecución manual
 
 jobs:
   run-bot:
@@ -14,16 +14,23 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Download jobs.json artifact
-        uses: actions/download-artifact@v3
+      - name: Download previous jobs.json
+        uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: jobs_json
           path: .
 
+      - name: Ensure jobs.json exists
+        run: |
+          if [ ! -f jobs.json ]; then
+            echo "[]" > jobs.json
+          fi
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -35,8 +42,8 @@ jobs:
       - name: Run Job Alert Bot
         run: python bot.py
 
-      - name: Upload jobs.json artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload updated jobs.json
+        uses: actions/upload-artifact@v4
         with:
           name: jobs_json
           path: jobs.json
