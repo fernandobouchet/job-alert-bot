@@ -1,54 +1,70 @@
 from jobspy import scrape_jobs
-from utils import parse_date_to_iso_utc, safe_parse_date
+from utils import safe_parse_date
 
 def fetch_jobspy():
     """
-    Obtiene ofertas de Indeed y LinkedIn usando Job Spy y las normaliza
-    para integrarlas en el bot.
-    Solo filtra por seniority en el título, no en la descripción.
+    Obtiene ofertas de Indeed y LinkedIn usando JobSpy y las normaliza
+    para integrarlas en el bot. Captura únicamente empleos Junior/Trainee
+    en distintas áreas IT y filtra roles no deseados.
     """
     jobs = []
+
+    area_exclude_terms = [
+    'marketing', 'ventas', 'sales',
+    'recursos', 'recruiter',
+    'diseñador', 'designer',
+    'contador', 'accountant',
+    'administrativo', 'administrative',
+    'finanzas', 'finance',
+    'comercial', 'commercial',
+    'teacher', 'profesor', 'professor',
+    'arquitecto', 'architect'
+    ]
+
+    exclude_query_str = " ".join(f"-{term}" for term in area_exclude_terms)
 
     try:
         df = scrape_jobs(
             site_name=["indeed", "linkedin"],
-            search_term=(
-                '"junior IT" OR "trainee IT" OR "junior developer" OR "trainee developer" '
-                'OR "junior programmer" OR "trainee programmer" OR "junior software" '
-                'OR "trainee software" OR "junior QA" OR "trainee QA" OR "junior support" '
-                'OR "technical support" OR "help desk" OR "desarrollador junior" '
-                'OR "programador junior" OR "desarrollador trainee" OR "programador trainee" '
-                'OR "soporte técnico" OR "QA junior" OR "QA trainee" OR "data junior" '
-                'OR "infraestructura junior" '
-                '-marketing -ventas -recursos -recruiter -diseñador -contador '
-                '-administrativo -finanzas -comercial -teacher -profesor'
-            ),
+            search_term = (
+                '("junior" OR "jr" OR "trainee" OR "intern" OR "entry-level") '
+                'AND ("programacion" OR "programming" OR '
+                '"desarrollo-mobile" OR "mobile development" OR '
+                '"data-science-analytics" OR "data analyst" OR "data scientist" OR '
+                '"sysadmin-devops-qa" OR "sysadmin" OR "devops" OR "QA" OR "quality assurance" OR '
+                '"cybersecurity" OR "security analyst" OR '
+                '"machine-learning-ai" OR "AI" OR "machine learning" OR '
+                '"technical-support" OR "help desk" OR "support") '
+                f"{exclude_query_str}"
+            ),    
             location="Argentina",
             country_indeed="Argentina",
             results_wanted=30,
             hours_old=24,
             linkedin_fetch_description=False
         )
-
     except Exception as e:
-        print(f"❌ Error al obtener jobs con Job Spy: {e}")
+        print(f"❌ Error al obtener jobs con JobSpy: {e}")
         return jobs
 
     jobs_list = df.to_dict(orient="records")
 
     for j in jobs_list:
         try:
-            title = str(j.get("title") or "").strip().lower()
-            if any(s in title for s in ["senior", "sr", "lead", "manager"]):
+            title = str(j.get("title") or "").strip()
+            description = str(j.get("description") or "").strip()
+
+            title_lower = title.lower()
+            if any(s in title_lower for s in ["senior", "sr", "lead", "manager", "director", "head"]):
                 continue
 
             published_at = safe_parse_date(j.get("date_posted"))
 
             jobs.append({
                 "id": str(j.get("id")).strip(),
-                "title": str(j.get("title") or "").strip(),
+                "title": title,
                 "company": str(j.get("company") or "").strip(),
-                "description": str(j.get("description") or "").strip(),
+                "description": description,
                 "source": str(j.get("site_name") or "").capitalize(),
                 "seniority": "Junior",
                 "salary": j.get("salary", "No especificado"),
