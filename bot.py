@@ -40,7 +40,7 @@ async def run_bot():
     all_jobs = [job for result in results for job in result]
 
     recent_jobs = filter_last_24h(all_jobs)
-    new_jobs, _ = update_json(recent_jobs)
+    new_jobs = update_json(recent_jobs)
 
     if new_jobs:
         await send_jobs(bot, CHAT_ID, new_jobs)
