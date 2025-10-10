@@ -33,11 +33,11 @@ async def send_jobs(bot, chat_id, jobs):
             print(f"No se pudo enviar '{job['title']}': {e}")
 
 async def run_bot():
-    all_jobs = []
-    for source_func in SOURCES:
-        jobs = source_func()
-        all_jobs.extend(jobs)
-        
+    tasks = [asyncio.to_thread(source_func) for source_func in SOURCES]
+    results = await asyncio.gather(*tasks)
+
+    all_jobs = [job for result in results for job in result]
+
     recent_jobs = filter_last_24h(all_jobs)
     new_jobs, _ = update_json(recent_jobs)
 
