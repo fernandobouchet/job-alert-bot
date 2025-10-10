@@ -29,6 +29,7 @@ async def send_jobs(bot, chat_id, jobs):
         )
         try:
             await bot.send_message(chat_id=chat_id, text=text, parse_mode=constants.ParseMode.HTML)
+            await asyncio.sleep(0.5)
         except Exception as e:
             print(f"No se pudo enviar '{job['title']}': {e}")
 
