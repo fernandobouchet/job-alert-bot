@@ -20,6 +20,26 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Initialize 'data' branch if it doesn't exist
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if ! git ls-remote --exit-code origin data; then
+            echo "Branch 'data' does not exist remotely. Creating initial branch."
+            git checkout -b data
+            
+            echo "Initial data setup" > README_data.md
+            git add README_data.md
+            git commit -m "Initial setup of data branch"
+            
+            git push -u origin data
+            
+            git checkout ${{ github.ref_name }}
+          else
+            echo "Branch 'data' already exists remotely. Continuing."
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -37,7 +57,7 @@ jobs:
 
           if git show-ref --quiet refs/heads/data; then
             echo "Merging data branch content..."
-            git merge --allow-unrelated-histories --no-ff origin/data -X ours || echo "No merge needed or failed to merge."
+            git merge --allow-unrelated-histories --no-ff origin/data -X ours || echo "Merge failed or no changes to merge."
           else
             echo "Branch 'data' does not exist. Initial run."
           fi
