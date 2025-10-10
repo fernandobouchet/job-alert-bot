@@ -15,39 +15,10 @@ jobs:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup branch data and Git Identity
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          if git show-ref --quiet refs/heads/data; then
-            echo "Branch 'data' existe. Checkout."
-            git checkout data
-          else
-            echo "Branch 'data' no existe. Creando huérfana e inicializando."
-            git checkout --orphan data
-            git rm -rf .
-            touch .gitkeep
-            git add .gitkeep
-            git commit -m "Initial data branch setup with .gitkeep"
-          fi
-
-      - name: Get current date
-        id: date
-        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-
-      - name: Ensure daily JSON file exists
-        run: |
-          FILE="jobs_${{ steps.date.outputs.today }}.json"
-          if [ ! -f "$FILE" ]; then
-            # Inicializar con un array JSON vacío
-            echo "[]" > "$FILE" 
-          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -60,15 +31,37 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Fetch and Merge 'data' branch
+        run: |
+          git fetch origin data:data || echo "Branch 'data' does not exist yet."
+
+          if git show-ref --quiet refs/heads/data; then
+            echo "Merging data branch content..."
+            git merge --allow-unrelated-histories --no-ff origin/data -X ours || echo "No merge needed or failed to merge."
+          else
+            echo "Branch 'data' does not exist. Initial run."
+          fi
+
+      - name: Get current date & Ensure daily JSON file exists
+        id: prepare_data
+        run: |
+          today=$(date +'%Y-%m-%d')
+          FILE="jobs_${today}.json"
+
+          if [ ! -f "$FILE" ]; then
+            echo "[]" > "$FILE" 
+          fi
+
+          echo "today=$today" >> $GITHUB_OUTPUT
+
       - name: Run Job Alert Bot
         run: python bot.py
 
       - name: Commit and push data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update jobs for ${{ steps.date.outputs.today }}"
+          commit_message: "Update jobs for ${{ steps.prepare_data.outputs.today }}"
           branch: data
-
           file_pattern: "jobs_*.json"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
