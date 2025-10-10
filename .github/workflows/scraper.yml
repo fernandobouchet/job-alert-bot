@@ -20,16 +20,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup branch data
+      - name: Setup branch data and Git Identity
         run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
           if git show-ref --quiet refs/heads/data; then
+            echo "Branch 'data' existe. Checkout."
             git checkout data
           else
+            echo "Branch 'data' no existe. Creando huérfana e inicializando."
             git checkout --orphan data
             git rm -rf .
-            touch jobs.json
-            git add jobs.json
-            git commit -m "Initial data branch"
+            touch .gitkeep
+            git add .gitkeep
+            git commit -m "Initial data branch setup with .gitkeep"
           fi
 
       - name: Get current date
@@ -40,7 +45,8 @@ jobs:
         run: |
           FILE="jobs_${{ steps.date.outputs.today }}.json"
           if [ ! -f "$FILE" ]; then
-            echo "[]" > "$FILE"
+            # Inicializar con un array JSON vacío
+            echo "[]" > "$FILE" 
           fi
 
       - name: Set up Python
@@ -62,6 +68,7 @@ jobs:
         with:
           commit_message: "Update jobs for ${{ steps.date.outputs.today }}"
           branch: data
+
           file_pattern: "jobs_*.json"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
