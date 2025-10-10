@@ -1,7 +1,12 @@
 import json
 from datetime import datetime, timezone
 
-def update_json(new_jobs, path="jobs.json"):
+def update_json(new_jobs):
+    # Nombre de archivo diario
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    path = f"jobs_{date_str}.json"
+
+    # Cargar datos previos si existen
     try:
         with open(path, "r", encoding="utf-8") as f:
             old_jobs = json.load(f)
@@ -12,12 +17,14 @@ def update_json(new_jobs, path="jobs.json"):
     old_ids = {j['id'] for j in old_jobs}
     jobs_to_send = []
 
+    # Agregar trabajos nuevos
     for job in new_jobs:
         job['date_scraped'] = now.isoformat()
         if job['id'] not in old_ids:
             old_jobs.append(job)
             jobs_to_send.append(job)
 
+    # Guardar archivo actualizado
     with open(path, "w", encoding="utf-8") as f:
         json.dump(old_jobs, f, indent=2, ensure_ascii=False)
 

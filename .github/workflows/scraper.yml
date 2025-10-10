@@ -2,31 +2,44 @@ name: Job Alert Bot
 
 on:
   schedule:
-    - cron: "0 */6 * * *" # Cada 6 horas
-  workflow_dispatch: # Permite ejecución manual
+    - cron: "0 */6 * * *" # Ejecutar cada 6 horas
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+
     env:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download previous jobs.json
-        uses: actions/download-artifact@v4
-        continue-on-error: true
         with:
-          name: jobs_json
-          path: .
+          fetch-depth: 0
 
-      - name: Ensure jobs.json exists
+      - name: Setup branch data
         run: |
-          if [ ! -f jobs.json ]; then
+          if git show-ref --quiet refs/heads/data; then
+            git checkout data
+          else
+            git checkout --orphan data
+            git rm -rf .
             echo "[]" > jobs.json
+            git add jobs.json
+            git commit -m "Initial data branch"
+          fi
+
+      - name: Get current date
+        id: date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Ensure daily JSON file exists
+        run: |
+          FILE="jobs_${{ steps.date.outputs.today }}.json"
+          if [ ! -f "$FILE" ]; then
+            echo "[]" > "$FILE"
           fi
 
       - name: Set up Python
@@ -42,8 +55,10 @@ jobs:
       - name: Run Job Alert Bot
         run: python bot.py
 
-      - name: Upload updated jobs.json
-        uses: actions/upload-artifact@v4
-        with:
-          name: jobs_json
-          path: jobs.json
+      - name: Commit and push data
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add jobs_${{ steps.date.outputs.today }}.json
+          git commit -m "Update jobs for ${{ steps.date.outputs.today }}" || echo "No changes to commit"
+          git push origin data
