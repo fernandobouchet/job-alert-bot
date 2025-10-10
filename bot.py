@@ -19,12 +19,13 @@ SOURCES = [fetch_getonboard, fetch_educacionit, fetch_jobspy]
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
         text = (
-            f"💼 <b>{clean_text(job['title'])}</b>\n"
-            f"🏢 {clean_text(job['company'])}\n"
-            f"🏅 {clean_text(job['seniority'])}\n"
-            f"💰 {clean_text(job['salary'])}\n"
-            f"📝 {clean_text(job['description'])[:200]}...\n"
-            f"🔗 <a href='{clean_text(job['url'])}'>Link</a>"
+            f"💼 **{clean_text(job['title'])}**\n"
+            f"--- \n"
+            f"🏢 Empresa: {clean_text(job['company'])}\n"
+            f"💰 Salario: {clean_text(job['salary'])}\n\n"
+            f"📝 Descripción:\n"
+            f"{clean_text(job['description'])[:200]}...\n\n"
+            f"🔗 <a href='{clean_text(job['url'])}'>Ver detalles</a>"
         )
         try:
             await bot.send_message(chat_id=chat_id, text=text, parse_mode=constants.ParseMode.HTML)
