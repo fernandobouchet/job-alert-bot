@@ -27,7 +27,7 @@ jobs:
           else
             git checkout --orphan data
             git rm -rf .
-            echo "[]" > jobs.json
+            touch jobs.json
             git add jobs.json
             git commit -m "Initial data branch"
           fi
@@ -47,6 +47,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -57,9 +58,11 @@ jobs:
         run: python bot.py
 
       - name: Commit and push data
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add jobs_${{ steps.date.outputs.today }}.json
-          git commit -m "Update jobs for ${{ steps.date.outputs.today }}" || echo "No changes to commit"
-          git push origin data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update jobs for ${{ steps.date.outputs.today }}"
+          branch: data
+          file_pattern: "jobs_*.json"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
