@@ -9,7 +9,6 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
@@ -29,18 +28,17 @@ jobs:
           git config user.email "github-actions@github.com"
 
           if ! git ls-remote --exit-code origin data; then
-            echo "Branch 'data' does not exist remotely. Creating initial branch."
-            git checkout -b data
+            git checkout --orphan temp_data
+            git rm -rf .
             
-            echo "Initial data setup" > README_data.md
+            echo "Initial setup for data branch" > README_data.md
             git add README_data.md
             git commit -m "Initial setup of data branch"
             
+            git branch -m data
             git push -u origin data
             
             git checkout ${{ github.ref_name }}
-          else
-            echo "Branch 'data' already exists remotely. Continuing."
           fi
 
       - name: Set up Python
@@ -56,13 +54,10 @@ jobs:
 
       - name: Fetch and Merge 'data' branch
         run: |
-          git fetch origin data:data || echo "Branch 'data' does not exist yet."
+          git fetch origin data:data || true
 
           if git show-ref --quiet refs/heads/data; then
-            echo "Merging data branch content..."
-            git merge --allow-unrelated-histories --no-ff origin/data -X ours || echo "Merge failed or no changes to merge."
-          else
-            echo "Branch 'data' does not exist. Initial run."
+            git merge --allow-unrelated-histories --no-ff origin/data -X ours || true
           fi
 
       - name: Get current date & Ensure daily JSON file exists
