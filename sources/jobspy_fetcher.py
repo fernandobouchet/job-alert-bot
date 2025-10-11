@@ -2,11 +2,6 @@ from jobspy import scrape_jobs
 from utils import safe_parse_date
 
 def fetch_jobspy():
-    """
-    Obtiene ofertas de Indeed y LinkedIn usando JobSpy y las normaliza
-    para integrarlas en el bot. Captura únicamente empleos Junior/Trainee
-    en distintas áreas IT y filtra roles no deseados.
-    """
     jobs = []
 
     area_exclude_terms = [
@@ -37,12 +32,14 @@ def fetch_jobspy():
                 '"technical-support" OR "help desk" OR "support") '
                 f"{exclude_query_str}"
             ),    
-            location="Argentina",
+            location="Buenos Aires, AR",
             country_indeed="Argentina",
             results_wanted=30,
             hours_old=24,
             linkedin_fetch_description=False
         )
+
+        
     except Exception as e:
         print(f"❌ Error al obtener jobs con JobSpy: {e}")
         return jobs
@@ -65,8 +62,7 @@ def fetch_jobspy():
                 "title": title,
                 "company": str(j.get("company") or "").strip(),
                 "description": description,
-                "source": str(j.get("site_name") or "").capitalize(),
-                "seniority": "Junior",
+                "source": str(j.get("site") or "").capitalize(),
                 "salary": j.get("salary", "No especificado"),
                 "url": j.get("job_url", ""),
                 "published_at": published_at
