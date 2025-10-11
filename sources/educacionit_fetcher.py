@@ -44,7 +44,6 @@ def fetch_educacionit():
                 "company": company,
                 "description": description,
                 "source": "EducacionIT",
-                "seniority": "Junior",
                 "salary": "No especificado",
                 "url": url,
                 "published_at": published_at

@@ -42,7 +42,6 @@ def fetch_getonboard():
             seniority_id = seniority_data.get("id")
             if seniority_id not in [1, 2]:
                 continue
-            seniority = "Trainee" if seniority_id == 1 else "Junior"
 
             if a.get("remote") is False:
                 continue
@@ -82,7 +81,6 @@ def fetch_getonboard():
                 "company": company,
                 "description": a.get("description", ""),
                 "source": "GetOnBoard",
-                "seniority": seniority,
                 "salary": salary,
                 "url": url,
                 "published_at": published_at_iso
