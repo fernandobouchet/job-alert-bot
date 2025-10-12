@@ -14,22 +14,23 @@ TELE_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 bot = Bot(TELE_TOKEN)
 
-SOURCES = [fetch_getonboard, fetch_educacionit, fetch_jobspy]
+SOURCES = [fetch_educacionit, fetch_getonboard, fetch_jobspy]
 
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
         text = (
-            f"💼 **{clean_text(job['title'])}**\n"
+            f"💼 <b>{clean_text(job['title'])}</b>\n"
             f"--- \n"
             f"🏢 Empresa: {clean_text(job['company'])}\n"
             f"💰 Salario: {clean_text(job['salary'])}\n\n"
+            f"🏢 Fuente: {clean_text(job['source'])}\n"
             f"📝 Descripción:\n"
             f"{clean_text(job['description'])[:200]}...\n\n"
             f"🔗 <a href='{clean_text(job['url'])}'>Ver detalles</a>"
         )
         try:
             await bot.send_message(chat_id=chat_id, text=text, parse_mode=constants.ParseMode.HTML)
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1.0)
         except Exception as e:
             print(f"No se pudo enviar '{job['title']}': {e}")
 
