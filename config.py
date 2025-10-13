@@ -17,35 +17,30 @@ AREA_EXCLUDED_TERMS = [
     "marketing",
     "ventas",
     "sales",
-    "recursos",
-    "recruiter",
-    "diseñador",
-    "designer",
+    "comercial",
+    "commercial",
+    "finanzas",
+    "finance",
     "contador",
     "accountant",
     "administrativo",
     "administrative",
-    "finanzas",
-    "finance",
-    "comercial",
-    "commercial",
+    "gestion",
+    "logistica",
+    "recursos",
+    "recruiter",
+    "rrhh",
+    "diseñador",
+    "designer",
+    "arquitecto",
+    "architect",
     "teacher",
     "profesor",
     "professor",
-    "arquitecto",
-    "architect",
+    "cliente",
 ]
 
-SEARCH_TERMS = [
-    '("junior" OR "jr" OR "trainee" OR "intern" OR "entry-level") '
-    'AND ("programacion" OR "programming" OR '
-    '"desarrollo-mobile" OR "mobile development" OR '
-    '"data-science-analytics" OR "data analyst" OR "data scientist" OR '
-    '"sysadmin-devops-qa" OR "sysadmin" OR "devops" OR "QA" OR "quality assurance" OR '
-    '"cybersecurity" OR "security analyst" OR '
-    '"machine-learning-ai" OR "AI" OR "machine learning" OR '
-    '"technical-support" OR "help desk" OR "support") '
-]
+SEARCH_TERMS = '(junior OR jr OR trainee OR intern OR "entry-level" OR "associate") AND (developer OR "software engineer" OR "web developer" OR "mobile developer" OR "data analyst" OR "data scientist" OR "sysadmin" OR devops OR "cloud engineer" OR QA OR "quality assurance" OR "cyber security" OR "machine learning" OR "AI" OR "technical support" OR "help desk")'
 
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {

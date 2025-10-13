@@ -12,7 +12,7 @@ def fetch_jobspy():
     all_jobs = []
 
     exclude_query_str = " ".join(f"-{term}" for term in AREA_EXCLUDED_TERMS)
-    search_term_str = " ".join(SEARCH_TERMS) + " " + exclude_query_str
+    search_term_str = SEARCH_TERMS + " " + exclude_query_str
 
     try:
         df = scrape_jobs(
