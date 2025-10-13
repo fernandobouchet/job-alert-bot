@@ -2,6 +2,5 @@ python-dotenv
 python-telegram-bot
 requests
 beautifulsoup4
-lxml
 pandas
 python-jobspy
