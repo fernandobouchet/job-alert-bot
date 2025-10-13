@@ -2,12 +2,13 @@ import re
 import math
 from datetime import datetime, timezone, timedelta, date
 
+
 def clean_text(text):
     """Elimina HTML y exceso de espacios."""
     if not text:
         return ""
-    text = re.sub(r'<[^>]+>', '', text)
-    text = re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(r"<[^>]+>", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
@@ -27,33 +28,30 @@ def filter_last_24h(jobs):
             continue
     return filtered
 
-def parse_date_to_iso_utc(date_str, fmt="%d-%m-%Y"):
-    """Convierte una fecha string a ISO UTC"""
-    try:
-        dt = datetime.strptime(date_str, fmt)
-        return dt.replace(tzinfo=timezone.utc).isoformat()
-    except Exception:
-        return None
-    
-def safe_parse_date(d):
+
+def safe_parse_date_to_ISO(d):
     if d is None or (isinstance(d, float) and math.isnan(d)):
         # Valor nulo o NaN → usar fecha actual UTC
         return datetime.now(timezone.utc).isoformat()
-    
+
     if isinstance(d, str):
         try:
             return datetime.fromisoformat(d).replace(tzinfo=timezone.utc).isoformat()
         except ValueError:
             try:
-                return datetime.strptime(d, "%Y-%m-%d").replace(tzinfo=timezone.utc).isoformat()
+                return (
+                    datetime.strptime(d, "%Y-%m-%d")
+                    .replace(tzinfo=timezone.utc)
+                    .isoformat()
+                )
             except ValueError:
                 return datetime.now(timezone.utc).isoformat()
-    
+
     if isinstance(d, datetime):
         return d.replace(tzinfo=timezone.utc).isoformat()
-    
+
     if isinstance(d, date):
         return datetime(d.year, d.month, d.day, tzinfo=timezone.utc).isoformat()
-    
+
     # fallback
     return datetime.now(timezone.utc).isoformat()

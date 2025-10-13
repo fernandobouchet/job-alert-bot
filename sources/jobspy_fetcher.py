@@ -1,75 +1,62 @@
 from jobspy import scrape_jobs
-from utils import safe_parse_date
+from config import (
+    AREA_EXCLUDED_TERMS,
+    EXCLUDED_SENIORITYS,
+    FETCHER_CONFIG,
+    SEARCH_TERMS,
+)
+from utils import safe_parse_date_to_ISO
+
 
 def fetch_jobspy():
-    jobs = []
+    all_jobs = []
 
-    area_exclude_terms = [
-    'marketing', 'ventas', 'sales',
-    'recursos', 'recruiter',
-    'diseñador', 'designer',
-    'contador', 'accountant',
-    'administrativo', 'administrative',
-    'finanzas', 'finance',
-    'comercial', 'commercial',
-    'teacher', 'profesor', 'professor',
-    'arquitecto', 'architect'
-    ]
-
-    exclude_query_str = " ".join(f"-{term}" for term in area_exclude_terms)
+    exclude_query_str = " ".join(f"-{term}" for term in AREA_EXCLUDED_TERMS)
 
     try:
         df = scrape_jobs(
             site_name=["indeed", "linkedin"],
-            search_term = (
-                '("junior" OR "jr" OR "trainee" OR "intern" OR "entry-level") '
-                'AND ("programacion" OR "programming" OR '
-                '"desarrollo-mobile" OR "mobile development" OR '
-                '"data-science-analytics" OR "data analyst" OR "data scientist" OR '
-                '"sysadmin-devops-qa" OR "sysadmin" OR "devops" OR "QA" OR "quality assurance" OR '
-                '"cybersecurity" OR "security analyst" OR '
-                '"machine-learning-ai" OR "AI" OR "machine learning" OR '
-                '"technical-support" OR "help desk" OR "support") '
-                f"{exclude_query_str}"
-            ),    
-            location="Buenos Aires, AR",
-            country_indeed="Argentina",
-            results_wanted=30,
-            hours_old=24,
-            linkedin_fetch_description=False
+            search_term=(SEARCH_TERMS + f"{exclude_query_str}"),
+            location=FETCHER_CONFIG["JobSpyFetcher"]["location"],
+            country_indeed=FETCHER_CONFIG["JobSpyFetcher"]["country_indeed"],
+            results_wanted=FETCHER_CONFIG["JobSpyFetcher"]["results_wanted"],
+            hours_old=FETCHER_CONFIG["JobSpyFetcher"]["hours_old"],
+            linkedin_fetch_description=FETCHER_CONFIG["JobSpyFetcher"][
+                "linkedin_fetch_description"
+            ],
         )
-
-        
     except Exception as e:
-        print(f"❌ Error al obtener jobs con JobSpy: {e}")
-        return jobs
+        print(f"Error fetching Jobspy: {e}")
+        return all_jobs
 
     jobs_list = df.to_dict(orient="records")
 
-    for j in jobs_list:
+    for job in jobs_list:
         try:
-            title = str(j.get("title") or "").strip()
-            description = str(j.get("description") or "").strip()
+            title = str(job.get("title") or "").strip()
+            description = str(job.get("description") or "").strip()
 
             title_lower = title.lower()
-            if any(s in title_lower for s in ["senior", "sr", "lead", "manager", "director", "head"]):
+            if any(s in title_lower for s in EXCLUDED_SENIORITYS):
                 continue
 
-            published_at = safe_parse_date(j.get("date_posted"))
+            published_at = safe_parse_date_to_ISO(job.get("date_posted"))
 
-            jobs.append({
-                "id": str(j.get("id")).strip(),
-                "title": title,
-                "company": str(j.get("company") or "").strip(),
-                "description": description,
-                "source": str(j.get("site") or "").capitalize(),
-                "salary": j.get("salary", "No especificado"),
-                "url": j.get("job_url", ""),
-                "published_at": published_at
-            })
+            all_jobs.append(
+                {
+                    "id": str(job.get("id")).strip(),
+                    "title": title,
+                    "company": str(job.get("company") or "").strip(),
+                    "description": description,
+                    "source": str(job.get("site") or "").capitalize(),
+                    "salary": job.get("salary", "No especificado"),
+                    "url": job.get("job_url", ""),
+                    "published_at": published_at,
+                }
+            )
 
         except Exception as e:
-            print(f"⚠️ Error normalizando job {j.get('title', '')}: {e}")
+            print(f"⚠️ Error normalizing job from Jobspy: {e}")
             continue
 
-    return jobs
+    return all_jobs

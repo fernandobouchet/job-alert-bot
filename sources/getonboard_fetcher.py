@@ -1,89 +1,77 @@
 import requests
-from datetime import datetime, timezone
+from config import (
+    FETCHER_CONFIG,
+    GETONBOARD_CATEGORIES_IT,
+    GETONBOARD_BASE_URL as BASE_URL,
+)
+from utils import safe_parse_date_to_ISO
 
-# Categorías relevantes de IT
-CATEGORIES_IT = [
-    "programacion",
-    "desarrollo-mobile",
-    "data-science-analytics",
-    "sysadmin-devops-qa",
-    "cybersecurity",
-    "machine-learning-ai",
-    "technical-support"
-]
-
-BASE = "https://www.getonbrd.com/api/v0/categories/{category}/jobs"
 
 def fetch_getonboard():
     all_jobs = []
-    for category in CATEGORIES_IT:
+    for category in GETONBOARD_CATEGORIES_IT:
         try:
-            r = requests.get(
-                BASE.format(category=category),
+            req = requests.get(
+                BASE_URL.format(category=category),
                 params={
-                    "per_page": 5,                    
-                    "page": 1,
+                    "per_page": FETCHER_CONFIG["GetOnBoardFetcher"]["per_page"],
+                    "page": FETCHER_CONFIG["GetOnBoardFetcher"]["page"],
                     "expand": '["company"]',
                 },
-                timeout=15
+                timeout=15,
             )
 
-            r.raise_for_status()
-            data = r.json().get("data", [])
+            req.raise_for_status()
+            data = req.json().get("data", [])
         except requests.RequestException as e:
             print(f"Error fetching GetOnBoard ({category}): {e}")
             continue
 
-        for j in data:
-            a = j.get("attributes", {})
+        for job in data:
+            try:
+                jobData = job.get("attributes", {})
 
-            # Extraer seniority y filtrar solo Trainee y Junior
-            seniority_data = a.get("seniority", {}).get("data", {})
-            seniority_id = seniority_data.get("id")
-            if seniority_id not in [1, 2]:
+                # Extraer seniority y filtrar solo Trainee y Junior
+                seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
+                if (
+                    seniority_id
+                    not in FETCHER_CONFIG["GetOnBoardFetcher"]["seniority_ids"]
+                ):
+                    continue
+
+                if jobData.get("remote") is False:
+                    continue
+
+                if jobData.get("remote_modality") not in ["fully_remote"]:
+                    continue
+
+                published_at_ts = jobData.get("published_at")
+                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
+
+                salary_min = jobData.get("min_salary")
+                salary_max = jobData.get("max_salary")
+                salary = (
+                    f"${salary_min} - ${salary_max}"
+                    if salary_min and salary_max
+                    else "No especificado"
+                )
+
+                all_jobs.append(
+                    {
+                        "id": job.get("id"),
+                        "title": jobData.get("title", ""),
+                        "company": jobData.get("company", {})
+                        .get("data", {})
+                        .get("attributes", {})
+                        .get("name", ""),
+                        "description": jobData.get("description", ""),
+                        "source": "GetOnBoard",
+                        "salary": salary,
+                        "url": job.get("links", {}).get("public_url", ""),
+                        "published_at": published_at_iso,
+                    }
+                )
+            except Exception as e:
+                print(f"⚠️ Error normalizing job from Getonboard: {e}")
                 continue
-
-            if a.get("remote") is False:
-                continue
-
-            if a.get("remote_modality") not in ["fully_remote"]:
-                continue
-
-            published_at_ts = a.get("published_at")
-            if not published_at_ts:
-                continue
-
-            published_at = datetime.fromtimestamp(published_at_ts, tz=timezone.utc)
-            published_at_iso = published_at.isoformat()
-
-            min_s = a.get("min_salary")
-            max_s = a.get("max_salary")
-            if min_s and max_s:
-                salary = f"${min_s} - ${max_s}"
-            elif min_s:
-                salary = f"${min_s}"
-            elif max_s:
-                salary = f"${max_s}"
-            else:
-                salary = "No especificado"
-
-            # URL y ID
-            url = j.get("links", {}).get("public_url", "")
-            job_id = j.get("id")  # único por GetOnBoard
-
-            # Empresa
-            company = a.get("company", {}).get("data", {}).get("attributes", {}).get("name", "")
-
-            # Agregar job simplificado
-            all_jobs.append({
-                "id": job_id,
-                "title": a.get("title", ""),
-                "company": company,
-                "description": a.get("description", ""),
-                "source": "GetOnBoard",
-                "salary": salary,
-                "url": url,
-                "published_at": published_at_iso
-            })
-
     return all_jobs
