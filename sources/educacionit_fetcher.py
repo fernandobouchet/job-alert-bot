@@ -1,13 +1,15 @@
 import requests
+from utils import is_job_recent, safe_parse_date_to_ISO
 from bs4 import BeautifulSoup
-from utils import safe_parse_date_to_ISO
-from config import EDUCACIONIT_BASE_URL as BASE_URL
+from config import FETCHER_CONFIG
 
 
 def fetch_educacionit():
+    config = FETCHER_CONFIG.get("EducacionITFetcher", {})
+
     all_jobs = []
     try:
-        req = requests.get(BASE_URL, timeout=15)
+        req = requests.get(config.get("base_url"), timeout=config.get("timeout", 15))
         req.raise_for_status()
     except requests.RequestException as e:
         print(f"Error fetching EducaciónIT: {e}")
@@ -32,14 +34,22 @@ def fetch_educacionit():
             desc_el = card.select_one("p.fs12")
             description = desc_el.text.strip() if desc_el else ""
 
-            salary_el = card.select_one("span.fs10")
-            salary = salary_el.text.strip() if salary_el else "No especificado"
-            salary = salary.replace("\n", "").strip()
+            salary_div = card.select_one("div[style*='color:#ff7700']")
+            if salary_div:
+                full_salary_text = salary_div.text.strip()
+                salary = full_salary_text.replace("Remuneración:", "").strip()
+            else:
+                salary = "No especificado"
 
             date_el = card.select_one("p.fechaEmpleo")
-            published_at = safe_parse_date_to_ISO(
+            published_at_iso = safe_parse_date_to_ISO(
                 date_el.text.strip() if date_el else None
             )
+
+            if not is_job_recent(
+                published_at_iso, hours_threshold=config.get("hours_old", 24)
+            ):
+                continue
 
             all_jobs.append(
                 {
@@ -50,7 +60,7 @@ def fetch_educacionit():
                     "source": "EducaciónIT",
                     "salary": salary,
                     "url": url,
-                    "published_at": published_at,
+                    "published_at": published_at_iso,
                 }
             )
 

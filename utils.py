@@ -29,6 +29,24 @@ def filter_last_24h(jobs):
     return filtered
 
 
+def is_job_recent(published_at_iso: str, hours_threshold: int = 24) -> bool:
+    if not published_at_iso:
+        return False
+
+    now = datetime.now(timezone.utc)
+    time_threshold = now - timedelta(hours=hours_threshold)
+
+    try:
+        published_dt = datetime.fromisoformat(published_at_iso).replace(
+            tzinfo=timezone.utc
+        )
+
+        return published_dt >= time_threshold
+
+    except Exception:
+        return False
+
+
 def safe_parse_date_to_ISO(d):
     now = datetime.now(timezone.utc)
 

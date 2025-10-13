@@ -1,24 +1,22 @@
 import requests
-from config import (
-    FETCHER_CONFIG,
-    GETONBOARD_CATEGORIES_IT,
-    GETONBOARD_BASE_URL as BASE_URL,
-)
-from utils import safe_parse_date_to_ISO
+from utils import is_job_recent, safe_parse_date_to_ISO
+from config import FETCHER_CONFIG
 
 
 def fetch_getonboard():
+    config = FETCHER_CONFIG.get("GetOnBoardFetcher", {})
+
     all_jobs = []
-    for category in GETONBOARD_CATEGORIES_IT:
+    for category in config.get("categories", []):
         try:
             req = requests.get(
-                BASE_URL.format(category=category),
+                config.get("base_url").format(category=category),
                 params={
-                    "per_page": FETCHER_CONFIG["GetOnBoardFetcher"]["per_page"],
-                    "page": FETCHER_CONFIG["GetOnBoardFetcher"]["page"],
+                    "per_page": config.get("per_page", 10),
+                    "page": config.get("page", 1),
                     "expand": '["company"]',
                 },
-                timeout=15,
+                timeout=config.get("timeout", 15),
             )
 
             req.raise_for_status()
@@ -30,13 +28,11 @@ def fetch_getonboard():
         for job in data:
             try:
                 jobData = job.get("attributes", {})
+                job_id = f"educacionit-{job.get('id', '').strip()}"
 
                 # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
-                if (
-                    seniority_id
-                    not in FETCHER_CONFIG["GetOnBoardFetcher"]["seniority_ids"]
-                ):
+                if seniority_id not in config.get("seniority_ids", []):
                     continue
 
                 if jobData.get("remote") is False:
@@ -48,17 +44,26 @@ def fetch_getonboard():
                 published_at_ts = jobData.get("published_at")
                 published_at_iso = safe_parse_date_to_ISO(published_at_ts)
 
+                if not is_job_recent(
+                    published_at_iso, hours_threshold=config.get("hours_old", 24)
+                ):
+                    continue
+
                 salary_min = jobData.get("min_salary")
                 salary_max = jobData.get("max_salary")
-                salary = (
-                    f"${salary_min} - ${salary_max}"
-                    if salary_min and salary_max
-                    else "No especificado"
-                )
+
+                if salary_min and salary_max:
+                    salary = f"${salary_min} - ${salary_max}"
+                elif salary_min:
+                    salary = f"Mínimo ${salary_min}"
+                elif salary_max:
+                    salary = f"Máximo ${salary_max}"
+                else:
+                    salary = "No especificado"
 
                 all_jobs.append(
                     {
-                        "id": job.get("id"),
+                        "id": job_id,
                         "title": jobData.get("title", ""),
                         "company": jobData.get("company", {})
                         .get("data", {})

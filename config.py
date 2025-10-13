@@ -1,19 +1,40 @@
-GETONBOARD_BASE_URL = "https://www.getonbrd.com/api/v0/categories/{category}/jobs"
-EDUCACIONIT_BASE_URL = "https://empleos.educacionit.com/trabajos?nivel=junior"
-
-GETONBOARD_CATEGORIES_IT = [
-    "programacion",
-    "desarrollo-mobile",
-    "data-science-analytics",
-    "sysadmin-devops-qa",
-    "cybersecurity",
-    "machine-learning-ai",
-    "technical-support",
-]
+FETCHER_CONFIG = {
+    "GetOnBoardFetcher": {
+        "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
+        "per_page": 10,
+        "page": 1,
+        "timeout": 15,
+        "hours_old": 24,
+        "seniority_ids": [1, 2],  # Trainee y Juniorç
+        "categories": [
+            "programacion",
+            "desarrollo-mobile",
+            "data-science-analytics",
+            "sysadmin-devops-qa",
+            "cybersecurity",
+            "machine-learning-ai",
+            "technical-support",
+        ],
+    },
+    "JobSpyFetcher": {
+        "site_name": ["indeed", "linkedin"],
+        "location": "Buenos Aires, AR",
+        "country_indeed": "Argentina",
+        "results_wanted": 30,
+        "hours_old": 24,
+        "linkedin_fetch_description": True,
+        "search_terms": '(entry level OR "entry-level" OR associate OR junior OR jr OR trainee OR intern OR graduate OR grad) AND (developer OR "software developer" OR "software engineer" OR "web developer" OR "mobile developer" OR "data analyst" OR "data scientist" OR "sysadmin" OR devops OR "cloud engineer" OR "cloud computing" OR QA OR "quality assurance" OR testing OR "cyber security" OR "machine learning" OR "AI" OR "technical support" OR "help desk") -marketing -ventas -sales',
+    },
+    "EducacionITFetcher": {
+        "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
+        "timeout": 15,
+        "hours_old": 24,
+    },
+}
 
 EXCLUDED_SENIORITYS = ["senior", "sr", "lead", "manager", "director", "head"]
 
-AREA_EXCLUDED_TERMS = [
+EXCLUDED_AREA_TERMS = [
     "marketing",
     "ventas",
     "sales",
@@ -40,21 +61,14 @@ AREA_EXCLUDED_TERMS = [
     "cliente",
 ]
 
-SEARCH_TERMS = '(junior OR jr OR trainee OR intern OR "entry-level" OR "associate") AND (developer OR "software engineer" OR "web developer" OR "mobile developer" OR "data analyst" OR "data scientist" OR "sysadmin" OR devops OR "cloud engineer" OR QA OR "quality assurance" OR "cyber security" OR "machine learning" OR "AI" OR "technical support" OR "help desk")'
-
-FETCHER_CONFIG = {
-    "GetOnBoardFetcher": {
-        "per_page": 10,
-        "page": 1,
-        "seniority_ids": [1, 2],  # Trainee y Junior
-    },
-    "JobSpyFetcher": {
-        "site_name": ["indeed", "linkedin"],
-        "location": "Buenos Aires, AR",
-        "country_indeed": "Argentina",
-        "results_wanted": 30,
-        "hours_old": 24,
-        "linkedin_fetch_description": False,
-    },
-    "EducacionITFetcher": {},
-}
+EXCLUDED_EXPERIENCE_PHRASES = [
+    "5 years experience",
+    "4 years experience",
+    "3 years experience",
+    "minimo 5 años",
+    "minimo 4 años",
+    "minimo 3 años",
+    "5 años de experiencia",
+    "4 años de experiencia",
+    "3 años de experiencia",
+]
