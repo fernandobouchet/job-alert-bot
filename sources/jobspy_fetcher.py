@@ -12,11 +12,12 @@ def fetch_jobspy():
     all_jobs = []
 
     exclude_query_str = " ".join(f"-{term}" for term in AREA_EXCLUDED_TERMS)
+    search_term_str = " ".join(SEARCH_TERMS) + " " + exclude_query_str
 
     try:
         df = scrape_jobs(
             site_name=["indeed", "linkedin"],
-            search_term=(SEARCH_TERMS + f"{exclude_query_str}"),
+            search_term=search_term_str,
             location=FETCHER_CONFIG["JobSpyFetcher"]["location"],
             country_indeed=FETCHER_CONFIG["JobSpyFetcher"]["country_indeed"],
             results_wanted=FETCHER_CONFIG["JobSpyFetcher"]["results_wanted"],
@@ -58,5 +59,4 @@ def fetch_jobspy():
         except Exception as e:
             print(f"⚠️ Error normalizing job from Jobspy: {e}")
             continue
-
     return all_jobs

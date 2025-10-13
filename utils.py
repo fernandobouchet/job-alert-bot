@@ -34,24 +34,32 @@ def safe_parse_date_to_ISO(d):
         # Valor nulo o NaN → usar fecha actual UTC
         return datetime.now(timezone.utc).isoformat()
 
-    if isinstance(d, str):
+    # Si es timestamp (int o float)
+    if isinstance(d, (int, float)):
         try:
-            return datetime.fromisoformat(d).replace(tzinfo=timezone.utc).isoformat()
-        except ValueError:
+            return datetime.fromtimestamp(d, tz=timezone.utc).isoformat()
+        except Exception:
+            return datetime.now(timezone.utc).isoformat()
+
+    # Si es string
+    if isinstance(d, str):
+        for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%d", "%d-%m-%Y"):
             try:
                 return (
-                    datetime.strptime(d, "%Y-%m-%d")
-                    .replace(tzinfo=timezone.utc)
-                    .isoformat()
+                    datetime.strptime(d, fmt).replace(tzinfo=timezone.utc).isoformat()
                 )
             except ValueError:
-                return datetime.now(timezone.utc).isoformat()
+                continue
+        # fallback
+        return datetime.now(timezone.utc).isoformat()
 
+    # Si es datetime
     if isinstance(d, datetime):
         return d.replace(tzinfo=timezone.utc).isoformat()
 
+    # Si es date
     if isinstance(d, date):
         return datetime(d.year, d.month, d.day, tzinfo=timezone.utc).isoformat()
 
-    # fallback
+    # fallback final
     return datetime.now(timezone.utc).isoformat()
