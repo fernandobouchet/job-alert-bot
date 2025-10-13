@@ -30,36 +30,59 @@ def filter_last_24h(jobs):
 
 
 def safe_parse_date_to_ISO(d):
-    if d is None or (isinstance(d, float) and math.isnan(d)):
-        # Valor nulo o NaN → usar fecha actual UTC
-        return datetime.now(timezone.utc).isoformat()
+    now = datetime.now(timezone.utc)
 
-    # Si es timestamp (int o float)
+    if d is None or (isinstance(d, float) and math.isnan(d)):
+        dt = now - timedelta(hours=1)
+        return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+
     if isinstance(d, (int, float)):
         try:
-            return datetime.fromtimestamp(d, tz=timezone.utc).isoformat()
+            dt = datetime.fromtimestamp(d, tz=timezone.utc)
+            return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         except Exception:
-            return datetime.now(timezone.utc).isoformat()
+            return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
-    # Si es string
     if isinstance(d, str):
-        for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%d", "%d-%m-%Y"):
+        d_lower = d.lower()
+        try:
+            if "hour" in d_lower or "hora" in d_lower:
+                hours = int(re.search(r"\d+", d).group())
+                dt = now - timedelta(hours=hours)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+            elif "day" in d_lower or "día" in d_lower:
+                days = int(re.search(r"\d+", d).group())
+                dt = now - timedelta(days=days)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+            elif "week" in d_lower or "semana" in d_lower:
+                weeks = int(re.search(r"\d+", d).group())
+                dt = now - timedelta(weeks=weeks)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        except (ValueError, AttributeError):
+            pass
+
+        for fmt in (
+            "%Y-%m-%dT%H:%M:%S.%f%z",
+            "%Y-%m-%dT%H:%M:%S%z",
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%d",
+            "%d-%m-%Y",
+        ):
             try:
-                return (
-                    datetime.strptime(d, fmt).replace(tzinfo=timezone.utc).isoformat()
-                )
+                dt = datetime.strptime(d, fmt)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
             except ValueError:
                 continue
-        # fallback
-        return datetime.now(timezone.utc).isoformat()
 
-    # Si es datetime
     if isinstance(d, datetime):
-        return d.replace(tzinfo=timezone.utc).isoformat()
+        if d.tzinfo is None:
+            d = d.replace(tzinfo=timezone.utc)
+        return d.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
-    # Si es date
     if isinstance(d, date):
-        return datetime(d.year, d.month, d.day, tzinfo=timezone.utc).isoformat()
+        dt = datetime(d.year, d.month, d.day, tzinfo=timezone.utc)
+        return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
-    # fallback final
-    return datetime.now(timezone.utc).isoformat()
+    return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
