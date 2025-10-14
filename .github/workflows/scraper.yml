@@ -60,27 +60,15 @@ jobs:
             git merge --allow-unrelated-histories --no-ff origin/data -X ours || true
           fi
 
-      - name: Get current date & Ensure daily JSON file exists
-        id: prepare_data
-        run: |
-          today=$(date +'%Y-%m-%d')
-          FILE="jobs_${today}.json"
-
-          if [ ! -f "$FILE" ]; then
-            echo "[]" > "$FILE" 
-          fi
-
-          echo "today=$today" >> $GITHUB_OUTPUT
-
       - name: Run Job Alert Bot
         run: python main.py
 
       - name: Commit and push data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update jobs for ${{ steps.prepare_data.outputs.today }}"
+          commit_message: "Data update: latest jobs, monthly history, and trends."
           branch: data
-          file_pattern: "jobs_*.json"
+          file_pattern: "data/*.json"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
