@@ -1,5 +1,6 @@
 import re
 import math
+from config import TAGS_KEYWORDS
 from datetime import datetime, timezone, timedelta, date
 
 
@@ -104,3 +105,17 @@ def safe_parse_date_to_ISO(d):
         return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
     return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+
+
+def extract_tags(title, description):
+
+    text = f"{title} {description}".lower()
+
+    found_tags = []
+    for kw in TAGS_KEYWORDS:
+        # Usa \b (límite de palabra) y re.escape para buscar la palabra completa
+        pattern = r"\b" + re.escape(kw) + r"\b"
+        if re.search(pattern, text):
+            found_tags.append(kw)
+
+    return found_tags

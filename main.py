@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import os
 import asyncio
 from dotenv import load_dotenv
@@ -5,8 +6,10 @@ from telegram import Bot, constants
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
-from utils import clean_text, filter_last_24h
+from utils import clean_text, extract_tags
 from update_json import update_json
+import pandas as pd
+
 
 load_dotenv()
 
@@ -44,10 +47,54 @@ async def run_bot():
 
     all_jobs = [job for result in results for job in result]
 
-    recent_jobs = filter_last_24h(all_jobs)
+    if not all_jobs:
+        print("No se obtuvieron trabajos de ninguna fuente.")
+        return
+
+    # Crear DataFrame
+    df = pd.DataFrame(all_jobs)
+
+    # Crea una clave única para identificar trabajos duplicados entre fuentes.
+    df["dedupe_key"] = (
+        df["title"].str.lower().str.strip()
+        + " "
+        + df["company"].str.lower().str.strip()
+    )
+    df.drop_duplicates(subset=["dedupe_key"], inplace=True)
+    df.drop(columns=["dedupe_key"], inplace=True)
+
+    # 4️⃣ Normalizar fechas y filtrar últimos 24h
+    FILTER_HOURS = 24
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
+
+    df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
+
+    df = df[df["published_at"] >= cutoff].copy()
+
+    if df.empty:
+        print("No hay trabajos recientes o únicos para procesar.")
+        return
+
+    print(f"Total de jobs únicos y recientes: {len(df)}")
+
+    # 5️⃣ Extraer tags (keywords) de título y descripción
+
+    df["tags"] = df.apply(
+        lambda row: extract_tags(row["title"], row["description"]), axis=1
+    )
+
+    current_time_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    df["date_scraped"] = current_time_iso
+
+    # 6️⃣ Convertir a lista de dicts para enviar
+    df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    recent_jobs = df.to_dict(orient="records")
+
+    # 7️⃣ Actualizar JSON con trabajos nuevos y enviar
     new_jobs = update_json(recent_jobs)
 
     if new_jobs:
+        print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos para enviar.")
         await send_jobs(bot, CHAT_ID, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
