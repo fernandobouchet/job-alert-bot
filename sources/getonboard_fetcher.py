@@ -28,7 +28,7 @@ def fetch_getonboard():
         for job in data:
             try:
                 jobData = job.get("attributes", {})
-                job_id = f"educacionit-{job.get('id', '').strip()}"
+                job_id = f"getonboard-{job.get('id', '').strip()}"
 
                 # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
