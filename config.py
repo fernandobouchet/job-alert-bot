@@ -61,6 +61,10 @@ EXCLUDED_AREA_TERMS = [
     "cliente",
     "electrónico",
     "electronic",
+    "lawyer",
+    "legal",
+    "abogado",
+    "litigation",
 ]
 
 EXCLUDED_EXPERIENCE_PHRASES = [
