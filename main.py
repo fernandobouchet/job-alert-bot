@@ -1,4 +1,3 @@
-from datetime import datetime, timezone, timedelta
 import os
 import asyncio
 from dotenv import load_dotenv
@@ -6,7 +5,7 @@ from telegram import Bot, constants
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
-from utils import clean_text, extract_tags
+from utils import clean_text, updateDataFrame
 from update_json import update_json
 import pandas as pd
 
@@ -22,15 +21,18 @@ SOURCES = [fetch_educacionit, fetch_getonboard, fetch_jobspy]
 
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
+        tags_display = ", ".join(job.get("tags", []))
+
         text = (
-            f"💼 <b>{clean_text(job['title'])}</b>\n"
+            f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b> ({clean_text(job.get('modality', 'N/A'))})\n"
             f"--- \n"
-            f"🏢 Empresa: {clean_text(job['company'])}\n"
-            f"💰 Salario: {clean_text(job['salary'])}\n\n"
-            f"🏢 Fuente: {clean_text(job['source'])}\n"
+            f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
+            f"💰 Salario: {clean_text(job.get('salary', 'No especificado'))}\n"
+            f"🏷️ Tags: <code>{tags_display}</code>\n\n"
+            f"🏢 Fuente: {clean_text(job.get('source', 'N/A'))}\n"
             f"📝 Descripción:\n"
-            f"{clean_text(job['description'])[:200]}...\n\n"
-            f"🔗 <a href='{clean_text(job['url'])}'>Ver detalles</a>"
+            f"{clean_text(job.get('description', ''))[:200]}...\n\n"
+            f"🔗 <a href='{clean_text(job.get('url', '#'))}'>Ver detalles</a>"
         )
         try:
             await bot.send_message(
@@ -54,43 +56,8 @@ async def run_bot():
     # Crear DataFrame
     df = pd.DataFrame(all_jobs)
 
-    # Crea una clave única para identificar trabajos duplicados entre fuentes.
-    df["dedupe_key"] = (
-        df["title"].str.lower().str.strip()
-        + " "
-        + df["company"].str.lower().str.strip()
-    )
-    df.drop_duplicates(subset=["dedupe_key"], inplace=True)
-    df.drop(columns=["dedupe_key"], inplace=True)
+    recent_jobs = updateDataFrame(df)
 
-    # 4️⃣ Normalizar fechas y filtrar últimos 24h
-    FILTER_HOURS = 24
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
-
-    df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
-
-    df = df[df["published_at"] >= cutoff].copy()
-
-    if df.empty:
-        print("No hay trabajos recientes o únicos para procesar.")
-        return
-
-    print(f"Total de jobs únicos y recientes: {len(df)}")
-
-    # 5️⃣ Extraer tags (keywords) de título y descripción
-
-    df["tags"] = df.apply(
-        lambda row: extract_tags(row["title"], row["description"]), axis=1
-    )
-
-    current_time_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
-    df["date_scraped"] = current_time_iso
-
-    # 6️⃣ Convertir a lista de dicts para enviar
-    df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-    recent_jobs = df.to_dict(orient="records")
-
-    # 7️⃣ Actualizar JSON con trabajos nuevos y enviar
     new_jobs = update_json(recent_jobs)
 
     if new_jobs:

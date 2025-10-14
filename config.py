@@ -59,6 +59,8 @@ EXCLUDED_AREA_TERMS = [
     "profesor",
     "professor",
     "cliente",
+    "electrónico",
+    "electronic",
 ]
 
 EXCLUDED_EXPERIENCE_PHRASES = [
@@ -73,33 +75,51 @@ EXCLUDED_EXPERIENCE_PHRASES = [
     "3 años de experiencia",
 ]
 
-
-TAGS_KEYWORDS = keywords = [
+TAGS_KEYWORDS = [
+    # Roles
+    "frontend",
+    "backend",
+    "fullstack",
+    "devops",
+    "software engineer",
+    "qa",
+    # Lenguajes
     "python",
-    "golang",
     "java",
-    "node",
+    "golang",
     "javascript",
     "typescript",
+    "c#",
+    "c++",
+    "ruby",
+    # Frontend
     "react",
-    "nextjs",
     "vue",
     "angular",
+    # Backend
     "django",
     "flask",
-    "fastapi",
-    "ruby",
+    "spring",
+    "express",
     "rails",
-    "php",
-    "laravel",
-    "c#",
     ".net",
-    "c++",
+    # Bases de datos
     "sql",
-    "mysql",
     "postgres",
     "mongodb",
+    "redis",
+    "elasticsearch",
+    # Cloud & Infra
     "aws",
     "azure",
     "gcp",
+    "docker",
+    "kubernetes",
+    "terraform",
+    # Metodologías & Arquitectura
+    "git",
+    "ci/cd",
+    "agile",
+    "microservices",
+    "graphql",
 ]

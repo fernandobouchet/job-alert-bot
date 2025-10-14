@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 
@@ -65,12 +65,15 @@ def aggregate_trends(jobs_list):
 
 
 def update_json(recent_jobs):
-
     if not recent_jobs:
         return []
 
-    # La fecha de escaneo es la misma para todos los trabajos de esta ejecución
-    current_date_str = recent_jobs[0]["date_scraped"][:10]
+    print("⚙️ Applying filters and enriching data...")
+
+    # La fecha de escaneo (AAAA-MM-DD)
+    current_date_str = recent_jobs[0].get(
+        "date_scraped", datetime.now(timezone.utc).isoformat()
+    )[:10]
 
     # a. Determinar el path del archivo mensual y cargarlo
     monthly_path = get_monthly_history_path(current_date_str)
@@ -81,23 +84,31 @@ def update_json(recent_jobs):
     historical_ids = {j["id"] for j in monthly_history}
     jobs_to_send = []
 
+    # --- PROCESAMIENTO Y FILTRADO ---
     for job in recent_jobs:
-        if job["id"] not in historical_ids:
-            monthly_history.append(job)
-            jobs_to_send.append(job)
+
+        # 1. Deduplicación (vs. historial mensual)
+        if job["id"] in historical_ids:
+            continue
+
+        # Es un trabajo nuevo.
+        monthly_history.append(job)
+        jobs_to_send.append(job)
 
     # c. Guardar el historial mensual actualizado
     save_json(monthly_history, monthly_path)
 
+    # d. Guardar la lista de los últimos trabajos nuevos (para el frontend)
     save_json(jobs_to_send, LATEST_JOBS_FILE)
 
+    # e. Actualizar Historial de Tendencias
     trends_history = load_json(TRENDS_HISTORY_FILE)
 
-    # b. Calcular las tendencias para el día de hoy con los trabajos nuevos
+    # f. Calcular las tendencias para el día de hoy con los trabajos nuevos
     today_trends = aggregate_trends(jobs_to_send)
 
     if today_trends:
-        # c. Encontrar el índice del registro de hoy si existe
+        # g. Encontrar el índice del registro de hoy si existe
         today_index = next(
             (
                 i
@@ -114,7 +125,15 @@ def update_json(recent_jobs):
             # Agregar un nuevo registro diario
             trends_history.extend(today_trends)
 
-        # d. Guardar el archivo de tendencias actualizado
+        # h. Podar Historial de Tendencias (eliminar entradas de hace más de 365 días)
+        one_year_ago = datetime.now() - timedelta(days=365)
+        trends_history = [
+            item
+            for item in trends_history
+            if datetime.strptime(item["date"], "%Y-%m-%d") > one_year_ago
+        ]
+
+        # i. Guardar el archivo de tendencias actualizado
         save_json(trends_history, TRENDS_HISTORY_FILE)
 
     print(f"💾 {len(jobs_to_send)} jobs guardados en {monthly_path}.")
