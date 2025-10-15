@@ -1,6 +1,6 @@
 import re
 import math
-
+import asyncio
 import pandas as pd
 from config import (
     EXCLUDED_AREA_TERMS,
@@ -9,7 +9,8 @@ from config import (
     TAGS_KEYWORDS,
 )
 from datetime import datetime, timezone, timedelta, date
-
+from json_handler import update_job_data
+from bot.utils import send_jobs
 
 def clean_text(text):
     """Elimina HTML y exceso de espacios."""
@@ -19,6 +20,38 @@ def clean_text(text):
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
+async def scrape(sources, chat_id, bot = None):
+    print("🚀 Iniciando búsqueda de trabajos...")
+    tasks = [asyncio.to_thread(source_func) for source_func in sources]
+    results = await asyncio.gather(*tasks)
+
+    all_jobs = [job for result in results for job in result]
+
+    if not all_jobs:
+        print("No se obtuvieron trabajos de ninguna fuente.")
+        return
+
+    df = pd.DataFrame(all_jobs)
+    df_filtered = filter_jobs(df)
+
+    if df_filtered.empty:
+        print("No se encontraron trabajos nuevos con los filtros aplicados.")
+        return
+
+    recent_jobs = updateDataFrame(df_filtered)
+
+    if not recent_jobs:
+        print("No hay trabajos nuevos para enviar.")
+        return
+
+    new_jobs = update_job_data(recent_jobs)
+
+    if new_jobs:
+        print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
+        if bot:
+            await send_jobs(bot, chat_id, new_jobs)
+    else:
+        print("No hay jobs nuevos para enviar.")
 
 def safe_parse_date_to_ISO(d):
     now = datetime.now(timezone.utc)

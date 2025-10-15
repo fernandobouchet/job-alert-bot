@@ -3,7 +3,7 @@ name: Job Alert Bot
 on:
   schedule:
     - cron: "0 12,15,18,21 * * 1-5"
-    - cron: "0 0,7 * * *"
+    - cron: "0 0,18 * * *"
   workflow_dispatch:
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: Run Job Alert Bot
-        run: python main.py
+        run: python main.py --scraper
 
       - name: Commit and push data
         uses: stefanzweifel/git-auto-commit-action@v5
