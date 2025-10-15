@@ -2,7 +2,12 @@ import re
 import math
 
 import pandas as pd
-from config import TAGS_KEYWORDS
+from config import (
+    EXCLUDED_AREA_TERMS,
+    EXCLUDED_EXPERIENCE_PHRASES,
+    EXCLUDED_SENIORITYS,
+    TAGS_KEYWORDS,
+)
 from datetime import datetime, timezone, timedelta, date
 
 
@@ -13,41 +18,6 @@ def clean_text(text):
     text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
-
-
-def filter_last_24h(jobs):
-    """Filtra jobs publicados en las últimas 24h"""
-    now = datetime.now(timezone.utc)
-    filtered = []
-    for job in jobs:
-        pub = job.get("published_at")
-        if not pub:
-            continue
-        try:
-            dt = datetime.fromisoformat(pub)
-            if dt >= now - timedelta(days=1):
-                filtered.append(job)
-        except Exception:
-            continue
-    return filtered
-
-
-def is_job_recent(published_at_iso: str, hours_threshold: int = 24) -> bool:
-    if not published_at_iso:
-        return False
-
-    now = datetime.now(timezone.utc)
-    time_threshold = now - timedelta(hours=hours_threshold)
-
-    try:
-        published_dt = datetime.fromisoformat(published_at_iso).replace(
-            tzinfo=timezone.utc
-        )
-
-        return published_dt >= time_threshold
-
-    except Exception:
-        return False
 
 
 def safe_parse_date_to_ISO(d):
@@ -110,47 +80,43 @@ def safe_parse_date_to_ISO(d):
 
 
 def updateDataFrame(df):
+    FILTER_HOURS = 24
+
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
-        + " "
+        + "|"
         + df["company"].str.lower().str.strip()
     )
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    # 4️⃣ Normalizar fechas y filtrar últimos 24h
-    FILTER_HOURS = 24
     cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
+
+    df = df.dropna(subset=["published_at"])
 
     df = df[df["published_at"] >= cutoff].copy()
 
     if df.empty:
         print("No hay trabajos recientes o únicos para procesar.")
-        return
-
+        return []
     print(f"Total de jobs únicos y recientes: {len(df)}")
 
-    # 5️⃣ Extraer tags (keywords) de título y descripción
-
     df["text_for_extraction"] = (
-        df["title"].astype(str) + " " + df["description"].astype(str)
+        df["title"].fillna("").astype(str)
+        + " "
+        + df["description"].fillna("").astype(str)
     )
 
-    # Aplica las funciones de utilidad a la columna combinada
-    df["tags"] = df.apply(lambda row: extract_tags(row["text_for_extraction"]), axis=1)
-    df["modality"] = df.apply(
-        lambda row: extract_job_modality(row["text_for_extraction"]), axis=1
-    )
+    df["tags"] = df["text_for_extraction"].apply(extract_tags)
+    df["modality"] = df["text_for_extraction"].apply(extract_job_modality)
 
-    # Limpieza
     df.drop(columns=["text_for_extraction"], inplace=True)
 
     current_time_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
     df["date_scraped"] = current_time_iso
 
-    # 6️⃣ Convertir a lista de dicts para enviar
     df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
     recent_jobs = df.to_dict(orient="records")
 
@@ -206,3 +172,37 @@ def extract_job_modality(text_for_extraction):
 
     # --- 4. Fallback ---
     return "Not Specified"
+
+
+def filter_jobs(df):
+    if df.empty:
+        return df
+
+    # --- 1. Seniority Filter (by title) ---
+    pattern_seniority = "|".join([s.lower() for s in EXCLUDED_SENIORITYS])
+    df = df[
+        ~df["title"].str.lower().str.contains(pattern_seniority, regex=True, na=False)
+    ].copy()
+
+    # --- 2. Area/Role Filter (by title + description) ---
+
+    escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS]
+    pattern_area_strict = r"\b(" + "|".join(escaped_terms) + r")\b"
+
+    df["_temp"] = df["title"].fillna("") + " " + df["description"].fillna("")
+
+    df = df[
+        ~df["_temp"].str.lower().str.contains(pattern_area_strict, regex=True, na=False)
+    ].copy()
+    df = df.drop(columns=["_temp"])
+
+    # --- 3. Experience Filter (by description phrases) ---
+    pattern_experience = "|".join([e.lower() for e in EXCLUDED_EXPERIENCE_PHRASES])
+    df = df[
+        ~df["description"]
+        .fillna("")
+        .str.lower()
+        .str.contains(pattern_experience, regex=True, na=False)
+    ].copy()
+
+    return df

@@ -1,5 +1,5 @@
 import requests
-from utils import is_job_recent, safe_parse_date_to_ISO
+from utils import safe_parse_date_to_ISO
 from bs4 import BeautifulSoup
 from config import FETCHER_CONFIG
 
@@ -45,11 +45,6 @@ def fetch_educacionit():
             published_at_iso = safe_parse_date_to_ISO(
                 date_el.text.strip() if date_el else None
             )
-
-            if not is_job_recent(
-                published_at_iso, hours_threshold=config.get("hours_old", 24)
-            ):
-                continue
 
             all_jobs.append(
                 {

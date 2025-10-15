@@ -1,11 +1,6 @@
 from jobspy import scrape_jobs
 from utils import safe_parse_date_to_ISO
-from config import (
-    EXCLUDED_EXPERIENCE_PHRASES,
-    EXCLUDED_SENIORITYS,
-    FETCHER_CONFIG,
-    EXCLUDED_AREA_TERMS,
-)
+from config import FETCHER_CONFIG
 
 
 def fetch_jobspy():
@@ -27,26 +22,12 @@ def fetch_jobspy():
         print(f"Error fetching Jobspy: {e}")
         return all_jobs
 
-    excluded_seniority_set = set(s.lower() for s in EXCLUDED_SENIORITYS)
-    excluded_area_set = set(s.lower() for s in EXCLUDED_AREA_TERMS)
-    excluded_experience_set = set(s.lower() for s in EXCLUDED_EXPERIENCE_PHRASES)
-
     jobs_list = df.to_dict(orient="records")
 
     for job in jobs_list:
         try:
             title = str(job.get("title") or "").strip()
             description = str(job.get("description") or "").strip()
-            full_text_lower = (title + " " + description).lower()
-
-            if any(s in title.lower() for s in excluded_seniority_set):
-                continue
-
-            if any(a in full_text_lower for a in excluded_area_set):
-                continue
-
-            if any(a in full_text_lower for a in excluded_experience_set):
-                continue
 
             published_at_iso = safe_parse_date_to_ISO(job.get("date_posted"))
 

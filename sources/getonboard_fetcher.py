@@ -1,5 +1,5 @@
 import requests
-from utils import is_job_recent, safe_parse_date_to_ISO
+from utils import safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
 
 
@@ -43,11 +43,6 @@ def fetch_getonboard():
 
                 published_at_ts = jobData.get("published_at")
                 published_at_iso = safe_parse_date_to_ISO(published_at_ts)
-
-                if not is_job_recent(
-                    published_at_iso, hours_threshold=config.get("hours_old", 24)
-                ):
-                    continue
 
                 salary_min = jobData.get("min_salary")
                 salary_max = jobData.get("max_salary")

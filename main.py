@@ -5,7 +5,7 @@ from telegram import Bot, constants
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
-from utils import clean_text, updateDataFrame
+from utils import clean_text, filter_jobs, updateDataFrame
 from update_json import update_json
 import pandas as pd
 
@@ -36,7 +36,10 @@ async def send_jobs(bot, chat_id, jobs):
         )
         try:
             await bot.send_message(
-                chat_id=chat_id, text=text, parse_mode=constants.ParseMode.HTML
+                chat_id=chat_id,
+                text=text,
+                parse_mode=constants.ParseMode.HTML,
+                disable_web_page_preview=True,
             )
             await asyncio.sleep(1.0)
         except Exception as e:
@@ -56,8 +59,19 @@ async def run_bot():
     # Crear DataFrame
     df = pd.DataFrame(all_jobs)
 
-    recent_jobs = updateDataFrame(df)
+    # Filtrar DataFrame
+    df_filtered = filter_jobs(df)
 
+    if df_filtered.empty:
+        return
+
+    # Actualizar DataFrame
+    recent_jobs = updateDataFrame(df_filtered)
+
+    if not recent_jobs:
+        return
+
+    # Actualizar JSON
     new_jobs = update_json(recent_jobs)
 
     if new_jobs:
