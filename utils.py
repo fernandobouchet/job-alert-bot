@@ -3,9 +3,10 @@ import math
 import asyncio
 import pandas as pd
 from config import (
-    EXCLUDED_AREA_TERMS,
+    EXCLUDED_AREA_TERMS_TITLE,
     EXCLUDED_EXPERIENCE_PHRASES,
     EXCLUDED_SENIORITYS,
+    REQUIRED_IT_SIGNALS,
     TAGS_KEYWORDS,
 )
 from datetime import datetime, timezone, timedelta, date
@@ -25,6 +26,8 @@ async def scrape(sources, chat_id, bot=None):
         return
 
     df = pd.DataFrame(all_jobs)
+
+    print(df.head())
     df_filtered = filter_jobs(df)
 
     if df_filtered.empty:
@@ -41,8 +44,7 @@ async def scrape(sources, chat_id, bot=None):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        if bot:
-            await send_jobs(bot, chat_id, new_jobs)
+
     else:
         print("No hay jobs nuevos para enviar.")
 
@@ -202,34 +204,35 @@ def extract_job_modality(text_for_extraction):
 
 
 def filter_jobs(df):
+    """Filter jobs by seniority, area, positive IT signals and experience."""
     if df.empty:
         return df
 
-    # --- 1. Seniority Filter (by title) ---
-    pattern_seniority = "|".join([s.lower() for s in EXCLUDED_SENIORITYS])
-    df = df[
-        ~df["title"].str.lower().str.contains(pattern_seniority, regex=True, na=False)
-    ].copy()
+    # 1. Seniority
+    pattern = "|".join([re.escape(s.lower()) for s in EXCLUDED_SENIORITYS])
+    df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
 
-    # --- 2. Area/Role Filter (by title + description) ---
+    # 2. Area (título)
+    escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS_TITLE]
+    pattern = r"\b(?:" + "|".join(escaped_terms) + r")\b"
+    df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
 
-    escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS]
-    pattern_area_strict = r"\b(?:" + "|".join(escaped_terms) + r")\b"
-
-    df["_temp"] = df["title"].fillna("") + " " + df["description"].fillna("")
-
-    df = df[
-        ~df["_temp"].str.lower().str.contains(pattern_area_strict, regex=True, na=False)
-    ].copy()
+    # 3. ⭐ IT SIGNALS
+    df["_temp"] = (
+        df["title"].fillna("") + " " + df["description"].fillna("")
+    ).str.lower()
+    escaped_signals = [re.escape(s.lower()) for s in REQUIRED_IT_SIGNALS]
+    pattern = r"\b(?:" + "|".join(escaped_signals) + r")\b"
+    df = df[df["_temp"].str.contains(pattern, regex=True, na=False)].copy()
     df = df.drop(columns=["_temp"])
 
-    # --- 3. Experience Filter (by description phrases) ---
-    pattern_experience = "|".join([e.lower() for e in EXCLUDED_EXPERIENCE_PHRASES])
+    # 4. Experience
+    pattern = "|".join([re.escape(e.lower()) for e in EXCLUDED_EXPERIENCE_PHRASES])
     df = df[
         ~df["description"]
         .fillna("")
         .str.lower()
-        .str.contains(pattern_experience, regex=True, na=False)
+        .str.contains(pattern, regex=True, na=False)
     ].copy()
 
     return df
