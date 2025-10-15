@@ -33,7 +33,7 @@ def save_json(data, filepath):
 
 def get_monthly_history_path(date_str):
     # Formato AAAA_MM
-    month_str = datetime.strptime(date_str[:10], "%Y-%m-%d").strftime("%Y_%m")
+    month_str = datetime.strptime(date_str[:7], "%Y-%m").strftime("%Y_%m")
     return os.path.join(DATA_DIR, f"jobs_{month_str}.json")
 
 
@@ -42,8 +42,8 @@ def aggregate_trends(jobs_list):
     trends = defaultdict(lambda: {"total_jobs": 0, "tags": defaultdict(int)})
 
     for job in jobs_list:
-        # Usamos solo la parte de la fecha (AAAA-MM-DD) para la clave de agregación
-        date_key = job["date_scraped"][:10]
+        # Usamos solo la parte de la fecha (AAAA-MM) para la clave de agregación
+        date_key = job["date_scraped"][:7]
 
         trends[date_key]["total_jobs"] += 1
 
@@ -70,13 +70,13 @@ def update_json(recent_jobs):
 
     print("⚙️ Applying filters and enriching data...")
 
-    # La fecha de escaneo (AAAA-MM-DD)
-    current_date_str = recent_jobs[0].get(
+    # La fecha de escaneo (AAAA-MM)
+    current_month_str = recent_jobs[0].get(
         "date_scraped", datetime.now(timezone.utc).isoformat()
-    )[:10]
+    )[:7]
 
     # a. Determinar el path del archivo mensual y cargarlo
-    monthly_path = get_monthly_history_path(current_date_str)
+    monthly_path = get_monthly_history_path(current_month_str)
     monthly_history = load_json(monthly_path)
 
     # b. Identificar trabajos nuevos y crear la lista de envío
@@ -104,33 +104,42 @@ def update_json(recent_jobs):
     # e. Actualizar Historial de Tendencias
     trends_history = load_json(TRENDS_HISTORY_FILE)
 
-    # f. Calcular las tendencias para el día de hoy con los trabajos nuevos
-    today_trends = aggregate_trends(jobs_to_send)
+    # f. Calcular las tendencias para el mes actual con los trabajos nuevos
+    current_month_trends = aggregate_trends(jobs_to_send)
 
-    if today_trends:
-        # g. Encontrar el índice del registro de hoy si existe
-        today_index = next(
+    if current_month_trends:
+        # g. Encontrar el índice del registro de este mes si existe
+        month_index = next(
             (
                 i
                 for i, item in enumerate(trends_history)
-                if item["date"] == current_date_str
+                if item["date"] == current_month_str
             ),
             -1,
         )
 
-        if today_index != -1:
-            # Sobrescribir el registro de hoy (Si el bot corre varias veces al día)
-            trends_history[today_index] = today_trends[0]
-        else:
-            # Agregar un nuevo registro diario
-            trends_history.extend(today_trends)
+        if month_index != -1:
+            # Actualizar el registro existente
+            existing_entry = trends_history[month_index]
+            new_entry = current_month_trends[0]
 
-        # h. Podar Historial de Tendencias (eliminar entradas de hace más de 365 días)
-        one_year_ago = datetime.now() - timedelta(days=365)
+            existing_entry["total_jobs"] += new_entry["total_jobs"]
+            for tag, count in new_entry["tags"].items():
+                existing_entry["tags"][tag] = (
+                    existing_entry["tags"].get(tag, 0) + count
+                )
+        else:
+            # Agregar un nuevo registro mensual
+            trends_history.extend(current_month_trends)
+
+        # h. Podar Historial de Tendencias (eliminar entradas de hace más de 12 meses)
+        current_date = datetime.now()
+        twelve_months_ago = current_date.replace(year=current_date.year - 1)
+
         trends_history = [
             item
             for item in trends_history
-            if datetime.strptime(item["date"], "%Y-%m-%d") > one_year_ago
+            if datetime.strptime(item["date"], "%Y-%m") > twelve_months_ago
         ]
 
         # i. Guardar el archivo de tendencias actualizado
