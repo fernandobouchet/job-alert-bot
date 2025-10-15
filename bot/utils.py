@@ -1,6 +1,7 @@
 import asyncio
+import re
 from telegram import constants
-from utils import clean_text
+
 
 async def send_jobs(bot, chat_id, jobs):
     for job in jobs:
@@ -28,3 +29,12 @@ async def send_jobs(bot, chat_id, jobs):
             await asyncio.sleep(1.0)
         except Exception as e:
             print(f"No se pudo enviar '{job['title']}': {e}")
+
+
+def clean_text(text):
+    """Elimina HTML y exceso de espacios."""
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text

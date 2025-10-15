@@ -12,15 +12,8 @@ from datetime import datetime, timezone, timedelta, date
 from json_handler import update_job_data
 from bot.utils import send_jobs
 
-def clean_text(text):
-    """Elimina HTML y exceso de espacios."""
-    if not text:
-        return ""
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
 
-async def scrape(sources, chat_id, bot = None):
+async def scrape(sources, chat_id, bot=None):
     print("🚀 Iniciando búsqueda de trabajos...")
     tasks = [asyncio.to_thread(source_func) for source_func in sources]
     results = await asyncio.gather(*tasks)
@@ -52,6 +45,7 @@ async def scrape(sources, chat_id, bot = None):
             await send_jobs(bot, chat_id, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
+
 
 def safe_parse_date_to_ISO(d):
     now = datetime.now(timezone.utc)
@@ -220,7 +214,7 @@ def filter_jobs(df):
     # --- 2. Area/Role Filter (by title + description) ---
 
     escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS]
-    pattern_area_strict = r"\b(" + "|".join(escaped_terms) + r")\b"
+    pattern_area_strict = r"\b(?:" + "|".join(escaped_terms) + r")\b"
 
     df["_temp"] = df["title"].fillna("") + " " + df["description"].fillna("")
 
