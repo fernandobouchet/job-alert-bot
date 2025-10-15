@@ -210,6 +210,7 @@ EXCLUDED_AREA_TERMS = [
     "electricista",
     "ingeniero civil",
     "civil engineer",
+    "picker",
 ]
 
 
