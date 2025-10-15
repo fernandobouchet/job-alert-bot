@@ -71,7 +71,7 @@ EXCLUDED_SENIORITYS = [
     "level 4",
 ]
 
-[
+EXCLUDED_AREA_TERMS_TITLE = [
     # Finanzas, Compliance, Legal
     "finanzas",
     "finance",

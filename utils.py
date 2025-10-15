@@ -44,7 +44,8 @@ async def scrape(sources, chat_id, bot=None):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-
+        if bot:
+            await send_jobs(bot, chat_id, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
 
