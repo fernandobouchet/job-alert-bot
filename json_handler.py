@@ -26,13 +26,9 @@ def load_json(filepath):
         return []
 
 
-import json
-import os
-
-def save_json(data, filename):
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def save_json(data, filepath):
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 
 def get_monthly_history_path(date_str):
