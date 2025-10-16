@@ -326,3 +326,5 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "cibersecurity analyst",
     "analista de ciberseguridad",
 ]
+
+LOG_UNFILTERED_JOBS = True

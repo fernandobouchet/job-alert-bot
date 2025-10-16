@@ -6,11 +6,12 @@ from config import (
     EXCLUDED_AREA_TERMS_TITLE,
     EXCLUDED_EXPERIENCE_PHRASES,
     EXCLUDED_SENIORITYS,
+    LOG_UNFILTERED_JOBS,
     REQUIRED_IT_SIGNALS,
     TAGS_KEYWORDS,
 )
 from datetime import datetime, timezone, timedelta, date
-from json_handler import update_job_data
+from json_handler import update_job_data, save_json
 from bot.utils import send_jobs
 
 
@@ -44,7 +45,8 @@ async def scrape(sources, chat_id, bot=None):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-
+        if bot:
+            await send_jobs(bot, chat_id, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
 
@@ -208,6 +210,8 @@ def filter_jobs(df):
     if df.empty:
         return df
 
+    original_df = df.copy()
+
     # 1. Seniority
     pattern = "|".join([re.escape(s.lower()) for s in EXCLUDED_SENIORITYS])
     df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
@@ -236,5 +240,12 @@ def filter_jobs(df):
         .str.lower()
         .str.contains(pattern, regex=True, na=False)
     ].copy()
+
+    if LOG_UNFILTERED_JOBS:
+        unfiltered_jobs = original_df[~original_df.index.isin(df.index)]
+        if not unfiltered_jobs.empty:
+            save_json(
+                unfiltered_jobs.to_dict(orient="records"), "data/unfiltered_jobs.json"
+            )
 
     return df
