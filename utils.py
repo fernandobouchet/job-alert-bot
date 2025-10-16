@@ -44,8 +44,7 @@ async def scrape(sources, chat_id, bot=None):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        if bot:
-            await send_jobs(bot, chat_id, new_jobs)
+
     else:
         print("No hay jobs nuevos para enviar.")
 
@@ -219,16 +218,18 @@ def filter_jobs(df):
     df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
 
     # 3. ⭐ IT SIGNALS
-    df["_temp"] = (
-        df["title"].fillna("") + " " + df["description"].fillna("")
-    ).str.lower()
+    df["_temp_title"] = df["title"].fillna("").str.lower()
     escaped_signals = [re.escape(s.lower()) for s in REQUIRED_IT_SIGNALS]
     pattern = r"\b(?:" + "|".join(escaped_signals) + r")\b"
-    df = df[df["_temp"].str.contains(pattern, regex=True, na=False)].copy()
-    df = df.drop(columns=["_temp"])
+    df = df[df["_temp_title"].str.contains(pattern, regex=True, na=False)].copy()
+    df = df.drop(columns=["_temp_title"])
 
     # 4. Experience
-    pattern = "|".join([re.escape(e.lower()) for e in EXCLUDED_EXPERIENCE_PHRASES])
+    pattern = (
+        r"\b("
+        + "|".join([re.escape(e.lower()) for e in EXCLUDED_EXPERIENCE_PHRASES])
+        + r")\b"
+    )
     df = df[
         ~df["description"]
         .fillna("")
