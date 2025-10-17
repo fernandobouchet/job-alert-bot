@@ -1,10 +1,10 @@
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
-        "per_page": 10,
+        "per_page": 5,
         "page": 1,
         "timeout": 15,
-        "hours_old": 24,
+        "hours_old": 14,
         "seniority_ids": [1, 2],
         "categories": [
             "programacion",
@@ -21,14 +21,14 @@ FETCHER_CONFIG = {
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 75,
-        "hours_old": 24,
+        "hours_old": 14,
         "linkedin_fetch_description": True,
         "search_terms": '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR qa OR tester OR support OR sysadmin OR devops OR data OR security OR tech OR software OR informática) -ventas -sales -marketing -rrhh -hr -"recursos humanos" -contable -accounting -finanzas -finance -comunicacion',
     },
     "EducacionITFetcher": {
         "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
         "timeout": 15,
-        "hours_old": 24,
+        "hours_old": 14,
     },
 }
 

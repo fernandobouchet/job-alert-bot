@@ -111,7 +111,7 @@ def safe_parse_date_to_ISO(d):
 
 
 def updateDataFrame(df):
-    FILTER_HOURS = 24
+    FILTER_HOURS = 14
 
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
