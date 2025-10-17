@@ -249,3 +249,13 @@ def filter_jobs(df):
             )
 
     return df
+
+
+def is_job_too_old(published_at_iso, days_limit=1):
+    """Comprueba si un trabajo es más antiguo que el límite de días."""
+    try:
+        published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_limit)
+        return published_date < cutoff_date
+    except (ValueError, TypeError):
+        return False

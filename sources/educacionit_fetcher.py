@@ -1,5 +1,6 @@
+import datetime
 import requests
-from utils import safe_parse_date_to_ISO
+from utils import is_job_too_old, safe_parse_date_to_ISO
 from bs4 import BeautifulSoup
 from config import FETCHER_CONFIG
 
@@ -20,6 +21,15 @@ def fetch_educacionit():
 
     for card in job_cards:
         try:
+
+            date_el = card.select_one("p.fechaEmpleo")
+            published_at_iso = safe_parse_date_to_ISO(
+                date_el.text.strip() if date_el else None
+            )
+
+            if is_job_too_old(published_at_iso, 1):
+                continue
+
             job_id = f"educacionit-{card.get('id', '').strip()}"
 
             title_el = card.select_one("h3 a")
