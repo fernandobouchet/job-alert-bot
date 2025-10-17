@@ -27,6 +27,9 @@ def load_json(filepath):
 
 
 def save_json(data, filepath):
+    dir_name = os.path.dirname(filepath)
+    if dir_name:
+        os.makedirs(dir_name, exist_ok=True)
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
@@ -125,9 +128,7 @@ def update_job_data(recent_jobs):
 
             existing_entry["total_jobs"] += new_entry["total_jobs"]
             for tag, count in new_entry["tags"].items():
-                existing_entry["tags"][tag] = (
-                    existing_entry["tags"].get(tag, 0) + count
-                )
+                existing_entry["tags"][tag] = existing_entry["tags"].get(tag, 0) + count
         else:
             # Agregar un nuevo registro mensual
             trends_history.extend(current_month_trends)
@@ -157,7 +158,9 @@ def delete_jobs_by_ids(job_ids):
 
     # Eliminar de latest_jobs.json
     latest_jobs = load_json(LATEST_JOBS_FILE)
-    filtered_latest_jobs = [job for job in latest_jobs if job["id"] not in job_ids_to_delete]
+    filtered_latest_jobs = [
+        job for job in latest_jobs if job["id"] not in job_ids_to_delete
+    ]
     if len(latest_jobs) != len(filtered_latest_jobs):
         save_json(filtered_latest_jobs, LATEST_JOBS_FILE)
         deleted_count += len(latest_jobs) - len(filtered_latest_jobs)
@@ -166,11 +169,13 @@ def delete_jobs_by_ids(job_ids):
     for i in range(13):
         current_date = datetime.now() - timedelta(days=i * 30)
         monthly_path = get_monthly_history_path(current_date.strftime("%Y-%m"))
-        
+
         if os.path.exists(monthly_path):
             monthly_history = load_json(monthly_path)
-            filtered_monthly_history = [job for job in monthly_history if job["id"] not in job_ids_to_delete]
-            
+            filtered_monthly_history = [
+                job for job in monthly_history if job["id"] not in job_ids_to_delete
+            ]
+
             if len(monthly_history) != len(filtered_monthly_history):
                 save_json(filtered_monthly_history, monthly_path)
                 deleted_count += len(monthly_history) - len(filtered_monthly_history)
