@@ -1,0 +1,25 @@
+[
+  {
+    "date": "2025-10",
+    "total_jobs": 6,
+    "tags": {
+      "backend": 2,
+      "fullstack": 1,
+      "javascript": 1,
+      "typescript": 2,
+      "react": 2,
+      "node.js": 1,
+      "express": 1,
+      "sql": 1,
+      "mongodb": 1,
+      "aws": 1,
+      "azure": 1,
+      "gcp": 2,
+      "docker": 1,
+      "ci/cd": 1,
+      "api": 1,
+      "frontend": 1,
+      "qa": 1
+    }
+  }
+]
