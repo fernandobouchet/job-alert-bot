@@ -1,7 +1,7 @@
 [
   {
     "date": "2025-10",
-    "total_jobs": 14,
+    "total_jobs": 16,
     "tags": {
       "backend": 4,
       "fullstack": 1,
@@ -10,12 +10,12 @@
       "react": 4,
       "node.js": 3,
       "express": 1,
-      "sql": 4,
+      "sql": 5,
       "mongodb": 1,
-      "aws": 5,
-      "azure": 2,
+      "aws": 6,
+      "azure": 3,
       "gcp": 3,
-      "docker": 2,
+      "docker": 3,
       "ci/cd": 4,
       "api": 3,
       "frontend": 2,
@@ -28,14 +28,16 @@
       "android": 1,
       "git": 2,
       "php": 1,
-      "security": 1,
+      "security": 2,
       "python": 2,
       "angular": 1,
       "rest": 1,
       "agile": 2,
       "microservices": 1,
       "next.js": 1,
-      "react native": 1
+      "react native": 1,
+      "kubernetes": 1,
+      "terraform": 1
     }
   }
 ]

@@ -257,5 +257,39 @@
     "tags": [],
     "modality": "Hybrid",
     "date_scraped": "2025-10-17T15:26:14+00:00"
+  },
+  {
+    "id": "li-4316339863",
+    "title": "Remote Wastewater Electrical Engineer",
+    "company": "Uptalent.io",
+    "description": "We are an expanding engineering consultancy focused on electrical design for wastewater and stormwater lift stations. We are seeking an experienced engineer to lead projects, guide a small drafting team, and support our growth into areas like treatment plant design.\n   \n\n  \n\n**Responsibilities**\n* Collaborate with civil engineers, city officials, and equipment vendors to define project requirements.\n* Oversee and review the work of a drafting team, and update plans when necessary.\n* Work closely with Professional Engineers (PEs) to review and approve designs.\n* Monitor project progress, communicate updates to clients, and ensure deadlines are met.\n* Review submittals during bidding and construction phases.\n* (Optional) Contribute to expanding services into treatment plant projects and help standardize drafting procedures and CAD templates\n\n\n**Requirements**\n* Hands\\-on experience in wastewater electrical engineering (lift stations, pump stations, or treatment plants).\n* Previous experience working for the U.S Market in this same indsutry will be highly valued\n* Excellent written and verbal English communication skills.\n* Strong AutoCAD skills, with experience reviewing and checking drafting work.\n* Experience managing or coordinating projects with multiple stakeholders.\n* Knowledge of Autodesk Vault or similar project management software is a plus.\n* Broader experience in MEP disciplines (mechanical, civil, etc.) is an advantage\n\n\n**Benefits**\n* Take a leadership role in a growing consultancy.\n* Work on innovative wastewater and stormwater projects.\n* Collaborative environment with opportunities to expand your expertise into new project types\n* Work from anywhere!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4316339863",
+    "published_at": "2025-10-17T17:03:35+00:00",
+    "tags": [],
+    "modality": "Remote",
+    "date_scraped": "2025-10-17T18:03:35+00:00"
+  },
+  {
+    "id": "li-4293915503",
+    "title": "Cloud Engineer",
+    "company": "EPAM Systems",
+    "description": "We are searching for an experienced\n **Cloud Engineer** \n with strong expertise in cloud database architectures to join our team.\n \n\n\n\n In this position, you will be tasked with ensuring the scalability, security, and performance of cloud\\-based solutions within critical production environments. You will work collaboratively across teams to design and implement innovative cloud solutions.\n \n\n\n\n  \n \n\n\n\n**Responsibilities** \n\n\n\n* Architect, implement, and manage reliable and optimized cloud databases using systems like Amazon RDS, DynamoDB, ElastiCache, and Azure SQL Database\n* Collaborate with development, infrastructure, and operations teams to deliver scalable and secure solutions\n* Improve database performance by optimizing SQL queries, PLSQL processes, and Bash scripts\n* Diagnose and resolve issues related to performance and availability in complex production systems\n* Oversee security and access management using tools such as Vault and BeyondTrust while monitoring systems with platforms like Datadog and CloudWatch\n* Automate infrastructure and workflows using Terraform, Terragrunt, Ansible, and GitLab\n\n\n\n  \n \n\n\n\n**Requirements** \n\n\n\n* Bachelor’s degree in Computer Science, Computer Engineering, or a related discipline\n* At least 2 years of experience in cloud engineering roles\n* In\\-depth knowledge of Amazon RDS, including configuration and optimization techniques\n* Practical experience managing DynamoDB for non\\-relational databases\n* Proficiency in ElastiCache for enhancing performance and caching solutions\n* Experience with Azure SQL Database for managing scalable relational databases in the cloud\n* Advanced expertise in database design, modeling, query optimization, and scalability best practices\n* Familiarity with monitoring tools like CloudWatch and Datadog to ensure system reliability\n* Strong experience in automating infrastructure using tools such as Terraform and Ansible\n* Skilled in using task management and tracking tools like Jira\n* Proven ability to collaborate effectively with cross\\-functional technical teams\n* Fluent English communication skills, written and spoken, at a B2 level or higher\n\n\n\n  \n \n\n\n\n**Nice to have** \n\n\n\n* Experience working with additional database engines and cloud services beyond the listed tools\n* Knowledge of containerization technologies, including Docker and Kubernetes\n* Understanding of advanced security practices for cloud\\-based systems\n* Certifications in AWS, Azure, or other cloud platforms\n\n\n\n  \n \n\n\n\n**We offer** \n\n\n\n* International projects with top brands\n* Work with global teams of highly skilled, diverse peers\n* Healthcare benefits\n* Employee financial programs\n* Paid time off and sick leave\n* Upskilling, reskilling and certification courses\n* Unlimited access to the LinkedIn Learning library and 22,000\\+ courses\n* Global career opportunities\n* Volunteer and community involvement opportunities\n* EPAM Employee Groups\n* Award\\-winning culture recognized by Glassdoor, Newsweek and LinkedIn",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4293915503",
+    "published_at": "2025-10-17T17:03:35+00:00",
+    "tags": [
+      "security",
+      "sql",
+      "aws",
+      "azure",
+      "docker",
+      "kubernetes",
+      "terraform"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-17T18:03:35+00:00"
   }
 ]
