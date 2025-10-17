@@ -111,8 +111,6 @@ def safe_parse_date_to_ISO(d):
 
 
 def updateDataFrame(df):
-    FILTER_HOURS = 24
-
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
         + "|"
@@ -121,7 +119,8 @@ def updateDataFrame(df):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
+    # Set cutoff to midnight of the current day in UTC
+    cutoff = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
 

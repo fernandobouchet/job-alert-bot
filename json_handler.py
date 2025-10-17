@@ -5,7 +5,7 @@ from collections import defaultdict
 
 
 DATA_DIR = "data"
-LATEST_JOBS_FILE = os.path.join(DATA_DIR, "latest_jobs.json")
+TODAY_JOBS_FILE = os.path.join(DATA_DIR, "today_jobs.json")
 TRENDS_HISTORY_FILE = os.path.join(DATA_DIR, "trends_history.json")
 
 
@@ -101,8 +101,24 @@ def update_job_data(recent_jobs):
     # c. Guardar el historial mensual actualizado
     save_json(monthly_history, monthly_path)
 
-    # d. Guardar la lista de los últimos trabajos nuevos (para el frontend)
-    save_json(jobs_to_send, LATEST_JOBS_FILE)
+    # d. Guardar la lista de trabajos de HOY (acumulativo)
+    try:
+        existing_jobs_today = load_json(TODAY_JOBS_FILE)
+    except json.JSONDecodeError:
+        existing_jobs_today = []
+
+    # Filtrar por si quedaron jobs de dias anteriores
+    today_cutoff = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    # Usamos un diccionario para manejar la unicidad y la actualización
+    all_today_jobs = {job['id']: job for job in existing_jobs_today if datetime.fromisoformat(job['published_at']) >= today_cutoff}
+    
+    # Agregamos los nuevos trabajos, sobreescribiendo duplicados
+    for job in jobs_to_send:
+        all_today_jobs[job['id']] = job
+
+    # Convertimos de nuevo a una lista y guardamos
+    save_json(list(all_today_jobs.values()), TODAY_JOBS_FILE)
 
     # e. Actualizar Historial de Tendencias
     trends_history = load_json(TRENDS_HISTORY_FILE)
@@ -147,7 +163,7 @@ def update_job_data(recent_jobs):
         save_json(trends_history, TRENDS_HISTORY_FILE)
 
     print(f"💾 {len(jobs_to_send)} jobs guardados en {monthly_path}.")
-    print(f"💾 {LATEST_JOBS_FILE} y {TRENDS_HISTORY_FILE} actualizados.")
+    print(f"💾 {TODAY_JOBS_FILE} y {TRENDS_HISTORY_FILE} actualizados.")
 
     return jobs_to_send
 
@@ -157,12 +173,12 @@ def delete_jobs_by_ids(job_ids):
     deleted_count = 0
 
     # Eliminar de latest_jobs.json
-    latest_jobs = load_json(LATEST_JOBS_FILE)
+    latest_jobs = load_json(TODAY_JOBS_FILE)
     filtered_latest_jobs = [
         job for job in latest_jobs if job["id"] not in job_ids_to_delete
     ]
     if len(latest_jobs) != len(filtered_latest_jobs):
-        save_json(filtered_latest_jobs, LATEST_JOBS_FILE)
+        save_json(filtered_latest_jobs, TODAY_JOBS_FILE)
         deleted_count += len(latest_jobs) - len(filtered_latest_jobs)
 
     # Eliminar de los archivos de historial mensual
