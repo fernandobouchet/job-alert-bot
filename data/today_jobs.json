@@ -223,5 +223,39 @@
     ],
     "modality": "Hybrid",
     "date_scraped": "2025-10-17T12:52:58+00:00"
+  },
+  {
+    "id": "li-4315705705",
+    "title": "React Developer",
+    "company": "Greencode Software",
+    "description": "Greencode Software is a Software Factory born in 2015 and constantly searching for new challenges.\n   \n\n  \n\n Based in Buenos Aires and the United States, it’s a growing team that, guided through the principle of\n **collaboration** \n , seeks to position itself as a technical and technological reference in digital transformation innovatively providing solutions to companies.\n   \n\n  \n\n**Continuous learning** \n is one of our core values. We see obstacles as opportunities to overcome ourselves.\n   \n\n  \n\n Are you ready to join a collaborative, flexible, and resilient team that carries agility in its DNA?\n   \n\n  \n\n We are looking for a\n **React Developer** \n to join us!\n   \n\n  \n\n**WHAT CHALLENGES SHOULD YOU EXPECT?**\n* Helping customers develop scalable applications with rich user experiences.\n* Working as a technical leader alongside customer business, development, and infrastructure teams.\n* Providing deep software development knowledge concerning front\\-end architecture, UX/UI design, and programming.\n* Advising and implementing AWS best practices.\n* Developing UIs using frameworks such as React.js and Next.js.\n* Define structure, style guides, and code standards for a project.\n* Define CI/CD pipelines using Jenkins and Github actions.\n\n\n**WHAT WILL HELP YOU SUCCEED?**\n* Good understanding of JavaScript.\n* Strong experience using React.\n* Exposure to Front\\-end libraries/frameworks \\- primarily for React.\n* Knowledge of scrum methodologies.\n* Experience using Next.js technologies.\n* Experience using React Native.\n* Experience with Material UI.\n* Experience using JIRA/Confluence.\n* Experience with web performance optimization.\n* Experience building scalable front\\-end infrastructure software or distributed systems.\n* Demonstrated leadership abilities in an engineering environment in driving operational excellence and best practices.\n* Able to solve difficult software and UX problems with some ambiguity.\n* Pushes for information to avoid solving the wrong problem and mitigate UI risks early in the process to avoid feature delays.\n* Can decompose a problem into clear software and UX design actions.\n* Can articulate the risks and benefits of depending on front\\-end libraries, frameworks, and tools\\-set.\n\n\n**WHY CHOOSING US?**\n* Agile and flexible environment.\n* A highly competitive compensation.\n* Plenty of opportunities to learn and develop your career\n* A supportive yet challenging group of people who want to deliver world\\-class solutions to our clients.\n* Flexible working hours.\n* Flexibility to do home office.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315705705",
+    "published_at": "2025-10-17T14:26:14+00:00",
+    "tags": [
+      "javascript",
+      "react",
+      "next.js",
+      "react native",
+      "aws",
+      "ci/cd",
+      "agile"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-17T15:26:14+00:00"
+  },
+  {
+    "id": "li-4315704864",
+    "title": "Process Engineer HC - Planta Tortuguitas",
+    "company": "Unilever",
+    "description": "**¿QUIÉNES SOMOS?**\n ¿Quieres ser parte de una compañía que hace la diferencia alrededor del mundo? En Unilever, tenemos un propósito claro \\- Iluminar la vida diaria de las personas a través de sus productos y servicios, así como también promover un estilo de vida sustentable \\-. A través de nuestras 400 marcas que llegan a 2\\.5 mil millones de personas todos los días, nuestro objetivo es generar un impacto social positivo a nivel mundial y local.\n   \n\n  \n\n Estamos buscando un/a\n **Ingeniero/a de Procesos** \n para el área de Producción en nuestra unidad de negocio de\n **Home Care.**\n**Los Objetivos Principales Serán**\n Liderar y dar soporte a los procesos productivos de la Planta Tortuguitas, impulsando la optimización, eficiencia, calidad y sustentabilidad de las operaciones, mediante la aplicación de metodologías de mejora continua y la implementación de nuevas tecnologías.\n   \n\n  \n\n**Las Principales Responsabilidades Serán**\n* Análisis y resolución de las perdidas crónicas de las líneas/procesos\n* Analizar y resolver desvíos crónicos de calidad\n* Participar del análisis e implementación de proyectos del Master Plan de planta.\n* Realizar y mantener actualizados los calendarios AM de las líneas.\n* Desarrolla e implementar Kaizenes\n* Aplicar la metodología UMS en todas las actividades.\n* Planificar y priorizar las acciones a realizar en las paradas planeadas\n\n\n**¿QUÉ NECESITAS PARA APLICAR A LA VACANTE?**\n* Graduados o próximos a graduarse de carreras de ingeniería.\n* Experiencia previa en posiciones de producción u operativas.\n* Excelentes habilidades de relacionamiento y comunicación con clientes internos y externos.\n* Inglés: Avanzado\n\n\n En Unilever, queremos generar experiencias que transformen a las personas. Es por eso que buscamos potenciar la flexibilidad, la agilidad, el bienestar y la diversidad. Estos son algunos beneficios y la cultura que te esperan\n   \n\n  \n\n* Modelo híbrido de trabajo.\n* Días adicionales de vacaciones.\n* Viernes Flex.\n* Día de cumpleaños flex.\n* Caja de productos bimestral.\n* Descuentos en becas de grado y posgrado, cursos cortos e idiomas.\n* Posibilidad de participar del programa de acciones.\n* Y mucho más!\n\n\n Unilever is an organisation committed to equity, inclusion and diversity to drive our business results and create a better future, every day, for our diverse employees, global consumers, partners, and communities. We believe a diverse workforce allows us to match our growth ambitions and drive inclusion across the business. At Unilever we are interested in every individual bringing their ‘Whole Self’ to work and this includes you! Thus if you require any support or access requirements, we encourage you to advise us at the time of your application so that we can support you through your recruitment journey.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315704864",
+    "published_at": "2025-10-17T14:26:14+00:00",
+    "tags": [],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-17T15:26:14+00:00"
   }
 ]
