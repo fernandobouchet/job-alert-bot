@@ -3,9 +3,11 @@ import math
 import asyncio
 import pandas as pd
 from config import (
+    DAYS_OLD_TRHESHOLD,
     EXCLUDED_AREA_TERMS_TITLE,
     EXCLUDED_EXPERIENCE_PHRASES,
     EXCLUDED_SENIORITYS,
+    HOURS_OLD_THRESHOLD,
     LOG_UNFILTERED_JOBS,
     REQUIRED_IT_SIGNALS,
     TAGS_KEYWORDS,
@@ -28,7 +30,6 @@ async def scrape(sources, chat_id, bot=None):
 
     df = pd.DataFrame(all_jobs)
 
-    print(df.head())
     df_filtered = filter_jobs(df)
 
     if df_filtered.empty:
@@ -111,7 +112,6 @@ def safe_parse_date_to_ISO(d):
 
 
 def updateDataFrame(df):
-    FILTER_HOURS = 14
 
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
@@ -121,7 +121,7 @@ def updateDataFrame(df):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_OLD_THRESHOLD)
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
 
@@ -251,7 +251,7 @@ def filter_jobs(df):
     return df
 
 
-def is_job_too_old(published_at_iso, days_limit=1):
+def its_job_days_old(published_at_iso, days_limit=DAYS_OLD_TRHESHOLD):
     """Comprueba si un trabajo es más antiguo que el límite de días."""
     try:
         published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))

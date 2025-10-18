@@ -1,6 +1,5 @@
-import datetime
 import requests
-from utils import is_job_too_old, safe_parse_date_to_ISO
+from utils import its_job_days_old, safe_parse_date_to_ISO
 from bs4 import BeautifulSoup
 from config import FETCHER_CONFIG
 
@@ -27,7 +26,7 @@ def fetch_educacionit():
                 date_el.text.strip() if date_el else None
             )
 
-            if is_job_too_old(published_at_iso, 1):
+            if its_job_days_old(published_at_iso):
                 continue
 
             job_id = f"educacionit-{card.get('id', '').strip()}"

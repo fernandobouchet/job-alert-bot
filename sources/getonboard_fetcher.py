@@ -1,5 +1,5 @@
 import requests
-from utils import safe_parse_date_to_ISO
+from utils import its_job_days_old, safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
 
 
@@ -30,6 +30,12 @@ def fetch_getonboard():
                 jobData = job.get("attributes", {})
                 job_id = f"getonboard-{job.get('id', '').strip()}"
 
+                published_at_ts = jobData.get("published_at")
+                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
+
+                if its_job_days_old(published_at_iso):
+                    continue
+
                 # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
                 if seniority_id not in config.get("seniority_ids", []):
@@ -40,9 +46,6 @@ def fetch_getonboard():
 
                 if jobData.get("remote_modality") not in ["fully_remote"]:
                     continue
-
-                published_at_ts = jobData.get("published_at")
-                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
 
                 salary_min = jobData.get("min_salary")
                 salary_max = jobData.get("max_salary")

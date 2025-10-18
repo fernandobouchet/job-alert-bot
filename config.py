@@ -1,10 +1,15 @@
+JOBSPY_SEARCH_TERMS = '(junior OR trainee OR "entry level" OR pasante OR intern OR graduate OR grad OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR software OR engineer OR ingeniero OR programador OR programmer OR technology OR tecnología OR tech OR informática OR computing OR computación OR redes OR network OR ciberseguridad OR cybersecurity OR security OR front OR frontend OR back OR backend OR "full stack" OR "full-stack" OR qa OR tester OR support OR sysadmin OR data OR datos OR cloud)'
+
+DAYS_OLD_TRHESHOLD = 1
+
+HOURS_OLD_THRESHOLD = 14
+
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
-        "per_page": 5,
+        "per_page": 10,
         "page": 1,
         "timeout": 15,
-        "hours_old": 14,
         "seniority_ids": [1, 2],
         "categories": [
             "programacion",
@@ -21,14 +26,13 @@ FETCHER_CONFIG = {
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 75,
-        "hours_old": 14,
-        "linkedin_fetch_description": True,
-        "search_terms": '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR qa OR tester OR support OR sysadmin OR devops OR data OR security OR tech OR software OR informática)',
+        "hours_old": HOURS_OLD_THRESHOLD,
+        "linkedin_fetch_description": False,
+        "search_terms": JOBSPY_SEARCH_TERMS,
     },
     "EducacionITFetcher": {
         "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
         "timeout": 15,
-        "hours_old": 14,
     },
 }
 
@@ -78,8 +82,6 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "accountant",
     "contable",
     "accounting",
-    "auditor",
-    "auditora",
     "treasury",
     "tesoreria",
     "financial analyst",
