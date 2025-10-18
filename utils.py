@@ -3,11 +3,9 @@ import math
 import asyncio
 import pandas as pd
 from config import (
+    DAYS_OLD,
     EXCLUDED_AREA_TERMS_TITLE,
-    EXCLUDED_EXPERIENCE_PHRASES,
-    EXCLUDED_SENIORITYS,
     LOG_UNFILTERED_JOBS,
-    REQUIRED_IT_SIGNALS,
     TAGS_KEYWORDS,
 )
 from datetime import datetime, timezone, timedelta, date
@@ -111,7 +109,6 @@ def safe_parse_date_to_ISO(d):
 
 
 def updateDataFrame(df):
-    FILTER_HOURS = 14
 
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
@@ -121,7 +118,7 @@ def updateDataFrame(df):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=FILTER_HOURS)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=DAYS_OLD)
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
 
@@ -206,40 +203,16 @@ def extract_job_modality(text_for_extraction):
 
 
 def filter_jobs(df):
-    """Filter jobs by seniority, area, positive IT signals and experience."""
+    """Filter jobs by area."""
     if df.empty:
         return df
 
     original_df = df.copy()
 
-    # 1. Seniority
-    pattern = "|".join([re.escape(s.lower()) for s in EXCLUDED_SENIORITYS])
-    df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
-
-    # 2. Area (título)
+    # 1. Area (título)
     escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS_TITLE]
     pattern = r"\b(?:" + "|".join(escaped_terms) + r")\b"
     df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
-
-    # 3. ⭐ IT SIGNALS
-    df["_temp_title"] = df["title"].fillna("").str.lower()
-    escaped_signals = [re.escape(s.lower()) for s in REQUIRED_IT_SIGNALS]
-    pattern = r"\b(?:" + "|".join(escaped_signals) + r")\b"
-    df = df[df["_temp_title"].str.contains(pattern, regex=True, na=False)].copy()
-    df = df.drop(columns=["_temp_title"])
-
-    # 4. Experience
-    pattern = (
-        r"\b("
-        + "|".join([re.escape(e.lower()) for e in EXCLUDED_EXPERIENCE_PHRASES])
-        + r")\b"
-    )
-    df = df[
-        ~df["description"]
-        .fillna("")
-        .str.lower()
-        .str.contains(pattern, regex=True, na=False)
-    ].copy()
 
     if LOG_UNFILTERED_JOBS:
         unfiltered_jobs = original_df[~original_df.index.isin(df.index)]
@@ -251,7 +224,7 @@ def filter_jobs(df):
     return df
 
 
-def is_job_too_old(published_at_iso, days_limit=1):
+def is_job_too_old(published_at_iso, days_limit=DAYS_OLD):
     """Comprueba si un trabajo es más antiguo que el límite de días."""
     try:
         published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))

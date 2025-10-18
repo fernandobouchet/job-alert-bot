@@ -1,10 +1,14 @@
+DAYS_OLD = 1
+HOURS_OLD = 14
+
+JOB_SEARCH_TERMS = '(junior OR trainee OR "entry level" OR pasante OR intern OR graduate OR grad OR asociado OR associate OR graduado OR becario) AND (IT OR sistemas OR developer OR desarrollador OR software OR engineer OR ingeniero OR programador OR technology OR tecnología OR tech OR informática OR computing OR computación OR redes OR network OR ciberseguridad OR cybersecurity OR security OR front OR frontend OR back OR backend OR "full stack" OR "full-stack" OR qa OR tester OR support OR sysadmin OR data OR datos OR cloud)'
+
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
         "per_page": 5,
         "page": 1,
         "timeout": 15,
-        "hours_old": 14,
         "seniority_ids": [1, 2],
         "categories": [
             "programacion",
@@ -21,51 +25,16 @@ FETCHER_CONFIG = {
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 75,
-        "hours_old": 14,
+        "hours_old": HOURS_OLD,
         "linkedin_fetch_description": True,
-        "search_terms": '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR qa OR tester OR support OR sysadmin OR devops OR data OR security OR tech OR software OR informática)',
+        "search_terms": JOB_SEARCH_TERMS,
     },
     "EducacionITFetcher": {
         "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
         "timeout": 15,
-        "hours_old": 14,
     },
 }
 
-EXCLUDED_SENIORITYS = [
-    "senior",
-    "sr",
-    "sr.",
-    "ssr",
-    "semi-senior",
-    "semisenior",
-    "lead",
-    "líder",
-    "lider",
-    "tech lead",
-    "manager",
-    "director",
-    "head",
-    "jefe",
-    "jefa",
-    "chief",
-    "gerente",
-    "principal",
-    "staff",
-    "architect",
-    "expert",
-    "experto",
-    "specialist",
-    "especialista",
-    "consultor",
-    "consultant",
-    " ii",
-    " iii",
-    " iv",
-    "level 2",
-    "level 3",
-    "level 4",
-]
 
 EXCLUDED_AREA_TERMS_TITLE = [
     # Finanzas
@@ -182,45 +151,9 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "seguridad fisica",
 ]
 
-EXCLUDED_EXPERIENCE_PHRASES = [
-    # English
-    "3 years",
-    "4 years",
-    "5 years",
-    "6 years",
-    "7 years",
-    "3+ years",
-    "4+ years",
-    "5+ years",
-    "6+ years",
-    "3-5 years",
-    "4-6 years",
-    "5-7 years",
-    "minimum 3 years",
-    "minimum 4 years",
-    "minimum 5 years",
-    # Spanish
-    "3 años",
-    "4 años",
-    "5 años",
-    "6 años",
-    "7 años",
-    "minimo 3 años",
-    "minimo 4 años",
-    "minimo 5 años",
-    "mínimo 3 años",
-    "mínimo 4 años",
-    "mínimo 5 años",
-    "3-5 años",
-    "4-6 años",
-    "5-7 años",
-    "al menos 3 años",
-    "al menos 4 años",
-    "al menos 5 años",
-]
-
 TAGS_KEYWORDS = [
     # Roles
+    "software engineer",
     "frontend",
     "backend",
     "fullstack",
@@ -293,63 +226,6 @@ TAGS_KEYWORDS = [
     "rest",
     "agile",
     "microservices",
-]
-
-REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
-    # Roles generales
-    "developer",
-    "desarrollador",
-    "engineer",
-    "ingeniero de software",
-    "programmer",
-    "programador",
-    "analista de datos",
-    "analista de sistemas",
-    "analista de negocio",
-    "technical support",
-    "soporte técnico",
-    "help desk",
-    "pentester",
-    "soc analyst",
-    "network engineer",
-    # Términos IT generales
-    "software",
-    "it",
-    "tech",
-    "technology",
-    "sistemas",
-    "informática",
-    "computing",
-    "tecnología",
-    # Tecnologías
-    "c++",
-    "elasticsearch",
-    "oracle",
-    "jenkins",
-    "gitlab",
-    "ansible",
-    "hadoop",
-    "cisco",
-    "firewall",
-    "vpn",
-    "network",
-    "redes",
-    "bi",
-    "etl",
-    "data warehouse",
-    "cloud",
-    "automation",
-    "testing",
-    "api gateway",
-    "data modeling",
-    # Roles específicos adicionales
-    "machine learning engineer",
-    "data engineer",
-    "web developer",
-    "desarrollador web",
-    "cybersecurity analyst",
-    "analista de ciberseguridad",
-    "analista funcional",
 ]
 
 LOG_UNFILTERED_JOBS = True

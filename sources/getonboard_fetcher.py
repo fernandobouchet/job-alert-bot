@@ -1,5 +1,5 @@
 import requests
-from utils import safe_parse_date_to_ISO
+from utils import is_job_too_old, safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
 
 
@@ -27,6 +27,12 @@ def fetch_getonboard():
 
         for job in data:
             try:
+                published_at_ts = jobData.get("published_at")
+                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
+
+                if is_job_too_old(published_at_iso):
+                    continue
+
                 jobData = job.get("attributes", {})
                 job_id = f"getonboard-{job.get('id', '').strip()}"
 
@@ -40,9 +46,6 @@ def fetch_getonboard():
 
                 if jobData.get("remote_modality") not in ["fully_remote"]:
                     continue
-
-                published_at_ts = jobData.get("published_at")
-                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
 
                 salary_min = jobData.get("min_salary")
                 salary_max = jobData.get("max_salary")
