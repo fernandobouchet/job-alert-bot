@@ -530,5 +530,30 @@
     ],
     "modality": "Not Specified",
     "date_scraped": "2025-10-17T21:22:33+00:00"
+  },
+  {
+    "id": "li-4313388967",
+    "title": "AI Test Engineer",
+    "company": "Qualitest",
+    "description": "Are you interested in working with the World’s leading AI\\-powered Quality Engineering Company? Ready to advance your career, team up with global thought leaders across industries and make a difference every day? Join us at Qualitest!\n   \n\n  \n\n We are looking for a AI Test Engineer to join our growing team in Argentina!\n   \n\n  \n\n Role \\- AI Test Engineer\n   \n\n  \n\n Location \\- Remote (ARG)\n   \n\n  \n\n We are seeking a skilled Quality Assurance Engineer with strong experience validating AI/ML models, data pipelines, and automation frameworks. This individual will play a key role in ensuring the integrity, reliability, and performance of AI\\-driven applications across enterprise\\-level programs. The ideal candidate will bring a balance of technical acumen, structured QA methodology, and curiosity around how AI systems behave and scale in production.\n   \n\n  \n\n**Responsibilities**\n Develop, maintain, and execute comprehensive test strategies for AI/ML model validation and automation pipelines.\n   \n\n  \n\n Partner with Data Scientists, MLOps Engineers, and Product Owners to define acceptance criteria for AI features and workflows.\n   \n\n  \n\n Validate data quality, bias, drift, and model outputs to ensure consistent and explainable AI results.\n   \n\n  \n\n Build and extend automation frameworks (Python / PyTest / Robot / Cypress / Postman) to support regression and performance testing.\n   \n\n  \n\n Create reusable scripts for data validation, API testing, and ETL checks supporting AI model training and deployment.\n   \n\n  \n\n Participate in CI/CD pipelines (GitHub Actions, Jenkins, Azure DevOps, etc.) for continuous validation of model updates.\n   \n\n  \n\n Document results, report issues, and ensure compliance with governance and audit standards for AI/ML systems.\n   \n\n  \n\n Collaborate with distributed teams (onshore \\& nearshore) ensuring delivery quality and cross\\-regional alignment.\n   \n\n  \n\n**Qualifications**\n 4–7\\+ years of QA / QE experience, including 2\\+ years working on AI/ML or data\\-driven projects.\n   \n\n  \n\n Familiarity with NumPy, Pandas, PyTest, and API testing tools.\n   \n\n  \n\n Experience validating REST APIs, data flows, and AI microservices.\n   \n\n  \n\n Understanding of ML lifecycle, including data ingestion, model training, testing, and deployment.\n   \n\n  \n\n Familiarity with cloud platforms (AWS / Azure / GCP) and MLOps pipelines.\n   \n\n  \n\n Excellent communication skills and ability to work with cross\\-functional global teams.\n   \n\n  \n\n Bachelor’s degree in Computer Science, Engineering, or related field preferred.\n   \n\n  \n\n Preferred SkillsKnowledge of GenAI, LLM evaluation, and prompt testing frameworks.\n   \n\n  \n\n Experience with data quality monitoring or AI observability tools.\n   \n\n  \n\n Exposure to AI governance, model validation frameworks, or responsible AI testing practices.\n   \n\n  \n\n Why Qualitest?\n   \n\n  \n\n* Be a part of a company who strives to support for diversity and inclusion in the workplace – we are one, we are many at Qualitest. Celebrate culture, share knowledge with engineers from around the globe, and inspire each other through our differences.\n* Local and global opportunities – we offer you internal rotation and international mobility opportunities to grow your career.\n* Clear view of your career and progression with the company – Qualitest is growing massively (since Jan 2021 – added more than 2000 engineers) and giving you the opportunity to grow with us.\n* Work hard and play harder with our flexible and casual culture. Take a break from work and join an employee event, or enjoy the amenities and games provided from one of our Employees Centers.\n* Never stop experimenting and learning with Qualitest Tech academy: 3000\\+ training courses, mentorship programs, technical tribes, sponsored certifications, leadership programs and much more.\n* Earn bonuses via our Client Referral and Employee Referral Program’s. Refer and earn – tap your network for net\\-worth.\n\n\n Intrigued to find more about us?\n   \n\n  \n\n* Visit our website at https://www.qualitestgroup.com/\n\n\n If you like what you have read, send us your resume and let’s start talking!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4313388967",
+    "published_at": "2025-10-17T23:37:50+00:00",
+    "tags": [
+      "devops",
+      "qa",
+      "python",
+      "aws",
+      "azure",
+      "gcp",
+      "ci/cd",
+      "pandas",
+      "api",
+      "rest",
+      "microservices"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-18T00:37:50+00:00"
   }
 ]
