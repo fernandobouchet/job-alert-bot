@@ -4,20 +4,16 @@ import asyncio
 import pandas as pd
 from config import (
     DAYS_OLD_TRHESHOLD,
-    EXCLUDED_AREA_TERMS_TITLE,
-    EXCLUDED_EXPERIENCE_PHRASES,
-    EXCLUDED_SENIORITYS,
     HOURS_OLD_THRESHOLD,
-    LOG_UNFILTERED_JOBS,
-    REQUIRED_IT_SIGNALS,
-    TAGS_KEYWORDS,
 )
 from datetime import datetime, timezone, timedelta, date
-from json_handler import update_job_data, save_json
+from filters_scoring import filter_jobs_with_scoring
+from json_handler import update_job_data
 from bot.utils import send_jobs
+from filters_scoring_config import TAGS_KEYWORDS
 
 
-async def scrape(sources, chat_id, bot=None):
+async def scrape(sources, chat_id, bot):
     print("🚀 Iniciando búsqueda de trabajos...")
     tasks = [asyncio.to_thread(source_func) for source_func in sources]
     results = await asyncio.gather(*tasks)
@@ -30,7 +26,7 @@ async def scrape(sources, chat_id, bot=None):
 
     df = pd.DataFrame(all_jobs)
 
-    df_filtered = filter_jobs(df)
+    df_filtered = filter_jobs_with_scoring(df, min_score=50, verbose=True)
 
     if df_filtered.empty:
         print("No se encontraron trabajos nuevos con los filtros aplicados.")
@@ -46,8 +42,7 @@ async def scrape(sources, chat_id, bot=None):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        if bot:
-            await send_jobs(bot, chat_id, new_jobs)
+        await send_jobs(bot, chat_id, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
 
@@ -160,9 +155,8 @@ def extract_tags(text_for_extraction):
 
     found_tags = []
     for kw in TAGS_KEYWORDS:
-        # Usa \b (límite de palabra) y re.escape para buscar la palabra completa
-        pattern = r"\b" + re.escape(kw) + r"\b"
-        if re.search(pattern, text):
+        pattern = r"(?<!\w)" + re.escape(kw) + r"(?!\w)"
+        if re.search(pattern, text, re.IGNORECASE):
             found_tags.append(kw)
 
     return found_tags
@@ -203,52 +197,6 @@ def extract_job_modality(text_for_extraction):
 
     # --- 4. Fallback ---
     return "Not Specified"
-
-
-def filter_jobs(df):
-    """Filter jobs by seniority, area, positive IT signals and experience."""
-    if df.empty:
-        return df
-
-    original_df = df.copy()
-
-    # 1. Seniority
-    pattern = "|".join([re.escape(s.lower()) for s in EXCLUDED_SENIORITYS])
-    df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
-
-    # 2. Area (título)
-    escaped_terms = [re.escape(term.lower()) for term in EXCLUDED_AREA_TERMS_TITLE]
-    pattern = r"\b(?:" + "|".join(escaped_terms) + r")\b"
-    df = df[~df["title"].str.lower().str.contains(pattern, regex=True, na=False)].copy()
-
-    # 3. ⭐ IT SIGNALS
-    df["_temp_title"] = df["title"].fillna("").str.lower()
-    escaped_signals = [re.escape(s.lower()) for s in REQUIRED_IT_SIGNALS]
-    pattern = r"\b(?:" + "|".join(escaped_signals) + r")\b"
-    df = df[df["_temp_title"].str.contains(pattern, regex=True, na=False)].copy()
-    df = df.drop(columns=["_temp_title"])
-
-    # 4. Experience
-    pattern = (
-        r"\b("
-        + "|".join([re.escape(e.lower()) for e in EXCLUDED_EXPERIENCE_PHRASES])
-        + r")\b"
-    )
-    df = df[
-        ~df["description"]
-        .fillna("")
-        .str.lower()
-        .str.contains(pattern, regex=True, na=False)
-    ].copy()
-
-    if LOG_UNFILTERED_JOBS:
-        unfiltered_jobs = original_df[~original_df.index.isin(df.index)]
-        if not unfiltered_jobs.empty:
-            save_json(
-                unfiltered_jobs.to_dict(orient="records"), "data/unfiltered_jobs.json"
-            )
-
-    return df
 
 
 def its_job_days_old(published_at_iso, days_limit=DAYS_OLD_TRHESHOLD):

@@ -30,8 +30,28 @@ def save_json(data, filepath):
     dir_name = os.path.dirname(filepath)
     if dir_name:
         os.makedirs(dir_name, exist_ok=True)
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    # Si es el archivo de rechazados, manejar la actualización
+    if 'rejected_jobs.json' in filepath:
+        existing_jobs = load_json(filepath)
+        existing_ids = {job['id'] for job in existing_jobs}
+        
+        new_jobs = [job for job in data if job['id'] not in existing_ids]
+        
+        if not new_jobs:
+            # print("No new rejected jobs to add.")
+            return
+
+        updated_jobs = existing_jobs + new_jobs
+        
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(updated_jobs, f, indent=2, ensure_ascii=False)
+        # print(f"Added {len(new_jobs)} new jobs to {filepath}. Total: {len(updated_jobs)}.")
+
+    else:
+        # Comportamiento original para otros archivos
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
 
 def get_monthly_history_path(date_str):
