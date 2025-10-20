@@ -5,7 +5,7 @@ from collections import defaultdict
 
 
 DATA_DIR = "data"
-TODAY_JOBS_FILE = os.path.join(DATA_DIR, "today_jobs.json")
+LATEST_JOBS_FILE = os.path.join(DATA_DIR, "latest_jobs.json")
 TRENDS_HISTORY_FILE = os.path.join(DATA_DIR, "trends_history.json")
 
 
@@ -123,7 +123,7 @@ def update_job_data(recent_jobs):
 
     # d. Guardar la lista de trabajos de HOY (acumulativo)
     try:
-        existing_jobs_today = load_json(TODAY_JOBS_FILE)
+        existing_jobs_today = load_json(LATEST_JOBS_FILE)
     except json.JSONDecodeError:
         existing_jobs_today = []
 
@@ -138,7 +138,7 @@ def update_job_data(recent_jobs):
         all_today_jobs[job['id']] = job
 
     # Convertimos de nuevo a una lista y guardamos
-    save_json(list(all_today_jobs.values()), TODAY_JOBS_FILE)
+    save_json(list(all_today_jobs.values()), LATEST_JOBS_FILE)
 
     # e. Actualizar Historial de Tendencias
     trends_history = load_json(TRENDS_HISTORY_FILE)
@@ -183,7 +183,7 @@ def update_job_data(recent_jobs):
         save_json(trends_history, TRENDS_HISTORY_FILE)
 
     print(f"💾 {len(jobs_to_send)} jobs guardados en {monthly_path}.")
-    print(f"💾 {TODAY_JOBS_FILE} y {TRENDS_HISTORY_FILE} actualizados.")
+    print(f"💾 {LATEST_JOBS_FILE} y {TRENDS_HISTORY_FILE} actualizados.")
 
     return jobs_to_send
 
@@ -193,12 +193,12 @@ def delete_jobs_by_ids(job_ids):
     deleted_count = 0
 
     # Eliminar de latest_jobs.json
-    latest_jobs = load_json(TODAY_JOBS_FILE)
+    latest_jobs = load_json(LATEST_JOBS_FILE)
     filtered_latest_jobs = [
         job for job in latest_jobs if job["id"] not in job_ids_to_delete
     ]
     if len(latest_jobs) != len(filtered_latest_jobs):
-        save_json(filtered_latest_jobs, TODAY_JOBS_FILE)
+        save_json(filtered_latest_jobs, LATEST_JOBS_FILE)
         deleted_count += len(latest_jobs) - len(filtered_latest_jobs)
 
     # Eliminar de los archivos de historial mensual
