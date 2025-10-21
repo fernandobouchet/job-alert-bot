@@ -10,7 +10,7 @@ from filters_scoring_config import (
     STRONG_ROLE_SIGNALS,
     STRONG_TECH_SIGNALS,
 )
-from json_handler import save_json
+from json_handler import save_json, handle_rejected_jobs_file
 from config import LOG_REJECTED_JOBS
 
 
@@ -171,6 +171,8 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
     """
     Filtrado basado en pre-filtros y scoring, con detalle de rechazo.
     """
+    handle_rejected_jobs_file(LOG_REJECTED_JOBS, verbose=verbose)
+
     if df.empty:
         if verbose:
             print("⚠️ Empty DataFrame, skipping filtering.")

@@ -229,3 +229,14 @@ def delete_jobs_by_ids(job_ids):
         print("No se encontraron trabajos con los IDs proporcionados.")
 
     return deleted_count
+
+def handle_rejected_jobs_file(log_rejected_jobs, verbose=True):
+    """
+    Deletes the rejected_jobs.json file if log_rejected_jobs is False.
+    """
+    if not log_rejected_jobs:
+        rejected_jobs_path = os.path.join(DATA_DIR, "rejected_jobs.json")
+        if os.path.exists(rejected_jobs_path):
+            os.remove(rejected_jobs_path)
+            if verbose:
+                print(f"🗑️ Deleted {rejected_jobs_path} as LOG_REJECTED_JOBS is False.")
