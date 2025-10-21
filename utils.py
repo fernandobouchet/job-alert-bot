@@ -2,13 +2,18 @@ import re
 import math
 import asyncio
 import pandas as pd
-
 try:
-    from config import DAYS_OLD_TRHESHOLD, HOURS_OLD_THRESHOLD, TIMEZONE
+    from config import (
+        DAYS_OLD_TRHESHOLD,
+        HOURS_OLD_THRESHOLD,
+        TIMEZONE,
+        SOURCES_BYPASS_SCORING
+    )
 except ImportError:
     TIMEZONE = "UTC"
+    SOURCES_BYPASS_SCORING = []
 import zoneinfo
-from datetime import datetime, timedelta, date
+from datetime import datetime, timezone, timedelta, date
 from filters_scoring import filter_jobs_with_scoring
 from json_handler import update_job_data
 from bot.utils import send_jobs
@@ -28,7 +33,12 @@ async def scrape(sources, chat_ids, bot, admin_chat_id):
 
     df = pd.DataFrame(all_jobs)
 
-    df_filtered = filter_jobs_with_scoring(df, min_score=50, verbose=True)
+    df_to_score = df[~df['source'].isin(SOURCES_BYPASS_SCORING)]
+    df_to_bypass = df[df['source'].isin(SOURCES_BYPASS_SCORING)]
+
+    df_filtered_scored = filter_jobs_with_scoring(df_to_score, min_score=50, verbose=True)
+
+    df_filtered = pd.concat([df_filtered_scored, df_to_bypass], ignore_index=True)
 
     if df_filtered.empty:
         print("No se encontraron trabajos nuevos con los filtros aplicados.")

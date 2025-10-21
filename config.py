@@ -52,3 +52,5 @@ FETCHER_CONFIG = {
 
 
 LOG_REJECTED_JOBS = True
+
+SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]
