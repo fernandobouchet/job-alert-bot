@@ -2,10 +2,15 @@ import re
 import math
 import asyncio
 import pandas as pd
-from config import (
-    DAYS_OLD_TRHESHOLD,
-    HOURS_OLD_THRESHOLD,
-)
+try:
+    from config import (
+        DAYS_OLD_TRHESHOLD,
+        HOURS_OLD_THRESHOLD,
+        TIMEZONE
+    )
+except ImportError:
+    TIMEZONE = "UTC"
+import zoneinfo
 from datetime import datetime, timezone, timedelta, date
 from filters_scoring import filter_jobs_with_scoring
 from json_handler import update_job_data
@@ -48,7 +53,7 @@ async def scrape(sources, chat_id, bot):
 
 
 def safe_parse_date_to_ISO(d):
-    now = datetime.now(timezone.utc)
+    now = datetime.now(zoneinfo.ZoneInfo(TIMEZONE))
 
     if d is None or (isinstance(d, float) and math.isnan(d)):
         dt = now - timedelta(hours=1)
@@ -56,7 +61,7 @@ def safe_parse_date_to_ISO(d):
 
     if isinstance(d, (int, float)):
         try:
-            dt = datetime.fromtimestamp(d, tz=timezone.utc)
+            dt = datetime.fromtimestamp(d, tz=zoneinfo.ZoneInfo(TIMEZONE))
             return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         except Exception:
             return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -89,18 +94,18 @@ def safe_parse_date_to_ISO(d):
             try:
                 dt = datetime.strptime(d, fmt)
                 if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=timezone.utc)
+                    dt = dt.replace(tzinfo=zoneinfo.ZoneInfo(TIMEZONE))
                 return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
             except ValueError:
                 continue
 
     if isinstance(d, datetime):
         if d.tzinfo is None:
-            d = d.replace(tzinfo=timezone.utc)
+            d = d.replace(tzinfo=zoneinfo.ZoneInfo(TIMEZONE))
         return d.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
     if isinstance(d, date):
-        dt = datetime(d.year, d.month, d.day, tzinfo=timezone.utc)
+        dt = datetime(d.year, d.month, d.day, tzinfo=zoneinfo.ZoneInfo(TIMEZONE))
         return dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
     return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -116,7 +121,7 @@ def updateDataFrame(df):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_OLD_THRESHOLD)
+    cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(hours=HOURS_OLD_THRESHOLD)
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
 
@@ -140,7 +145,7 @@ def updateDataFrame(df):
 
     df.drop(columns=["text_for_extraction"], inplace=True)
 
-    current_time_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
     df["date_scraped"] = current_time_iso
 
     df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -203,7 +208,7 @@ def its_job_days_old(published_at_iso, days_limit=DAYS_OLD_TRHESHOLD):
     """Comprueba si un trabajo es más antiguo que el límite de días."""
     try:
         published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))
-        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_limit)
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(days=days_limit)
         return published_date < cutoff_date
     except (ValueError, TypeError):
         return False

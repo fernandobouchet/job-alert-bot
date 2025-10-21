@@ -1,5 +1,12 @@
 import json
 import os
+try:
+    from config import (
+        TIMEZONE
+    )
+except ImportError:
+    TIMEZONE = "UTC"
+import zoneinfo
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
@@ -95,7 +102,7 @@ def update_job_data(recent_jobs):
 
     # La fecha de escaneo (AAAA-MM)
     current_month_str = recent_jobs[0].get(
-        "date_scraped", datetime.now(timezone.utc).isoformat()
+        "date_scraped", datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
     )[:7]
 
     # a. Determinar el path del archivo mensual y cargarlo
@@ -128,7 +135,7 @@ def update_job_data(recent_jobs):
         existing_jobs_today = []
 
     # Filtrar por si quedaron jobs de dias anteriores
-    today_cutoff = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).replace(hour=0, minute=0, second=0, microsecond=0)
     
     # Usamos un diccionario para manejar la unicidad y la actualización
     all_today_jobs = {job['id']: job for job in existing_jobs_today if datetime.fromisoformat(job['published_at']) >= today_cutoff}
@@ -170,7 +177,7 @@ def update_job_data(recent_jobs):
             trends_history.extend(current_month_trends)
 
         # h. Podar Historial de Tendencias (eliminar entradas de hace más de 12 meses)
-        current_date = datetime.now()
+        current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE))
         twelve_months_ago = current_date.replace(year=current_date.year - 1)
 
         trends_history = [
@@ -203,7 +210,7 @@ def delete_jobs_by_ids(job_ids):
 
     # Eliminar de los archivos de historial mensual
     for i in range(13):
-        current_date = datetime.now() - timedelta(days=i * 30)
+        current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(days=i * 30)
         monthly_path = get_monthly_history_path(current_date.strftime("%Y-%m"))
 
         if os.path.exists(monthly_path):
