@@ -1,7 +1,18 @@
 TIMEZONE = "America/Argentina/Buenos_Aires"
 
-JOBSPY_SEARCH_TERMS = '(junior OR jr OR "jr." OR trainee OR "entry level" OR pasante OR intern OR graduate OR grad OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR software OR engineer OR ingeniero OR programador OR programmer OR technology OR tecnología OR tech OR informática OR computing OR computación OR redes OR network OR ciberseguridad OR cybersecurity OR security OR front OR frontend OR back OR backend OR "full stack" OR "full-stack" OR qa OR tester OR support OR sysadmin OR data OR datos OR cloud OR analyst OR analista OR devops OR ux OR ui OR designer OR "machine learning" OR "inteligencia artificial")'
-
+JOBSPY_SEARCH_TERMS = (
+    '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) '
+    "("
+    "IT OR sistemas OR developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR "
+    "software OR technology OR tecnología OR informática OR computing OR computación OR "
+    "frontend OR backend OR fullstack OR devops OR sysadmin OR "
+    '"data analyst" OR "data engineer" OR "data science" OR '
+    "qa OR tester OR security OR ciberseguridad OR cybersecurity OR "
+    'cloud OR redes OR network OR "technical support" OR "soporte técnico" OR '
+    '"ux/ui" OR "ux designer" OR "ui designer" OR '
+    '"machine learning" OR "inteligencia artificial"'
+    ")"
+)
 
 DAYS_OLD_TRHESHOLD = 1
 
@@ -28,7 +39,7 @@ FETCHER_CONFIG = {
         "site_name": ["indeed", "linkedin"],
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
-        "results_wanted": 45,
+        "results_wanted": 50,
         "hours_old": HOURS_OLD_THRESHOLD,
         "linkedin_fetch_description": True,
         "search_terms": JOBSPY_SEARCH_TERMS,
