@@ -1,74 +1,17 @@
 import pandas as pd
-import re
-from filters_scoring_config import (
-    AMBIGUOUS_ROLES,
-    POSITIVE_SENIORITY_TERMS,
-    EXCLUDED_SENIORITYS,
-    EXCLUDED_AREA_TERMS_TITLE,
-    EXCLUDED_EXPERIENCE_PHRASES,
-    REQUIRED_IT_SIGNALS,
-    WEAK_IT_SIGNALS,
-    STRONG_ROLE_SIGNALS,
-    STRONG_TECH_SIGNALS,
+from constants import (
+    _REGEX_AMBIGUOUS_ROLES,
+    _REGEX_AREA_PREFILTER,
+    _REGEX_EXPERIENCE,
+    _REGEX_IT_SIGNALS,
+    _REGEX_POSITIVE_SENIORITY,
+    _REGEX_SENIORITY_EXCLUDED,
+    _REGEX_STRONG_ROLE_SIGNALS,
+    _REGEX_STRONG_TECH_SIGNALS,
+    _REGEX_WEAK_IT_SIGNALS,
 )
 from json_handler import save_json, handle_rejected_jobs_file
 from config import LOG_REJECTED_JOBS
-
-
-print("🔄 Compiling regex patterns from config...")
-
-
-_REGEX_AREA_PREFILTER = re.compile(
-    r"\b(?:" + "|".join(re.escape(t) for t in EXCLUDED_AREA_TERMS_TITLE) + r")",
-    re.IGNORECASE,
-)
-
-_REGEX_SENIORITY_EXCLUDED = re.compile(
-    r"\b(?:" + "|".join(re.escape(s) for s in EXCLUDED_SENIORITYS) + r")",
-    re.IGNORECASE,
-)
-
-_REGEX_POSITIVE_SENIORITY = re.compile(
-    r"\b(?:" + "|".join(re.escape(s) for s in POSITIVE_SENIORITY_TERMS) + r")",
-    re.IGNORECASE,
-)
-
-_REGEX_PREFILTER_COMBINED = re.compile(
-    f"{_REGEX_AREA_PREFILTER.pattern}|{_REGEX_SENIORITY_EXCLUDED.pattern}",
-    re.IGNORECASE,
-)
-
-_REGEX_EXPERIENCE = re.compile(
-    "|".join(re.escape(e) for e in EXCLUDED_EXPERIENCE_PHRASES), re.IGNORECASE
-)
-
-_REGEX_IT_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in REQUIRED_IT_SIGNALS),
-    re.IGNORECASE,
-)
-
-_REGEX_WEAK_IT_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in WEAK_IT_SIGNALS),
-    re.IGNORECASE,
-)
-
-_REGEX_STRONG_ROLE_SIGNALS = re.compile(
-    r"\b(?:" + "|".join(re.escape(s) for s in STRONG_ROLE_SIGNALS) + r")",
-    re.IGNORECASE,
-)
-
-_REGEX_STRONG_TECH_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in STRONG_TECH_SIGNALS),
-    re.IGNORECASE,
-)
-
-
-_REGEX_AMBIGUOUS_ROLES = re.compile(
-    r"\b(?:" + "|".join(re.escape(s) for s in AMBIGUOUS_ROLES) + r")",
-    re.IGNORECASE,
-)
-
-print("✅ Regex patterns compiled")
 
 
 def pre_filter_jobs(df, verbose=True):
@@ -83,19 +26,19 @@ def pre_filter_jobs(df, verbose=True):
         print(f"\n🔍 Starting pre-filtering for {initial_count} jobs...")
 
     # Identificar trabajos a rechazar
-    mask_reject = df["title"].str.contains(_REGEX_PREFILTER_COMBINED, na=False)
+    mask_reject = df["title"].str.contains(_REGEX_AREA_PREFILTER, na=False)
     df_rejected = df[mask_reject].copy()
     df_filtered = df[~mask_reject].copy()
 
     # Añadir razón de rechazo (el término específico que causó el rechazo)
     if not df_rejected.empty:
         df_rejected["rejection_reason"] = df_rejected["title"].apply(
-            lambda x: f"pre-filter: {', '.join(set(_REGEX_PREFILTER_COMBINED.findall(x)))}"
+            lambda x: f"pre-filter: {', '.join(set(_REGEX_AREA_PREFILTER.findall(x)))}"
         )
 
     rejected_count = len(df_rejected)
     if verbose:
-        print(f"   - Rejected by Area/Seniority: {rejected_count} jobs")
+        print(f"   - Rejected by Area: {rejected_count} jobs")
         print(
             f"   -> Jobs remaining for scoring: {len(df_filtered)} ({len(df_filtered)/initial_count*100:.1f}%)"
         )
@@ -118,62 +61,74 @@ def calculate_job_score(row):
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
     weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_it_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
+    strong_role_found = _REGEX_STRONG_ROLE_SIGNALS(title)
     has_ambiguous_role = set(_REGEX_AMBIGUOUS_ROLES.findall(title))
 
     all_signals_found = it_signals_found.union(weak_it_signals_found)
 
-    # ===== 1. SENIORITY SCORING (POSITIVO Y NEGATIVO) =====
+    # ===== 1. NOT IT SIGNALS OR WEAKS_SIGNALS ONLY =====
+    if not all_signals_found:
+        score = 0
+        score_details["fatal_no_it_signals"] = True
+        score_details["reason"] = "No IT signals found"
+        return 0, score_details
 
-    # ✅ Puntuación positiva para términos Junior/Trainee en el título (SOLO SI HAY SEÑALES IT)
-    if len(all_signals_found) >= 2:
+    if weak_it_signals_found and not it_signals_found and not strong_it_signals_found:
+        penalty = 35
+        score -= penalty
+        score_details["penalty_only_weak_signals"] = -penalty
+
+    # ===== 2. SENIORITY SCORING (POSITIVO Y NEGATIVO) =====
+
+    # ✅ Bonus por junior (SOLO si hay señales IT fuertes)
+    if len(it_signals_found) >= 1 or strong_it_signals_found:
         if _REGEX_POSITIVE_SENIORITY.search(title):
-            score += 25
-            score_details["bonus_seniority"] = 25
+            bonus = 20
+            score += bonus
+            score_details["bonus_seniority"] = bonus
 
     # ❌ Penalización fuerte para términos Senior/Lead en el título
     if _REGEX_SENIORITY_EXCLUDED.search(title):
-        penalty = 40
+        penalty = 50
         score -= penalty
         score_details["penalty_seniority"] = -penalty
 
-    if _REGEX_STRONG_ROLE_SIGNALS.search(title):
-        score += 20
-        score_details["strong_role_signal"] = 20
+    # ✅ Puntuación positiva roles fuertes
+    if strong_role_found:
+        bonus = 15
+        score += bonus
+        score_details["strong_role_signal"] = bonus
 
-    # ===== 2. IT SIGNALS SCORING (CON PENALIZACIÓN) =====
+    # ===== 3. IT SIGNALS SCORING (CON PENALIZACIÓN) =====
+    if it_signals_found:
+        # 3 puntos por señal IT
+        bonus = min(len(it_signals_found) * 3, 30)  # Max 30
+        score += bonus
+        score_details["bonus_it_signals"] = bonus
+        score_details["it_signals_found"] = list(it_signals_found)[:10]  # Top 10
 
-    if all_signals_found:
-        # Bonus for normal signals (5 points each, max 40)
-        normal_bonus = min(len(it_signals_found) * 5, 40)
-        # Bonus for weak signals (0.5 point each, max 5)
-        weak_bonus = min(len(weak_it_signals_found) * 0.5, 5)
-
-        total_bonus = normal_bonus + weak_bonus
-        score += total_bonus
-        score_details["bonus_it_signals"] = total_bonus
-        score_details["it_signals_found"] = list(all_signals_found)
-    else:
-        penalty = 25
-        score -= penalty
-        score_details["penalty_no_it_signals"] = -penalty
+    if weak_it_signals_found:
+        # 0.5 por señal débil
+        bonus = min(len(weak_it_signals_found) * 0.5, 5)
+        score += bonus
+        score_details["bonus_weak_signals"] = bonus
 
     if strong_it_signals_found:
-        # Increased bonus for strong signals (15 points each, max 30)
-        bonus = min(len(strong_it_signals_found) * 15, 30)
+        # 10 puntos por tech fuerte
+        bonus = min(len(strong_it_signals_found) * 10, 25)  # Max 25
         score += bonus
-        score_details["bonus_strong_it_signals"] = bonus
-        score_details["strong_it_signals_found"] = list(strong_it_signals_found)
+        score_details["bonus_strong_tech"] = bonus
+        score_details["strong_tech_found"] = list(strong_it_signals_found)[:5]
 
-    # Penalty for ambiguous roles with only weak (or no) signals
-    if has_ambiguous_role and not strong_it_signals_found:
-        penalty = 30
+    # ===== ROLES AMBIGUOS =====
+    if has_ambiguous_role and not strong_it_signals_found and len(it_signals_found) < 2:
+        penalty = 25
         score -= penalty
-        score_details["penalty_ambiguous_role"] = -penalty
+        score_details["penalty_ambiguous"] = -penalty
 
-    # ===== 3. EXPERIENCE PENALTY =====
-
+    # ===== EXPERIENCE =====
     if _REGEX_EXPERIENCE.search(description):
-        penalty = 20
+        penalty = 15
         score -= penalty
         score_details["penalty_experience"] = -penalty
 

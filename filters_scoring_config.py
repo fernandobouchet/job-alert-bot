@@ -73,8 +73,6 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "treasury",
     "tesoreria",
     "kyc",
-    "compliance",
-    "cumplimiento",
     "cobranzas",
     "collector",
     "credit",
@@ -150,8 +148,13 @@ EXCLUDED_AREA_TERMS_TITLE = [
     # Servicio al Cliente
     "customer service representative",
     "atención al cliente",
+    "customer success",
+    "customer support",
     "call center agent",
     "call center representative",
+    # Marketing & Ventas
+    "business development",
+    "growth",
     # Creativo & Contenido (específicos, NO "designer" genérico)
     "diseñador gráfico",
     "diseñadora gráfica",
@@ -174,6 +177,7 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "translator",
     "interpreter",
     "english writer",
+    "creative strategist"
     # Educación
     "profesor",
     "profesora",
@@ -210,8 +214,17 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "seguridad fisica",
     "security guard",
     "account executive sales",
-    "tierras",
     "land surveyor",
+    "asistente de ventas",
+    "asistente comercial",
+    "controller financiero",
+    "tesorero",
+    "treasury analyst",
+    "credit analyst",
+    "underwriter",
+    "agente inmobiliario",
+    "real estate",
+    "property manager",
 ]
 
 EXCLUDED_EXPERIENCE_PHRASES = [
@@ -341,6 +354,12 @@ WEAK_IT_SIGNALS = {
     "informática",
     "computing",
     "it",
+    "analyst",
+    "analista",
+    "support",
+    "soporte",
+    "specialist",
+    "especialista",
 }
 
 
@@ -367,8 +386,6 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "analista de sistemas",
     "systems analyst",
     "analista funcional",
-    "business analyst",
-    "analista de negocio",
     "business intelligence",
     "data scientist",
     "científico de datos",
@@ -387,10 +404,10 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "ingeniero cloud",
     # QA & Testing
     "qa engineer",
-    "quality assurance",
+    "quality assurance engineer",
     "qa analyst",
     "qa tester",
-    "test automation",
+    "test automation engineer",
     "automation engineer",
     "quality engineer",
     # Seguridad
@@ -405,6 +422,13 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "soc analyst",
     "security operations",
     "infosec analyst",
+    "it compliance",
+    "security compliance",
+    "compliance engineer",
+    "compliance analyst it",
+    "sox compliance",
+    "gdpr compliance",
+    "iso 27001",
     # Machine Learning & AI
     "machine learning engineer",
     "ml engineer",
@@ -540,8 +564,6 @@ STRONG_ROLE_SIGNALS = {
     "ingeniero",
     "programmer",
     "programador",
-    "analyst",
-    "analista",
     "designer ux",
     "designer ui",
     "ux/ui",
@@ -549,39 +571,17 @@ STRONG_ROLE_SIGNALS = {
 }
 
 AMBIGUOUS_ROLES = {
-
     "analyst",
-
     "analista",
-
-    "support",
-
-    "soporte",
-
     "coordinator",
-
     "coordinador",
-
     "assistant",
-
     "asistente",
-
     "specialist",
-
     "especialista",
-
     "product owner",
-
     "product manager",
-
-    "creative strategist",
-
-    "customer experience",
-
-    "virtual assistant",
-
-    "documentation success manager",
-
-    "gerente de operaciones",
-
+    "project manager",
+    "scrum master",
+    "agile coach",
 }
