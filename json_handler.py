@@ -1,13 +1,12 @@
 import json
 import os
+
 try:
-    from config import (
-        TIMEZONE
-    )
+    from config import TIMEZONE
 except ImportError:
     TIMEZONE = "UTC"
 import zoneinfo
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from collections import defaultdict
 
 
@@ -39,18 +38,18 @@ def save_json(data, filepath):
         os.makedirs(dir_name, exist_ok=True)
 
     # Si es el archivo de rechazados, manejar la actualización
-    if 'rejected_jobs.json' in filepath:
+    if "rejected_jobs.json" in filepath:
         existing_jobs = load_json(filepath)
-        existing_ids = {job['id'] for job in existing_jobs}
-        
-        new_jobs = [job for job in data if job['id'] not in existing_ids]
-        
+        existing_ids = {job["id"] for job in existing_jobs}
+
+        new_jobs = [job for job in data if job["id"] not in existing_ids]
+
         if not new_jobs:
             # print("No new rejected jobs to add.")
             return
 
         updated_jobs = existing_jobs + new_jobs
-        
+
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(updated_jobs, f, indent=2, ensure_ascii=False)
         # print(f"Added {len(new_jobs)} new jobs to {filepath}. Total: {len(updated_jobs)}.")
@@ -135,14 +134,20 @@ def update_job_data(recent_jobs):
         existing_jobs_today = []
 
     # Filtrar por si quedaron jobs de dias anteriores
-    today_cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).replace(hour=0, minute=0, second=0, microsecond=0)
-    
+    today_cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+
     # Usamos un diccionario para manejar la unicidad y la actualización
-    all_today_jobs = {job['id']: job for job in existing_jobs_today if datetime.fromisoformat(job['published_at']) >= today_cutoff}
-    
+    all_today_jobs = {
+        job["id"]: job
+        for job in existing_jobs_today
+        if datetime.fromisoformat(job["published_at"]) >= today_cutoff
+    }
+
     # Agregamos los nuevos trabajos, sobreescribiendo duplicados
     for job in jobs_to_send:
-        all_today_jobs[job['id']] = job
+        all_today_jobs[job["id"]] = job
 
     # Convertimos de nuevo a una lista y guardamos
     save_json(list(all_today_jobs.values()), LATEST_JOBS_FILE)
@@ -213,7 +218,9 @@ def delete_jobs_by_ids(job_ids):
 
     # Eliminar de los archivos de historial mensual
     for i in range(13):
-        current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(days=i * 30)
+        current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+            days=i * 30
+        )
         monthly_path = get_monthly_history_path(current_date.strftime("%Y-%m"))
 
         if os.path.exists(monthly_path):
@@ -232,6 +239,7 @@ def delete_jobs_by_ids(job_ids):
         print("No se encontraron trabajos con los IDs proporcionados.")
 
     return deleted_count
+
 
 def handle_rejected_jobs_file(log_rejected_jobs, verbose=True):
     """
