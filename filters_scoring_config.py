@@ -173,6 +173,7 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "traductor",
     "translator",
     "interpreter",
+    "english writer",
     # Educación
     "profesor",
     "profesora",
@@ -548,14 +549,39 @@ STRONG_ROLE_SIGNALS = {
 }
 
 AMBIGUOUS_ROLES = {
+
     "analyst",
+
     "analista",
+
     "support",
+
     "soporte",
+
     "coordinator",
+
     "coordinador",
+
     "assistant",
+
     "asistente",
+
     "specialist",
+
     "especialista",
+
+    "product owner",
+
+    "product manager",
+
+    "creative strategist",
+
+    "customer experience",
+
+    "virtual assistant",
+
+    "documentation success manager",
+
+    "gerente de operaciones",
+
 }

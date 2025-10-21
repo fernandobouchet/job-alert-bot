@@ -119,7 +119,7 @@ def calculate_job_score(row):
     weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_it_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
     has_ambiguous_role = set(_REGEX_AMBIGUOUS_ROLES.findall(title))
-    
+
     all_signals_found = it_signals_found.union(weak_it_signals_found)
 
     # ===== 1. SENIORITY SCORING (POSITIVO Y NEGATIVO) =====
@@ -145,9 +145,9 @@ def calculate_job_score(row):
     if all_signals_found:
         # Bonus for normal signals (5 points each, max 40)
         normal_bonus = min(len(it_signals_found) * 5, 40)
-        # Bonus for weak signals (1 point each, max 5)
-        weak_bonus = min(len(weak_it_signals_found) * 1, 5)
-        
+        # Bonus for weak signals (0.5 point each, max 5)
+        weak_bonus = min(len(weak_it_signals_found) * 0.5, 5)
+
         total_bonus = normal_bonus + weak_bonus
         score += total_bonus
         score_details["bonus_it_signals"] = total_bonus
@@ -165,8 +165,8 @@ def calculate_job_score(row):
         score_details["strong_it_signals_found"] = list(strong_it_signals_found)
 
     # Penalty for ambiguous roles with only weak (or no) signals
-    if has_ambiguous_role and not it_signals_found and not strong_it_signals_found:
-        penalty = 15
+    if has_ambiguous_role and not strong_it_signals_found:
+        penalty = 30
         score -= penalty
         score_details["penalty_ambiguous_role"] = -penalty
 
