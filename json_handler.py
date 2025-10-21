@@ -178,12 +178,15 @@ def update_job_data(recent_jobs):
 
         # h. Podar Historial de Tendencias (eliminar entradas de hace más de 12 meses)
         current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE))
-        twelve_months_ago = current_date.replace(year=current_date.year - 1)
+        twelve_months_ago = current_date.replace(
+            year=current_date.year - 1, day=1, hour=0, minute=0, second=0, microsecond=0
+        )
 
         trends_history = [
             item
             for item in trends_history
-            if datetime.strptime(item["date"], "%Y-%m") > twelve_months_ago
+            if datetime.strptime(item["date"], "%Y-%m")
+            >= twelve_months_ago.replace(tzinfo=None)
         ]
 
         # i. Guardar el archivo de tendencias actualizado
