@@ -1,11 +1,14 @@
 import pandas as pd
 import re
 from filters_scoring_config import (
+    AMBIGUOUS_ROLES,
     POSITIVE_SENIORITY_TERMS,
     EXCLUDED_SENIORITYS,
     EXCLUDED_AREA_TERMS_TITLE,
     EXCLUDED_EXPERIENCE_PHRASES,
     REQUIRED_IT_SIGNALS,
+    STRONG_ROLE_SIGNALS,
+    STRONG_TECH_SIGNALS,
 )
 from json_handler import save_json
 from config import LOG_REJECTED_JOBS
@@ -40,6 +43,22 @@ _REGEX_EXPERIENCE = re.compile(
 
 _REGEX_IT_SIGNALS = re.compile(
     "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in REQUIRED_IT_SIGNALS),
+    re.IGNORECASE,
+)
+
+_REGEX_STRONG_ROLE_SIGNALS = re.compile(
+    r"\b(?:" + "|".join(re.escape(s) for s in STRONG_ROLE_SIGNALS) + r")",
+    re.IGNORECASE,
+)
+
+_REGEX_STRONG_TECH_SIGNALS = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in STRONG_TECH_SIGNALS),
+    re.IGNORECASE,
+)
+
+
+_REGEX_AMBIGUOUS_ROLES = re.compile(
+    r"\b(?:" + "|".join(re.escape(s) for s in AMBIGUOUS_ROLES) + r")",
     re.IGNORECASE,
 )
 
@@ -91,6 +110,8 @@ def calculate_job_score(row):
     full_text = f"{title} {description}"
 
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
+    strong_it_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
+    has_ambiguous_role = set(_REGEX_AMBIGUOUS_ROLES.findall(title))
 
     # ===== 1. SENIORITY SCORING (POSITIVO Y NEGATIVO) =====
 
@@ -106,6 +127,10 @@ def calculate_job_score(row):
         score -= penalty
         score_details["penalty_seniority"] = -penalty
 
+    if _REGEX_STRONG_ROLE_SIGNALS.search(title):
+        score += 20
+        score_details["strong_role_signal"] = 20
+
     # ===== 2. IT SIGNALS SCORING (CON PENALIZACIÓN) =====
 
     if it_signals_found:
@@ -117,6 +142,17 @@ def calculate_job_score(row):
         penalty = 25
         score -= penalty
         score_details["penalty_no_it_signals"] = -penalty
+
+    if strong_it_signals_found:
+        bonus = min(len(strong_it_signals_found) * 10, 20)
+        score += bonus
+        score_details["bonus_strong_it_signals"] = bonus
+        score_details["strong_it_signals_found"] = list(strong_it_signals_found)
+
+    if has_ambiguous_role and not it_signals_found:
+        penalty = 15
+        score -= penalty
+        score_details["penalty_ambiguous_role"] = -penalty
 
     # ===== 3. EXPERIENCE PENALTY =====
 
