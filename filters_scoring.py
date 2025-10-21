@@ -7,6 +7,7 @@ from filters_scoring_config import (
     EXCLUDED_AREA_TERMS_TITLE,
     EXCLUDED_EXPERIENCE_PHRASES,
     REQUIRED_IT_SIGNALS,
+    WEAK_IT_SIGNALS,
     STRONG_ROLE_SIGNALS,
     STRONG_TECH_SIGNALS,
 )
@@ -43,6 +44,11 @@ _REGEX_EXPERIENCE = re.compile(
 
 _REGEX_IT_SIGNALS = re.compile(
     "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in REQUIRED_IT_SIGNALS),
+    re.IGNORECASE,
+)
+
+_REGEX_WEAK_IT_SIGNALS = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in WEAK_IT_SIGNALS),
     re.IGNORECASE,
 )
 
@@ -110,13 +116,16 @@ def calculate_job_score(row):
     full_text = f"{title} {description}"
 
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
+    weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_it_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
     has_ambiguous_role = set(_REGEX_AMBIGUOUS_ROLES.findall(title))
+    
+    all_signals_found = it_signals_found.union(weak_it_signals_found)
 
     # ===== 1. SENIORITY SCORING (POSITIVO Y NEGATIVO) =====
 
     # ✅ Puntuación positiva para términos Junior/Trainee en el título (SOLO SI HAY SEÑALES IT)
-    if len(it_signals_found) >= 2:
+    if len(all_signals_found) >= 2:
         if _REGEX_POSITIVE_SENIORITY.search(title):
             score += 25
             score_details["bonus_seniority"] = 25
@@ -133,23 +142,30 @@ def calculate_job_score(row):
 
     # ===== 2. IT SIGNALS SCORING (CON PENALIZACIÓN) =====
 
-    if it_signals_found:
-        bonus = min(len(it_signals_found) * 5, 40)
-        score += bonus
-        score_details["bonus_it_signals"] = bonus
-        score_details["it_signals_found"] = list(it_signals_found)
+    if all_signals_found:
+        # Bonus for normal signals (5 points each, max 40)
+        normal_bonus = min(len(it_signals_found) * 5, 40)
+        # Bonus for weak signals (1 point each, max 5)
+        weak_bonus = min(len(weak_it_signals_found) * 1, 5)
+        
+        total_bonus = normal_bonus + weak_bonus
+        score += total_bonus
+        score_details["bonus_it_signals"] = total_bonus
+        score_details["it_signals_found"] = list(all_signals_found)
     else:
         penalty = 25
         score -= penalty
         score_details["penalty_no_it_signals"] = -penalty
 
     if strong_it_signals_found:
-        bonus = min(len(strong_it_signals_found) * 10, 20)
+        # Increased bonus for strong signals (15 points each, max 30)
+        bonus = min(len(strong_it_signals_found) * 15, 30)
         score += bonus
         score_details["bonus_strong_it_signals"] = bonus
         score_details["strong_it_signals_found"] = list(strong_it_signals_found)
 
-    if has_ambiguous_role and not it_signals_found:
+    # Penalty for ambiguous roles with only weak (or no) signals
+    if has_ambiguous_role and not it_signals_found and not strong_it_signals_found:
         penalty = 15
         score -= penalty
         score_details["penalty_ambiguous_role"] = -penalty

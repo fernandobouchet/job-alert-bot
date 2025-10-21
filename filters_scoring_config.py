@@ -35,13 +35,11 @@ EXCLUDED_SENIORITYS = [
     "líder",
     "lider",
     "tech lead",
-    "manager",
     "director",
     "head",
     "jefe",
     "jefa",
     "chief",
-    "gerente",
     "principal",
     "staff",
     "architect",
@@ -334,6 +332,17 @@ TAGS_KEYWORDS = [
     "microservices",
 ]
 
+WEAK_IT_SIGNALS = {
+    "tech",
+    "technology",
+    "tecnología",
+    "sistemas",
+    "informática",
+    "computing",
+    "it",
+}
+
+
 REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     # Roles generales IT
     "developer",
@@ -448,18 +457,9 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "network administrator",
     "administrador de redes",
     "network analyst",
-    # Términos IT generales
     "software",
-    "tech",
-    "technology",
-    "tecnología",
-    "sistemas",
-    "informática",
-    "computing",
-    "it",
     # Tecnologías específicas
     "c++",
-    "c",
     "rust",
     "scala",
     "perl",
@@ -507,6 +507,10 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "graphql",
     "microservices architecture",
 ]
+
+# Remove weak signals from required signals to avoid double counting
+REQUIRED_IT_SIGNALS = [s for s in REQUIRED_IT_SIGNALS if s not in WEAK_IT_SIGNALS]
+
 
 STRONG_TECH_SIGNALS = {
     "python",
