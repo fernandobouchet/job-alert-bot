@@ -2,23 +2,20 @@ import re
 import math
 import asyncio
 import pandas as pd
+
 try:
-    from config import (
-        DAYS_OLD_TRHESHOLD,
-        HOURS_OLD_THRESHOLD,
-        TIMEZONE
-    )
+    from config import DAYS_OLD_TRHESHOLD, HOURS_OLD_THRESHOLD, TIMEZONE
 except ImportError:
     TIMEZONE = "UTC"
 import zoneinfo
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timedelta, date
 from filters_scoring import filter_jobs_with_scoring
 from json_handler import update_job_data
 from bot.utils import send_jobs
 from filters_scoring_config import TAGS_KEYWORDS
 
 
-async def scrape(sources, chat_id, bot):
+async def scrape(sources, chat_ids, bot, admin_chat_id):
     print("🚀 Iniciando búsqueda de trabajos...")
     tasks = [asyncio.to_thread(source_func) for source_func in sources]
     results = await asyncio.gather(*tasks)
@@ -47,7 +44,7 @@ async def scrape(sources, chat_id, bot):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        await send_jobs(bot, chat_id, new_jobs)
+        await send_jobs(bot, chat_ids, new_jobs, admin_chat_id)
     else:
         print("No hay jobs nuevos para enviar.")
 
@@ -121,7 +118,9 @@ def updateDataFrame(df):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(hours=HOURS_OLD_THRESHOLD)
+    cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+        hours=HOURS_OLD_THRESHOLD
+    )
 
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
 
@@ -145,7 +144,9 @@ def updateDataFrame(df):
 
     df.drop(columns=["text_for_extraction"], inplace=True)
 
-    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime(
+        "%Y-%m-%dT%H:%M:%S+00:00"
+    )
     df["date_scraped"] = current_time_iso
 
     df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -208,7 +209,9 @@ def its_job_days_old(published_at_iso, days_limit=DAYS_OLD_TRHESHOLD):
     """Comprueba si un trabajo es más antiguo que el límite de días."""
     try:
         published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))
-        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(days=days_limit)
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+            days=days_limit
+        )
         return published_date < cutoff_date
     except (ValueError, TypeError):
         return False
