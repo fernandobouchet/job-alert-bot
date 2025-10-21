@@ -1,4 +1,5 @@
-JOBSPY_SEARCH_TERMS = '(junior OR trainee OR "entry level" OR pasante OR intern OR graduate OR grad OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR software OR engineer OR ingeniero OR programador OR programmer OR technology OR tecnología OR tech OR informática OR computing OR computación OR redes OR network OR ciberseguridad OR cybersecurity OR security OR front OR frontend OR back OR backend OR "full stack" OR "full-stack" OR qa OR tester OR support OR sysadmin OR data OR datos OR cloud)'
+JOBSPY_SEARCH_TERMS = '(junior OR jr OR "jr." OR trainee OR "entry level" OR pasante OR intern OR graduate OR grad OR asociado OR associate OR graduado OR becario) (IT OR sistemas OR developer OR desarrollador OR software OR engineer OR ingeniero OR programador OR programmer OR technology OR tecnología OR tech OR informática OR computing OR computación OR redes OR network OR ciberseguridad OR cybersecurity OR security OR front OR frontend OR back OR backend OR "full stack" OR "full-stack" OR qa OR tester OR support OR sysadmin OR data OR datos OR cloud OR analyst OR analista OR devops OR ux OR ui OR designer OR "machine learning" OR "inteligencia artificial")'
+
 
 DAYS_OLD_TRHESHOLD = 1
 
