@@ -61,7 +61,7 @@ def calculate_job_score(row):
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
     weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_it_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
-    strong_role_found = _REGEX_STRONG_ROLE_SIGNALS(title)
+    strong_role_found = set(_REGEX_STRONG_ROLE_SIGNALS.findall(title))
     has_ambiguous_role = set(_REGEX_AMBIGUOUS_ROLES.findall(title))
 
     all_signals_found = it_signals_found.union(weak_it_signals_found)
