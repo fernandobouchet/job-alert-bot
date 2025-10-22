@@ -475,5 +475,331 @@
     "tags": [],
     "modality": "On-site",
     "date_scraped": "2025-10-21T23:42:41+00:00"
+  },
+  {
+    "id": "li-4317111812",
+    "title": "Full Stack Developer (Java, React) - Remote LATAM",
+    "company": "Zarego",
+    "description": "**English level: B2 or higher**\n**Seniority:** \n Senior\n   \n\n  \n\n**Stack:** \n Java, React, AWS\n   \n\n  \n\n Remote Anywhere in\n **LATAM**\n Hi! At Zarego, we are looking for a full\\-stack developer to join our team.\n   \n\n  \n\n If you are eager to take on new challenges, keep reading:\n   \n\n  \n\n**Requirements:**\n* 5\\+ years of professional experience in software development.\n* Strong proficiency in Java and the Spring Boot framework.\n* Experience with React and TypeScript.\n* Hands\\-on experience with AWS services (serverless is a plus).\n* Familiarity with Docker, CI/CD pipelines, and version control using Git.\n* Strong understanding of agile methodologies (Scrum or Kanban).\n* Excellent communication skills in English, both written and verbal, with the ability to collaborate effectively in cross\\-functional teams.\n\n\n**Nice to have:**\n* Bachelor's degree in Computer Science, Engineering, or related field.\n* Exposure to other technologies/programming languages/frameworks\n\n\n If you're a full\\-stack developer with a passion for building solutions, we want to hear from you!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4317111812",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "full stack",
+        "aws",
+        "java",
+        "git",
+        "spring",
+        "react",
+        "software",
+        "docker",
+        "developer",
+        "typescript"
+      ],
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "aws",
+        "java",
+        "spring",
+        "react",
+        "docker"
+      ]
+    },
+    "tags": [
+      "java",
+      "typescript",
+      "react",
+      "spring",
+      "aws",
+      "docker",
+      "git",
+      "ci/cd",
+      "agile"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4318255318",
+    "title": "Cientifico de Datos",
+    "company": "Swiss Medical",
+    "description": "**\\#SomosSwiss Medical, tenemos un propósito que nos inspira y te invitamos a que te sumes para sentirte parte del mismo: “Queremos que las personas Vivan más y mejor”.**\n**👉** \n\n**Científico de Datos**\n*¡Sumate a la Dirección de Sistemas y Tecnología de Swiss Medical!*\n**💪 Buscamos Protagonistas Que Se Animen a**\n Diseñar, desarrollar y desplegar modelos de inteligencia artificial y machine learning (generativa y no generativa) que permitan transformar datos en soluciones innovadoras, apoyando la estrategia de adopción transversal de IA en la organización y generando valor para el negocio a través de predicciones, automatizaciones e insights avanzados.\n   \n\n  \n\n**Principales Responsabilidades**\n* Explorar y preparar datos estructurados y no estructurados.\n* Desarrollar, entrenar y evaluar modelos de IA/ML.\n* Implementar pipelines de ML en entornos productivos.\n* Colaborar con equipos de datos y áreas de negocio para traducir necesidades estratégicas en soluciones.\n* Asegurar gobernanza, privacidad y seguridad de datos.\n* Generar insights y predicciones que impulsen decisiones clave.\n\n\n**🚀** \n**¿Qué esperamos de vos para que puedas contribuir a que más personas vivan más y mejor?**\n**Sera Necesario Que Conozcas Sobre**\n Experiencia comprobable en proyectos de IA generativa y no generativa.\n   \n\n  \n\n Manejo avanzado de Python y librerías de ML/IA (scikit\\-learn, TensorFlow, PyTorch, HuggingFace, etc.).\n   \n\n  \n\n Experiencia sólida en SQL y bases no relacionales.\n   \n\n  \n\n Conocimiento de soluciones de Big Data (Spark, Hadoop, Databricks, etc.)\n   \n\n  \n\n**💡** \n**¿Qué ofrecemos?**\n 🤝 Gran oportunidad de desarrollo.\n   \n\n  \n\n 👨‍⚕️ Prepaga para vos y tu grupo familiar\n   \n\n  \n\n 🏖 Días adicionales de vacaciones.\n   \n\n  \n\n 👨🏽‍💻 Beneficio de pago de Conectividad\n   \n\n  \n\n 🙌 Horario flexible y esquema híbrido de trabajo\n   \n\n  \n\n 📚 Licencias Udemy para que puedas capacitarte en lo que quieras.\n   \n\n  \n\n 💌Acceso preferencial en la contratación de productos y/o servicios de SMG como seguros de caución, hogar, automotor, retiro, vida y ahorro. SMG Cells\n   \n\n  \n\n 💉Campaña de vacunación gratuita\n   \n\n  \n\n 🏋️‍♀️🏋️‍♂️ Cobertura en Gimnasios a través de la red Wellhub\n   \n\n  \n\n 📌Descuentos corporativos en cines, teatros, viajes, restaurantes, spas y otros rubros.\n   \n\n  \n\n**📍** \n**Lunes a Jueves de 9 a 18 hs; Viernes de 9 a 17 hs, CABA**\n**👏** \n**¡SUMATE A LA EXPERIENCIA SWISS MEDICAL!**",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318255318",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 95.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 24,
+      "it_signals_found": [
+        "tensorflow",
+        "machine learning",
+        "python",
+        "pytorch",
+        "spark",
+        "hadoop",
+        "sql",
+        "científico de datos"
+      ],
+      "bonus_weak_signals": 1.0,
+      "bonus_strong_tech": 20,
+      "strong_tech_found": [
+        "sql",
+        "python"
+      ]
+    },
+    "tags": [
+      "python",
+      "sql",
+      "spark",
+      "machine learning",
+      "tensorflow"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4315925367",
+    "title": "Project Manager",
+    "company": "CircleSpace",
+    "description": "THE FORUMSPACE MISSION\n \n\n  \n\n\n\n\n\n\n We come together as a company, from Barcelona, Brooklyn, Saratoga Springs, Auckland, Buenos Aires, and more, to help other companies and communities create Forums and Circles. Forums/Circles are small groups of people pursuing a common purpose, striving to be open with each other, and pushing each other to act. Facilitated dialogue propels them, deepening over time.\n \n\n\n\n\n\n This isn’t a novel idea. We’ve studied and worked with many practitioners of all kinds of Forums and Circles, and our goal is to amplify their efforts, and spur on the movement \\- of Circles, not rows. This movement also includes intervision groups, Young Presidents’ Organization, the Aspen Institute, restorative justice practices, lean in, men’s groups and many more. We’re continually improving our system, platform and services, as we learn from our partners, participants, and from each other. \n \n\n\n\n\n\n We are currently creating hundreds of Forums for thousands of leaders nominated by YPO members\n \n\n\n\n\n  \n\n\n\n\n\n KEY RESPONSIBILITIES\n \n\n  \n\n\n\n\n\n\n At the core,\n \n CircleSpace\n \n is in the business of making space for human connection. In particular, we have been zooming in on\n \n Forums\n \n . Making sure that our customers and partners experience a great implementation of just that is our main focus as PMs. Like very organized fairy godparents, we navigate them towards success. This includes relational, management, and administrative tasks, such as \n \n\n\n\n\n  \n\n\n\n\n* Monitoring the customers’ projects behind the scenes (e.g. reviewing data) to anticipate needs, plan next steps and continuously improve\n* Seeing the project through, following up on its implementation, including updates to stakeholders, customer records, coordinating meetings etc.\n* Consulting with other teams and work on joint projects to improve our processes and tools (e.g. as part of the QA team)\n* Providing customer support, including live tech support via phone and chat and proactive outreach via email\n\n\n\n  \n\n\n\n\n\n YOU’RE A GOOD FIT, IF … \n \n\n  \n\n\n\n\n* You’re based in Buenos Aires, Argentina\n* Your English is at a professional level (high)\n* You have great emotional intelligence and find it easy to put yourself in someone else’s shoes\n* You don’t mind double\\- and triple checking your work and enjoy providing excellent service\n* You enjoy finding solutions, consulting with others, and learning new skills\n* You like learning from others and enjoy helping them to succeed, too\n* You are comfortable using tech in general and have experience with the following tools:\n* Google Docs, Google sheets, Google Slides\n* You know how to use basic functions of Google Sheets: pivot tables, vlookup, match, filters, and even better to add Macros.\n* BONUS: Tableau, PowerBI, Metabase, SQL, Python, Slack\n* BONUS: experience with CRM systems\n* You appreciate flexible hours. Depending on the customers’/team needs and time zone differences, we work unusual hours at times. But, usually you will work from about 9:00 to 18:00\\.\n* You want to go the extra mile required when working in a start\\-up company and are open to doing different jobs that help the productivity of the team. We do appreciate team members that want to add value and grow with us as we scale the business with the current team.\n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n YOU GET BONUS POINTS IF YOU HAVE EXPERIENCE … \n \n\n\n (These are NOT must\\-haves!)\n \n\n\n\n\n  \n\n\n\n\n* Supporting, selling or building a technological product or service\n* Working in a startup environment\n* Working In the field of customer success, customer support, project management or operations\n* Working within the Market Research, Human Resources or Learning \\& Development, Behavioral sciences, or other human\\-centered areas.\n* Working with a Software as a Service model\n* Knowledge of Team facilitation dynamics\n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n WHAT YOU GET IN RETURN \n \n\n  \n\n\n\n\n* A team of motivated team\\-mates in Barcelona and Buenos Aires that love to really move and shake things together, and also makes room for human connection and learning.\n* Flexible working hours. A customer appointment might mean a late night, but this also means that you might get to visit your grandma in the morning, weed your garden at midday, or pick up your kids from school. We are focused on getting work done \\- when and where is up to you\n* The opportunity to work with an international team of experienced entrepreneurs that are passionate about pushing peer connection and learning to a new level and helping people across the globe to have more meaningful, and effective conversations\n* Competitive compensation: This role comes with a starting salary of $US 24,000 gross per year, with the opportunity to grow to up to $US 32,100 gross in the first year based on performance.\n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n\n Note: \n \n\n\n\n\n\n At Circles, we focus on human connection and are convinced that we can learn more from inviting diverse perspectives. Therefore, we are dedicated to creating a safe environment and are looking for motivated team members independent of race, color, religion, gender, gender identity or expression, sexual orientation, national origin, genetics, disability, age and other factors.\n \n\n\n\n\n  \n\n\n\n\n\n Please apply here:\n \n https://survey.circl.es/t/tScEKW8Wogus",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315925367",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 86.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 15,
+      "it_signals_found": [
+        "qa",
+        "python",
+        "software",
+        "sql",
+        "tableau"
+      ],
+      "bonus_weak_signals": 1.5,
+      "bonus_strong_tech": 20,
+      "strong_tech_found": [
+        "sql",
+        "python"
+      ]
+    },
+    "tags": [
+      "qa",
+      "support",
+      "python",
+      "sql",
+      "tableau"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4315467448",
+    "title": "Soporte It",
+    "company": "FIND U",
+    "description": "🔍 ¡Estamos en búsqueda de talento!\n   \n\n Buscamos un/a profesional con experiencia comprobable en soporte funcional e infraestructura para una importante empresa ubicada en el Parque Industrial.\n   \n\n  \n\n 🎯 La posición requiere sólidos conocimientos en:\n   \n\n  \n\n Soporte Funcional:\n   \n\n Soporte en ERP / Sistema de Producción\n   \n\n Software de Backup y Réplica\n   \n\n Virtualización de Servidores\n   \n\n  \n\n Infraestructura y Redes:\n   \n\n Networking: topología de redes, switches, firewall, VLAN, protocolos, cableado estructurado\n   \n\n Soporte Microinformático: PC’s, impresoras, notebooks, etc.\n   \n\n Tecnología Microsoft: Windows Server, Active Directory, Windows Desktop, Exchange, Office/Office 365, SQL Server\n   \n\n  \n\n 📌 Requisitos:\n   \n\n Título en Sistemas / Tecnología\n   \n\n Experiencia comprobable en soporte funcional e infraestructura\n   \n\n Buen trato y disposición para el soporte a usuarios internos y externos\n   \n\n Alta capacidad de resolución de problemas\n   \n\n Trabajo en equipo y proactividad\n   \n\n  \n\n 💡 Conocimientos deseables:\n   \n\n Manejo de SQL Server y/o Oracle\n   \n\n Soluciones Business Intelligence\n   \n\n Linux, IoT e Inteligencia Artificial\n   \n\n Conocimientos en programación web\n   \n\n Inglés (deseable)\n   \n\n  \n\n 🚀 Si eres un/a profesional con pasión por resolver problemas técnicos y experiencia comprobable en soporte funcional e infraestructura…\n   \n\n  \n\n ¡Te invitamos a postularte!\n   \n\n 🙌 ¡Esperamos contar con tu talento!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315467448",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 83.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 21,
+      "it_signals_found": [
+        "oracle",
+        "linux",
+        "windows server",
+        "software",
+        "business intelligence",
+        "sql",
+        "firewall"
+      ],
+      "bonus_weak_signals": 2.0,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "sql"
+      ]
+    },
+    "tags": [
+      "sql"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4315904787",
+    "title": "Python Programmer",
+    "company": "myGwork - LGBTQ+ Business Community",
+    "description": "***This job is with Accenture, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ\\+ business community. Please do not contact the recruiter directly.***\n En Accenture, la tecnología impulsa nuestra transformación. Buscamos personas con ganas de aprender, crecer y trabajar con herramientas de vanguardia para resolver desafíos reales.\n   \n\n  \n\n Integramos inteligencia artificial generativa (GenIA) en nuestros proyectos para acelerar la innovación, optimizar procesos y generar impacto en múltiples industrias.\n   \n\n  \n\n Contamos con más de 1\\.600 profesionales dedicados exclusivamente a GenIA, respaldados por una red global de más de 40\\.000 expertos en datos e inteligencia artificial. Este enfoque se potencia con inversiones estratégicas, más de 35 alianzas tecnológicas y más de 25 estudios GenIA distribuidos globalmente.\n   \n\n  \n\n Sumate a nuestros equipos de Technology y descubrí cómo podés ser parte de esta evolución.\n   \n\n  \n\n**Qualifications**\n**📌 Skills/Experiencia requerida:**\n Expertise: mínimo 2 años de experiencia programando en Python\n   \n\n  \n\n Inglés avanzado (Excluyente)\n   \n\n  \n\n**📌 Descripción De Tareas**\n* Desarrollar y mantener servicios utilizando Tanium y Splunk SOAR, asegurando un alto rendimiento y confiabilidad.\n* Crear y personalizar reportes que respalden la toma de decisiones operativas y estratégicas.\n* Diseñar, implementar y resolver problemas relacionados con playbooks de automatización en Splunk SOAR.\n* Personalizar scripts para mejorar funcionalidades e integrar con aplicaciones y plataformas externas.\n* Colaborar con equipos multidisciplinarios para identificar oportunidades de integración y garantizar una entrega de servicios fluida.\n* Monitorear proactivamente y resolver incidencias relacionadas con el rendimiento del servicio y los flujos de trabajo automatizados.\n\n\n**📌Requisitos**\n* Mínimo 2 años de experiencia programando en Lenguaje Phyton\n* Conocimientos básicos de Splunk Soar (nice to have)\n* Nivel de Idioma: Inglés avanzado (Excluyente)\n\n\n 📌\n **Un lugar de trabajo único, descubrí los beneficios que tenemos para vos:**\n 🍔 Pedidos Ya\n   \n\n  \n\n 👩‍⚕️ Prepaga Swiss Medical sin costo para vos y tu grupo familiar primario\n   \n\n  \n\n 💻 Reintegro de Conectividad\n   \n\n  \n\n 💪 Gimnasio 100% Bonificado\n   \n\n  \n\n 🌎 Flexibilidad de saldo de vacaciones\n   \n\n  \n\n 💯 Jornada Flex\n   \n\n  \n\n 📚 Certificaciones bonificadas\n   \n\n  \n\n 🎂 Día de cumpleaños libre\n   \n\n  \n\n 🏆 Bonos\n   \n\n  \n\n 🗓 Accenture Days: 5 días extra libres al año.\n   \n\n  \n\n 🤟🏽Paquete de beneficios flexibles\n   \n\n  \n\n 👨‍👩‍👦‍👦 Licencias de Paternidad \\& Maternidad Extendida\n   \n\n  \n\n 💰 Ayuda Económica para Guardería y muchos ➕!\n   \n\n  \n\n 🏢 Contamos con oficinas en CABA, Córdoba, Mar del Plata, Salta, Mendoza y Rosario Y si estás en otras provincias nuestras\n **posiciones son remotas,** \n para que puedas trabajar desde tu casa!🌎\n   \n\n  \n\n 🌈\n **EN ACCENTURE, LA IGUALDAD IMPULSA LA INNOVACIÓN**\n ¿Sabías que Accenture fue elegida la compañía más diversa e inclusiva del mundo? Creemos que la fuerza laboral del futuro es una fuerza igualitaria para todos.\n   \n\n  \n\n Todas las decisiones referidas al proceso de selección de empleo se tomarán sin hacer distinción, exclusión o preferencia alguna basada en motivos de raza, color, género, orientación sexual, discapacidad, edad, religión, opinión política o sindical, nacionalidad u origen socioeconómico ni ninguna otra prevista en la legislación vigente, que tengan por efecto anular o alterar la igualdad de oportunidades o de trato entre los candidatos.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315904787",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 82.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "python",
+        "programmer"
+      ],
+      "bonus_weak_signals": 1.0,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "python"
+      ]
+    },
+    "tags": [
+      "python"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4318278157",
+    "title": "Unreal Developer",
+    "company": "Magic Media",
+    "description": "Magic Media is a pioneering media, entertainment and tech group powered by creativity and innovation. We have a physical presence in 15 countries and expertize in the areas of art, animation, cybersecurity, game development, software development, VFX and video production amongst others. We work with leading developers and publishers within the games and tech industry, providing support and solutions designed around individual needs and carried out by global experts.\n   \n\n  \n\n We're looking for an Unreal Developer who is self\\-motivated, goal\\-orientated, and a strong team player. The ideal candidate will have extensive full\\-time UE programming experience in games. We are looking for someone who is passionate about the digital content production process and who is willing to work with content creators and engineers of other disciplines to build awesome games.\n   \n\n  \n\n**WHAT YOU WILL DO:**\n* Implement and improve a variety of fast and efficient core software using Unreal Engine.\n* Maintain and build code using C\\+\\+ for all assigned work streams.\n* Help provide architectural oversight across the entire application.\n* Collaborate to devise optimal engineering solutions to technical challenges\n\n\n**Requirements**\n* Great understanding of Unreal C\\+\\+ and Blueprints\n* Understanding the fundamentals of Unreal Engine\n* Have a couple of projects done using Unreal Engine with C\\+\\+\n* Excellent communication skills\n* Fluent in English\n\n\n**DESIRABLE PLUSES:**\n* Experienced with multiplayer gameplay systems, network replication, core engine, and Virtual Reality technologies\n* Experience in Tools Development\n* Unity experience\n* Experience working with Amazon Gamelift, Google Firebase or Microsoft Playfab\n* Solid technical foundation (e.g. Computer Science / Maths Degree or equivalent)\n\n\n**Benefits**\n* An opportunity to hone and improve your skills by applying them to a diverse variety of engaging projects\n* Be part of an international Group with offices worldwide\n* Career growth and development\n* Working closely with a team of like\\-minded people in a fast\\-paced, multicultural environment\n* Ongoing training and professional self\\-improvement opportunities\n* Flexible working hours\n* An inclusive culture and open communication\n\n\n At Magic Media, our passion lies in gaming. Our vision is to create and deliver engaging and interesting games for our clients. We can deliver this high\\-quality work on any platform, whether it be on a console, PC, or mobile. We know that reputation and results go hand\\-in\\-hand. Therefore, we work hard to find experts and talented creators to deliver the best results.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318278157",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 75.5,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 9,
+      "it_signals_found": [
+        "software",
+        "developer",
+        "mobile"
+      ],
+      "bonus_weak_signals": 1.5
+    },
+    "tags": [
+      "mobile",
+      "support"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4318175446",
+    "title": "Sales Manager",
+    "company": "Empresa Confidencial",
+    "description": "Buscamos un/a Sales Manager con experiencia en la gestión comercial y desarrollo estratégico de cuentas. Este rol requiere un enfoque hands\\-on, con capacidad para construir relaciones con marcas y clientes, así como colaborar estrechamente con BDMs, AMs y equipos de soluciones para impulsar el crecimiento del negocio. Además, serás responsable de supervisar el equipo de Account Managers (AMs) y asegurar la correcta ejecución del forecast de ventas.\n \n\n\n\n  \n\n\n\n\n\n Sobre ti:\n \n\n\n\n Eres una persona ordenada, proactiva y con mentalidad estratégica. Te motiva trabajar en equipo y afrontar desafíos, aportando soluciones a los clientes con un enfoque consultivo. No solo gestionas ventas, sino que te involucras en todo el proceso comercial: desde la creación de propuestas hasta la visita a clientes para conocer sus necesidades.\n \n\n\n\n  \n\n\n\n\n\n Requisitos clave:\n \n\n\n* Experiencia comprobada en ventas B2B y gestión comercial en tecnología.\n* Experiencia vendiendo Microsoft, Google o AWS (Cloud principalmente)\n* Capacidad para liderar equipos de Account Managers, estableciendo estrategias y supervisando su desempeño.\n* Experiencia en la elaboración de forecasts de ventas y en la optimización de márgenes de ganancia (GP) a nivel pais.\n* Habilidad para construir relaciones sólidas con clientes y marcas, asegurando un flujo constante de oportunidades comerciales.\n* Enfoque estratégico y analítico para identificar nuevas oportunidades de mercado y mejorar la comercialización de productos y servicios.\n* Trabajo transversal con áreas clave (Marketing, Finanzas, Administración de Ventas) para potenciar la capacidad de respuesta de la organización.\n* Inglés avanzado, para interactuar con marcas y clientes internacionales.\n* Formación universitaria en Ingeniería Comercial, Ingeniería en sistemas o afines.\n\n\n\n  \n\n\n\n\n\n Lo que harás:\n \n\n\n* Supervisar y optimizar el desempeño de los Account Managers, garantizando el cumplimiento de objetivos comerciales.\n* Definir y gestionar el forecast de ventas, asegurando alineación con los objetivos estratégicos.\n* Desarrollar y presentar propuestas comerciales, trabajando directamente con el equipo y los clientes.\n* Fomentar la relación con marcas y socios estratégicos, maximizando el impacto en el negocio.\n* Identificar y atender los dolores del cliente, visitándolos y diseñando estrategias que agreguen valor.\n* Garantizar el cumplimiento de KPIs clave.\n* Trabajar en equipo y mantener una comunicación efectiva con stakeholders internos.\n\n\n\n  \n\n\n\n\n\n Habilidades clave:\n \n\n\n\n ✅ Enfoque estratégico y capacidad de liderazgo.\n \n\n\n\n ✅ Orientación a resultados y toma de decisiones basada en datos.\n \n\n\n\n ✅ Capacidad para trabajar en equipo y establecer relaciones de confianza.\n \n\n\n\n ✅ Mentalidad hands\\-on, con disposición para involucrarse en todas las etapas del proceso comercial.\n \n\n\n\n ✅ Escucha activa y capacidad de adaptación a distintos escenarios y clientes.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318175446",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 64.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 3,
+      "it_signals_found": [
+        "aws"
+      ],
+      "bonus_weak_signals": 1.0,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "aws"
+      ]
+    },
+    "tags": [
+      "aws"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4298288025",
+    "title": "Analista de Calificaciones y Calibraciones",
+    "company": "Catalent",
+    "description": "En Catalent estamos buscando un\n **Analista** \n**de Calificaciones y Calibraciones** \n para nuestra planta productiva de Loma Hermosa, Buenos Aires.\n   \n\n  \n\n**Principales** \n**Responsabilidades** \n**:**\n* Redactar y revisar documentación asociada al Sector Calificaciones, Calibraciones y CSV (protocolos, reportes, master planes individuales, procedimientos, entre otros).\n* Coordinar, seguir y revisar las actividades del sector de Calificaciones, Calibraciones y CSV realizadas por proveedores de servicios externos.\n* Mantener actualizado el estado calibrado de los instrumentos.\n* Mantener actualizado el estado calificado de equipos, áreas y servicios.\n* Utilizar los sistemas de calidad que utiliza la planta (sistema de gestión de mantenimiento; controles de cambio; seguimientos; correcciones y desviaciones, entre otros) proveyendo información y realizar evaluaciones iniciales asociadas.\n* Redactar, revisar y ejecutar tareas asociadas a validaciones de sistemas computarizados\n* Proponer mejoras para las actividades del área.\n\n\n**El** \n**candidato** \n**:**\n* Técnico, analista de sistemas o estudiante de Ingeniería, Farmacia, Bioquímica, Química o afines a la industria farmacéutica\n* Experiencia en actividades bajo entorno GMP y sistemas de gestión de calidad, utilizando buenas prácticas de documentación en la industria farmacéutica\n* Conocimiento básico de base de datos\n* Idioma: Inglés Intermedio\n\n\n**Beneficios** \n**:**\n* Posibilidades de crecimiento\n* Cobertura Médica\n* 21 días de vacaciones.\n* Comedor en Planta\n\n\n**Catalent offers rewarding opportunities to further your career!** \n Join the global drug development and delivery leader and help us bring over 7,000 life\\-saving and life\\-enhancing products to patients around the world. Catalent is an exciting and growing international company where employees work directly with pharma, biopharma and consumer health companies of all sizes to advance new medicines from early development to clinical trials and to the market. Catalent produces more than 70 billion doses per year, and each one will be used by someone who is counting on us. Join us in making a difference.\n   \n\n  \n\n personal initiative. dynamic pace. meaningful work.\n   \n\n  \n\n Visit Catalent Careers to explore career opportunities.\n   \n\n  \n\n Catalent is an Equal Opportunity Employer, including disability and veterans.\n   \n\n  \n\n If you require reasonable accommodation for any part of the application or hiring process due to a disability, you may submit your request by sending an email, and confirming your request for an accommodation and include the job number, title and location to DisabilityAccommodations@catalent.com. This option is reserved for individuals who require accommodation due to a disability. Information received will be processed by a U.S. Catalent employee and then routed to a local recruiter who will provide assistance to ensure appropriate consideration in the application or hiring process.\n   \n\n  \n\n Notice to Agency and Search Firm Representatives: Catalent Pharma Solutions (Catalent) is not accepting unsolicited resumes from agencies and/or search firms for this job posting. Resumes submitted to any Catalent employee by a third party agency and/or search firm without a valid written \\& signed search agreement, will become the sole property of Catalent. No fee will be paid if a candidate is hired for this position as a result of an unsolicited agency or search firm referral. Thank you.\n   \n\n  \n\n Important Security Notice to U.S. Job Seekers:\n   \n\n  \n\n Catalent NEVER asks candidates to provide any type of payment, bank details, photocopies of identification, social security number or other highly sensitive personal information during the offer process, and we NEVER do so via email or social media. If you receive any such request, DO NOT respond— it is a fraudulent request. Please forward such requests to spam@catalent.com for us to investigate with local authorities.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4298288025",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 57.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "security",
+        "analista de sistemas"
+      ],
+      "bonus_weak_signals": 1.5
+    },
+    "tags": [
+      "security"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4318250716",
+    "title": "Sales & Service Ambassador Allianz Insurance - Fully Remote (Spanish Speaking)",
+    "company": "Globl.Contact",
+    "description": "At Globl.Contact, we're redefining how people connect with trusted global brands. In partnership with\n **Allianz** \n , one of the world's leading insurance providers, our Customer Service Ambassadors help individuals and businesses protect what matters most.\n   \n\n  \n\n Here, you're not just another representative — you're part of a mission built on trust, reliability, and empathy. Our team combines professionalism and genuine care to create meaningful customer experiences that build confidence and peace of mind. 💙\n   \n\n  \n\n**What the Job Entails:**\n* Conduct outbound calls with potential customers and partners, engaging them in meaningful conversations about insurance solutions\n* Present and explain Allianz insurance products (such as health, travel, and property insurance) tailored to customer needs\n* Provide accurate and transparent information, guiding customers toward the best coverage options for their situation\n* Manage leads and follow up proactively to ensure excellent customer experience and satisfaction\n* Work closely with your team and supervisors to continuously improve your communication, sales, and advisory skills\n\n\n**Requirements**\n* Fluency in Spanish (C1 or higher) — this is essential for communicating effectively with customers\n* Good command of English for internal communication and training\n* A passion for customer interaction, sales, and advisory work, with a professional and empathetic approach\n* Previous experience in sales, customer service, or insurance is a plus, but not required\n* Confidence in outbound calling and explaining complex information in a clear, friendly way\n* A proactive, goal\\-oriented mindset and a genuine desire to help people\n\n\n**Benefits**\n* A secure, permanent employment contract with structured working hours\n* Remote work with all necessary equipment provided\n* Comprehensive paid training and onboarding, preparing you for success in your role\n* Above\\-average salary and performance\\-based bonuses\n* A fully digital recruitment and onboarding process\n* An international and supportive team culture, where collaboration, growth, and excellence are valued. 🌍\n\n\n If you're a\n **Spanish\\-speaking professional** \n passionate about helping people make informed decisions about their insurance and financial security — and you're excited to represent one of the world's most respected brands — we'd love to hear from you.\n   \n\n  \n\n Join us in delivering confidence, clarity, and care — one conversation at a time. 🌟",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318250716",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 53.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 3,
+      "it_signals_found": [
+        "security"
+      ]
+    },
+    "tags": [
+      "security"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4235533385",
+    "title": "Analytics Operations Analyst",
+    "company": "SimCorp",
+    "description": "**What Makes Us, Us**\n Join some of the most innovative thinkers in FinTech as we lead the evolution of financial technology. If you are an innovative, curious, collaborative person who embraces challenges and wants to grow, learn and pursue outcomes with our prestigious financial clients, say Hello to SimCorp!\n   \n\n  \n\n At its foundation, SimCorp is guided by our values — caring, customer success\\-driven, collaborative, curious, and courageous. Our people\\-centered organization focuses on skills development, relationship building, and client success. We take pride in cultivating an environment where all team members can grow, feel heard, valued, and empowered.\n   \n\n  \n\n If you like what we’re saying, keep reading!\n   \n\n  \n\n**WHY THIS ROLE IS IMPORTANT TO US** \n  \n\n  \n\n As an Analyst in our Analytics Operations department, your work will oversee the timeliness and accuracy of client data processing, identifying and escalating issues to prevent or minimize impact on SimCorp’s SaaS platform clients. You will assist our key managed services clients with queries related to their daily reports. This role will also support internal client services group to provide insights into platform usage, prioritizing enhancements with our development teams and new client/process onboarding. This opportunity will allow you to exercise your interest in finance and technology.\n   \n\n  \n\n**What You Will Be Responsible For**\n The Analyst will be joining a highly productive entrepreneurial team, itself part of a global organization. This is an ideal opportunity for someone with a solid academic background to support SimCorp’s AxiomaRisk clients within Analytics Operations department. After a comprehensive training program, we expect you to\n   \n\n  \n\n* Work on complex data sets related to portfolio positions and OTC derivatives, such as FX Forwards and Interest Rate Swaps\n* Ensure reconciliations are fully completed and troubleshoot any discrepancies within set deadlines (in accordance with client SLA/SLE’s).\n* Perform quality assurance tasks and data analysis to ensure validity of content delivered to AxiomaRisk’s clients\n* Oversee client processing, initial triage and escalation of issues to Product and Engineering teams via our Incident process\n* Work closely with the global Analytics Operations team to provide a seamless round the clock service for our clients (Hong Kong, India, Europe and Americas)\n* Contribute towards and improve dashboards and alerting capabilities to automate client process monitoring.\n* Assist client \\& client support organization to resolve or escalate managed services client queries to relevant product and engineering team.\n\n\n**What We Value**\n We expect you to be good at several of the following and be able to \\- and interested in \\- learning the rest.\n   \n\n  \n\n* Preferred 2\\-4 years prior experience in similar field with Bachelor’s / Master's degree in Finance, Business or Engineering from an accredited institution\n* Good understanding of equity, fixed income and derivative instruments\n* Knowledge of Risk Analytics and Derivatives Pricing would be ideal\n* Exposure to Power BI, Excel or SQL for data analysis and review is favourable.\n* Proficient in writing and speaking English.\n* Quantitative problem\\-solving and analytical skills, detail oriented.\n* Ability to manage cross\\-departmental projects and prior client facing experience.\n* Ability to work on a global team spread across multiple locations and time zones.\n\n\n**Benefits**\n Attractive salary, bonus scheme, and pension are essential for any work agreement. However, in SimCorp we believe we can offer more. Therefore, in addition to the traditional benefit scheme, we provide a good work and life balance: flexible working hours and a hybrid model. And opportunities for professional development: there is never just only one route \\- we offer an individual approach to professional development to support the direction you want to take.\n   \n\n  \n\n**NEXT STEP**\n Please send us your application in English via our career site as soon as possible, we process incoming applications continually.\n **Please note that only applications sent through our system will be processed.** \n At SimCorp, we recognize that bias can unintentionally occur in the recruitment process. To uphold fairness and equal opportunities for all applicants, we kindly ask you to exclude personal data such as photo, age, or any non\\-professional information from your application. Thank you for aiding us in our endeavor to mitigate biases in our recruitment process.\n   \n\n  \n\n If you are interested in being a part of SimCorp but are not sure this role is suitable, submit your CV anyway. SimCorp is on an exciting growth journey, and our Talent Acquisition Team is ready to assist you discover the right role for you. The approximate time to consider your CV is three weeks.\n   \n\n  \n\n We are eager to continually improve our talent acquisition process and make everyone’s experience positive and valuable. Therefore, during the process we will ask you to provide your feedback, which is highly appreciated.\n   \n\n  \n\n**Who We Are**\n For over 50 years, we have worked closely with investment and asset managers to become the world’s leading provider of integrated investment management solutions. We are 3,000\\+ colleagues with a broad range of nationalities, educations, professional experiences, ages, and backgrounds in general.\n   \n\n  \n\n SimCorp is an independent subsidiary of the Deutsche Börse Group. Following the recent merger with Axioma, we leverage the combined strength of our brands to provide an industry\\-leading, full, front\\-to\\-back offering for our clients.\n   \n\n  \n\n SimCorp is an equal\\-opportunity employer. We are committed to building a culture where diverse perspectives and expertise are integrated into our everyday work. We believe in the continual growth and development of our employees, so that we can provide best\\-in\\-class solutions to our clients.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4235533385",
+    "published_at": "2025-10-22T08:55:56+00:00",
+    "score": 52.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "sql",
+        "power bi"
+      ],
+      "bonus_weak_signals": 1.5,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "sql"
+      ],
+      "penalty_experience": -15
+    },
+    "tags": [
+      "support",
+      "sql",
+      "power bi"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T09:55:57+00:00"
   }
 ]
