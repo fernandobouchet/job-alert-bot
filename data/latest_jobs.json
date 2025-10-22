@@ -324,5 +324,339 @@
     ],
     "modality": "Hybrid",
     "date_scraped": "2025-10-22T09:55:57+00:00"
+  },
+  {
+    "id": "li-4318298826",
+    "title": "Backend Engineer (Contract, Buenos Aires)",
+    "company": "Nexus",
+    "description": "**About Nexus**\n Nexus is building the foundation for verifiable finance, an economic system where every transaction, order, and settlement can be proven on\\-chain with cryptographic assurance. To do this we’re developing a DEX Layer 1 blockchain purpose\\-built for the AI economy, powered by idle compute from millions of people around the world, and verified with zero\\-knowledge proofs. This is finance rebuilt for the future: verifiable, scalable, and open to all.\n   \n\n  \n\n Nexus has raised $25M in Series A funding from Lightspeed, Pantera, Dragonfly, SV Angel, and more.\n   \n\n  \n\n Location: Remote (commutable distance to Buenos Aires)\n   \n\n  \n\n Type: Contract\n   \n\n  \n\n Duration: 12 months with potential for extension\n   \n\n  \n\n The Role\n   \n\n  \n\n We’re expanding our backend engineering team in Latin America to design and deliver the infrastructure behind Nexus’s Layer 1 and its native DEX. As a Backend Engineer, you’ll build the systems and services that make verifiable trading, settlement, and financial data possible — ensuring reliability, speed, and transparency at scale.\n   \n\n  \n\n You’ll collaborate with protocol, product, and frontend teams in San Francisco while contributing remotely from Argentina or Mexico.\n   \n\n  \n\n What You’ll Do\n   \n\n  \n\n* Design and build backend services in Node.js and Rust for Nexus’s Layer 1 and DEX.\n* Develop APIs and data pipelines for trading, liquidity, and on\\-chain verification.\n* Build and maintain blockchain infrastructure components (RPC endpoints, explorers, dev tools).\n* Optimize performance and scalability across distributed systems.\n* Collaborate with frontend engineers to define data contracts and API interfaces.\n* Write clean, well\\-tested code that supports verifiable financial applications.\n\n\n What We’re Looking For\n   \n\n  \n\n* Strong experience developing backend systems in Node.js, Rust, or similar languages.\n* Proficiency with PostgreSQL, Prisma, or equivalent data stores.\n* Understanding of API design, authentication flows, and performance optimization.\n* Experience with distributed systems, financial infrastructure, or blockchain.\n* Excellent communication skills in Business English (spoken \\& written).\n\n\n Bonus Points For\n   \n\n  \n\n* Experience building or scaling financial systems (exchanges, payments, clearing).\n* Familiarity with blockchain architectures, smart contracts, or consensus protocols.\n* Exposure to DevOps tooling (Docker, Kubernetes, Terraform, AWS).\n* Experience in high\\-performance or low\\-latency system design.\n\n\n Why Join Us\n   \n\n  \n\n* Build the backend systems powering the Layer 1 for Verifiable Finance.\n* Collaborate with experts across blockchain, AI, and financial infrastructure.\n* Shape the foundation for a verifiable, transparent, global trading system.\n* Thrive in a fast\\-moving, high\\-impact engineering environment.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318298826",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "api",
+        "rust",
+        "docker",
+        "dev",
+        "kubernetes",
+        "frontend",
+        "devops",
+        "aws",
+        "node.js",
+        "backend"
+      ],
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "docker",
+        "aws",
+        "node.js",
+        "kubernetes"
+      ]
+    },
+    "tags": [
+      "frontend",
+      "backend",
+      "devops",
+      "node.js",
+      "aws",
+      "docker",
+      "kubernetes",
+      "terraform",
+      "api"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4318238814",
+    "title": "Ingeniero de Datos",
+    "company": "Swiss Medical",
+    "description": "**\\#SomosSwissMedical, tenemos un propósito que nos inspira y te invitamos a que te sumes para sentirte parte del mismo: “Queremos que las personas Vivan más y mejor”.**\n\n**👉 Ingeniero de Datos**\n**¡Se parte del equipo de la Dirección de Sistemas y Tecnología de SMG!**\n\n\n**💪 Buscamos Protagonistas Que Se Animen a**\n Buscamos un/a Ingeniero/a de Datos, con titulación técnica (Ingeniería Informática, Sistemas, Ciencias de la Computación o similares), con amplia experiencia en procesos de datos (ETLs/ELTs) y conocimientos en Snowflake, Python, SQL y DataStage. Queremos personas a las que les encanten los retos (¡cada día es distinto y aprenderás cosas nuevas!), y que quieran unirse a una de las mejores empresas de medicina privada.\n   \n\n  \n\n**Principales Responsabilidades**\n* Diseñar, desarrollar y mantener procesos ETL/ELT de datos.\n* Testear y realizar mantenimiento de infraestructuras de datos tanto On\\-Premise como en Nube (AWS).\n* Integrar y transformar información proveniente de múltiples fuentes internas y externas.\n* Crear modelos de datos robustos, escalables y optimizados en Snowflake.\n* Desarrollar pipelines de datos y DAGs en Airflow.\n* Aplicar las mejores prácticas de DataWarehousing, DataOps y gobierno de datos.\n* Asegurar la calidad, confiabilidad y disponibilidad de la información para las áreas de negocio.\n* Documentar flujos y arquitecturas de datos para garantizar la trazabilidad y el conocimiento compartido.\n\n\n**🚀 ¿Qué esperamos de vos para que puedas contribuir a que más personas vivan más y mejor?**\n**Requisitos Excluyentes**\n Sera necesario que conozcas sobre:\n   \n\n  \n\n* Experiencia comprobable con Snowflake y procesos ETL/ELT.\n* Dominio de SQL avanzado y conocimientos de optimización (mejora de performance, análisis de planes de ejecución, etc.).\n* Experiencia en DataStage para la integración y transformación de datos.\n* Desarrollo en Python para el manejo de datos y automatizaciones.\n* Modelado dimensional (hechos y dimensiones en esquemas en estrella).\n* Desarrollo de DAGs en Airflow.\n* Conocimiento en repositorios de código (GitHub/GitLab).\n\n\n***Competencias requeridas***\n*Orientación a resultados, autonomía y proactividad.*\n*Curiosidad por explorar problemas y capacidad de proponer soluciones de valor para el negocio.*\n*Habilidad para comunicar hallazgos y recomendaciones a equipos técnicos y de negocio.*\n*Empatía y escucha activa para fomentar el trabajo en equipo, especialmente con usuarios de negocio.*\n**💡 ¿Qué ofrecemos?**\n 🤝 Gran oportunidad de desarrollo.\n   \n\n  \n\n 👨‍⚕️ Prepaga para vos y tu grupo familiar\n   \n\n  \n\n 🏖 Días adicionales de vacaciones.\n   \n\n  \n\n 👨🏽‍💻 Beneficio de pago de Conectividad\n   \n\n  \n\n 🙌 Horario flexible y esquema híbrido de trabajo\n   \n\n  \n\n 📚 Licencias Udemy para que puedas capacitarte en lo que quieras.\n   \n\n  \n\n 💌Acceso preferencial en la contratación de productos y/o servicios de SMG como seguros de caución, hogar, automotor, retiro, vida y ahorro. SMG Cells\n   \n\n  \n\n 💉Campaña de vacunación gratuita\n   \n\n  \n\n 🏋️‍♀️🏋️‍♂️️ Cobertura en Gimnasios a través de la red Wellhub\n   \n\n  \n\n 📌Descuentos corporativos en cines, teatros, viajes, restaurantes, spas y otros rubros.\n   \n\n  \n\n**📍Lunes a Jueves de 9 a 18 hs; Viernes de 9 a 17 hs, CABA \\-**\n**👏 ¡SUMATE A LA EXPERIENCIA SWISS MEDICAL!**",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318238814",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 21,
+      "it_signals_found": [
+        "ingeniero",
+        "sql",
+        "airflow",
+        "aws",
+        "python",
+        "gitlab",
+        "etl"
+      ],
+      "bonus_weak_signals": 1.5,
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "aws",
+        "sql",
+        "python"
+      ]
+    },
+    "tags": [
+      "python",
+      "sql",
+      "aws"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4318511325",
+    "title": "Wordpress Web Developer",
+    "company": "FS Studio",
+    "description": "**Web Developer (WordPress / Design Implementation)**\n**Location:** \n Remote\n   \n\n  \n\n**Type:** \n Contract\n   \n\n  \n\n FS Studio is looking for a talented\n **Web Developer** \n to join our team to bring our new website vision to life. We’ve designed our site in Framer and now need someone with both strong WordPress development skills and a sharp design eye to translate it into a polished, production\\-ready site.\n   \n\n  \n\n**Responsibilities**\n* Translate the completed Framer design into a fully functional WordPress site, ensuring fidelity to the original layout, typography, and interactions.\n* Apply refinements and polish to the site—spacing, alignment, responsiveness, and micro\\-interactions—to elevate the overall design quality.\n* Implement mobile\\-first responsive design across devices and browsers.\n* Optimize the site for performance, accessibility, and SEO best practices.\n* Integrate required plugins, forms, and CMS features while maintaining a clean, maintainable codebase.\n* Collaborate with the FS Studio team to finalize details and provide input on UI/UX improvements.\n\n\n**Qualifications**\n* Proven experience building and customizing WordPress websites from provided designs (portfolio required).\n* Strong proficiency in HTML5, CSS3, JavaScript, and PHP.\n* Experience with WordPress theme customization and plugin integration.\n* Keen design sensibility: ability to match and enhance design details, not just replicate them.\n* Solid understanding of responsive design, accessibility standards, and cross\\-browser compatibility.\n* Familiarity with SEO optimization and website performance best practices.\n* Bonus: experience working with Framer designs or similar design\\-to\\-development workflows.\n\n\n**What We’re Looking For**\n This role is perfect for someone who thrives at the intersection of\n **development and design** \n —you’re not just a coder, but someone who cares about the craft of making a site look and feel exceptional.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318511325",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 96.5,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 21,
+      "it_signals_found": [
+        "mobile",
+        "framer",
+        "ui",
+        "php",
+        "ux",
+        "web developer",
+        "javascript"
+      ],
+      "bonus_weak_signals": 0.5,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "javascript"
+      ]
+    },
+    "tags": [
+      "mobile",
+      "ux",
+      "ui",
+      "javascript",
+      "php"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4315954225",
+    "title": "Software Developer Frontend - IT",
+    "company": "Mercado Libre",
+    "description": "Como\n **Software Developer Frontend** \n en Mercado Libre, diseñarás y escalarás sistemas innovadores y seguros que resuelven problemas reales y de alto impacto. Trabajarás en un entorno dinámico con tecnología de vanguardia, aplicando buenas prácticas de ingeniería, modelos de IA propios y aprendizaje continuo, con el propósito de democratizar el comercio electrónico y los servicios financieros en América Latina.\n \n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n Imagináte emprendiendo proyectos desafiantes, dinámicos e innovadores y\n **siendo responsable de** \n :\n \n\n\n\n  \n\n\n\n\n* Contribuir en el diseño y la creación de productos que impactan directamente en la vida de miles de personas a diario.\n* Colaborar en definiciones de arquitectura, pensando siempre en soluciones que resulten escalables.\n* Programar código de calidad y garantizar que todo funcione correctamente antes de ser implementado.\n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n**¿Qué buscamos en vos?** \n\n\n\n\n  \n\n\n\n\n* Haber finalizado o estar en la etapa final de tecnicaturas o carreras de grado como Ingeniería en Informática, Ciencias de la Computación o afines.\n* Contar con un máximo de 3 años de experiencia laboral en roles de programación.\n* Poseer conocimientos básicos teóricos de programación y estructuras de datos, como variable, función, if, bucle, operadores, de HTML, CSS, Javascript, y conocimientos del concepto de versionado, como GIT.\n\n\n\n  \n\n\n\n\n\n  \n\n\n\n\n\n**¿Te animás a dejar huella en la tecnología de América Latina?** \n\n\n\n\n  \n\n\n\n\n\n ¡Postulate y sumate a nuestro propósito!\n \n\n\n\n*Modalidad de trabajo híbrida. Site AMBA, Córdoba, Santa Fe, Rafaela.*",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315954225",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 80.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 18,
+      "it_signals_found": [
+        "software developer",
+        "git",
+        "javascript",
+        "frontend",
+        "css",
+        "html"
+      ],
+      "bonus_weak_signals": 2.0,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "javascript"
+      ],
+      "penalty_experience": -15
+    },
+    "tags": [
+      "frontend",
+      "javascript",
+      "git"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4308921299",
+    "title": "Startup Account Manager - Argentina",
+    "company": "Amazon Web Services (AWS)",
+    "description": "**Description**\n Would you like to be part of a team focused on helping startups grow in Argentina? Do you have a passion for generating new business? Do you have the technical background necessary to help establish Amazon Web Services (AWS) as a key technology platform provider?\n   \n\n  \n\n AWS offers a complete set of cloud services that enable all companies, from startups to enterprises, to run virtually everything in the cloud, including mobile applications, big data analytics, AI/ML platforms, GenAI, and microservices/serverless infrastructures. Startups, which are now primarily born\\-in\\-the\\-cloud, represent a critically important and growing subset of customers to AWS. Startups have unique needs, priorities, and growth trajectories that distinguish them from traditional businesses and require different engagement strategies and sales motions from sellers to effectively acquire, grow, and retain them long\\-term on the AWS platform.\n   \n\n  \n\n As AWS continues to grow, we seek a startup Account Manager to engage with startups in Argentina. As a Startup Account Manager, you will help drive the growth of your customers, servicing their unique needs, engaging with Founders, CxOs, Board of Directors and VC influencers, and teaming with business development, marketing, solution architecture and partner teams to lead execution of coordinated go\\-to\\-market strategies\n   \n\n  \n\n Key job responsibilities\n   \n\n  \n\n* Drive revenue growth in a defined territory\n* Accelerate customer adoption through well\\-developed sales engagements and successful GTM Strategy\n* Meet or exceed quarterly revenue and goal targets. \\- Develop and execute against a comprehensive account/territory plan.\n* Create \\& articulate compelling value propositions around AWS services.\n* Accelerate customer adoption by engaging Founders, CxO, Board of Directors and VC influencers\n* Work with partners to extend reach \\& drive adoption. \\- Develop long\\-term strategic relationships with key accounts.\n\n\n**About The Team**\n ABOUT AWS:\n   \n\n  \n\n Diverse Experiences\n   \n\n  \n\n Amazon values diverse experiences. Even if you do not meet all of the preferred qualifications and skills listed in the job description, we encourage candidates to apply. If your career is just starting, hasn’t followed a traditional path, or includes alternative experiences, don’t let it stop you from applying.\n   \n\n  \n\n Why AWS\n   \n\n  \n\n Amazon Web Services (AWS) is the world’s most comprehensive and broadly adopted cloud platform. We pioneered cloud computing and never stopped innovating — that’s why customers from the most successful startups to Global 500 companies trust our robust suite of products and services to power their businesses.\n   \n\n  \n\n Work/Life Balance\n   \n\n  \n\n We value work\\-life harmony. Achieving success at work should never come at the expense of sacrifices at home, which is why we strive for flexibility as part of our working culture. When we feel supported in the workplace and at home, there’s nothing we can’t achieve in the cloud.\n   \n\n  \n\n Inclusive Team Culture\n   \n\n  \n\n Here at AWS, it’s in our nature to learn and be curious. Our employee\\-led affinity groups foster a culture of inclusion that empower us to be proud of our differences. Ongoing events and learning experiences, including our Conversations on Race and Ethnicity (CORE) and AmazeCon (gender diversity) conferences, inspire us to never stop embracing our uniqueness.\n   \n\n  \n\n Mentorship and Career Growth\n   \n\n  \n\n We’re continuously raising our performance bar as we strive to become Earth’s Best Employer. That’s why you’ll find endless knowledge\\-sharing, mentorship and other career\\-advancing resources here to help you develop into a better\\-rounded professional\n   \n\n  \n\n**Basic Qualifications**\n* 3\\+ years of IT/Tech/Cloud sales experience in closing new business and carrying quota\n* 3\\+ years of experience selling cloud solutions at a technology company\n* Knowledge of Argentinian Startup landscape\n* Bachelor's degree in related field, or equivalent experience\n* Able to communicate effectively in English within technical and business settings\n\n\n**Preferred Qualifications**\n* Experience with sales CRM tools such as Salesforce or similar software\n* Experience driving new business in greenfield accounts at the C\\-suite level or equivalent\n* Experience in engineering, computer science, or MIS\n\n\n Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how\\-we\\-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner.\n   \n\n  \n\n  \n\n**Company** \n \\- Amazon Web Services Argentina S.R.L.\n   \n\n  \n\n Job ID: A3098584",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4308921299",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 77.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 15,
+      "it_signals_found": [
+        "mobile",
+        "microservices",
+        "software",
+        "aws",
+        "cloud computing"
+      ],
+      "bonus_weak_signals": 2.5,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "aws"
+      ]
+    },
+    "tags": [
+      "mobile",
+      "support",
+      "aws",
+      "microservices"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4318502810",
+    "title": "Staff Frontend Engineer",
+    "company": "Span",
+    "description": "**The magic of small teams can exist at any organization.**\n We started Span to address a pattern we'd all lived: as teams expand, context is buried under layers of meetings, tools, people and process. Things begin to stall in the \"outer loops\" like prioritization, allocation, collaboration, and management—areas where mistakes and inefficiencies are arguably more costly.\n   \n\n  \n\n We are creating a new type of tool that delivers coherent and useful software engineering context for humans and agents alike, a tool that we believe will enable ownership, autonomy, and superhuman impact inside of an engineering organization.\n   \n\n  \n\n**We’re building a future where:**\n* Engineering leaders can understand their most precious resource \\- team time \\- so that they’re able to invest intentionally, root out hidden costs of toil, and unlock the true potential of their team.\n* Everyone inside the organization can have an intuitive grasp of what’s happening so they’re empowered to make better decisions, operate confidently and deliver predictably.\n* The hours tied up in tagging, status reporting and coordination meetings are automated away so that people spend less time on busywork and more time on the real work.\n\n\n****In this role you’ll:****\n Help build a product UI that surfaces and explains KTLO root causes and recommended actions in a way engineers love to use.\n   \n\n  \n\n Build a frontend for a software catalog that works for monoliths and makes discovery feel effortless.\n   \n\n  \n\n Create interfaces that protect engineering focus time by anticipating and mitigating distractions with thoughtful, assistive design powered by AI.\n   \n\n  \n\n****What we're looking for:****\n Resourceful individuals who thrive in a high agency environment.\n   \n\n  \n\n Have been a founder, seed\\-stage design/engineering hire, or have launched your own project before.\n   \n\n  \n\n You have strong product sense and can prove it.\n   \n\n  \n\n Have experience working with LLMs, AI\\-driven UX, or agentic workflows.\n   \n\n  \n\n****About our Stack:****\n TypeScript, React, Tailwind, Zustand, Vite\n   \n\n  \n\n We also use NestJS, Postgres, Redis on the backend\n   \n\n  \n\n Airbyte, Dagster, Python, Kafka\n   \n\n  \n\n AWS, K8S, FluxCD\n   \n\n  \n\n Backed by dozens of founders and CTOs we admire from places like Slack, Notion, Rippling, Fivetran and Coda, CPOs from places like Adobe and Square, as well as funds like Alt, BoxGroup, Bling, Craft, and SV Angel who dare to dream with us.\n   \n\n  \n\n Compensation Range: $90K \\- $200K",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318502810",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 70.5,
+    "score_details": {
+      "base": 50,
+      "penalty_seniority": -50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "kafka",
+        "react",
+        "ui",
+        "software",
+        "ux",
+        "frontend",
+        "redis",
+        "aws",
+        "python",
+        "less"
+      ],
+      "bonus_weak_signals": 0.5,
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "aws",
+        "react",
+        "python",
+        "typescript"
+      ]
+    },
+    "tags": [
+      "frontend",
+      "backend",
+      "ux",
+      "ui",
+      "python",
+      "typescript",
+      "react",
+      "postgres",
+      "redis",
+      "aws"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4297312249",
+    "title": "Quick Commerce Groceries Assistant",
+    "company": "PedidosYa",
+    "description": "Pedidosya es parte de Delivery Hero, compañía líder mundial en delivery que opera en más de 70 países en todo el mundo. PedidosYa es la compañía de tecnología líder en delivery y quick commerce de Latinoamérica. Es una plataforma simple, rápida y accesible que conecta a una red de millones de personas usuarias, comercios y personas repartidoras a una gran variedad de productos y servicios que ofrece la comunidad. La compañía, que opera en 15 países de Latinoamérica lanzó en 2020 PedidosYa Market, el primer mercado 100% digital que entrega alimentos y artículos para el hogar desde los 10 minutos tras haber realizado el pedido. Delivery Hero cotiza en la Bolsa de Frankfurt desde 2017 y forma parte del índice bursátil MDAX.\n   \n\n  \n\n**Descripción del empleo**\n* Gestión Integral de Catálogo y Promociones Regional: Serás el/la dueño/a de la ejecución de punta a punta de las tareas ligadas a la creación y actualización de nuestro surtido y promociones online en cada una de nuestras tiendas.\n* Colaboración Intersectorial: Trabajarás codo a codo con referentes de distintos países y equipos colaborando estrechamente para asegurar la calidad de los procesos y detectar oportunidades de mejora.\n* Mejora Continua de Procesos: Esperamos que identifiques cuellos de botella en los procesos actuales y propongas ideas para mejorar / automatizar tareas.\n* Análisis y Optimización de Surtido: Trabajarás en proyectos o iniciativas estratégicas para maximizar nuestro nivel de oferta.\n\n\n**Requisitos**\n* Estudiantes universitarios iniciales o intermedios de ingeniería / administración de empresas o afines.\n* Experiencia laboral previa de al menos 1 o 2 años.\n* Conocimiento o experiencia en Google Sheets, / Excel (excluyente) SQL (deseable) Tableau/Looker Studio (deseable).\n* Alto nivel de energía, dinamismo y curiosidad para ser parte del desarrollo de un negocio en etapa de crecimiento.\n* Ser capaz de manejar grandes volúmenes de información sin perder de vista el detalle.\n* Comunicación clara y efectiva. Interactuar con múltiples equipos, adaptando tu mensaje y construyendo relaciones de confianza.\n\n\n**Información adicional**\n* Crear valor para un gran ecosistema de negocio.\n* Jugar en equipo, siempre: Pensar soluciones y construir colaborativamente, con buena energía.\n* Moverte a la velocidad de tus ideas y emprender.\n* Aprender, desarrollarte y reinventarte: Permitirte equivocarte, aprender haciendo, iterar y adaptarte a los cambios.\n* Generar impacto positivo en las personas y el planeta.\n* Trabajar de otra manera, en \\#ModoPeYa: no importa el tiempo ni el lugar desde donde trabajas, lo que importa es la agilidad con la que tomas decisiones, la flexibilidad para adaptarte y los resultados que alcanzas en equipo.\n\n\n La diversidad de talento potencia nuestra Cooltura y nuestra organización. Jugamos en equipo en todo lo que hacemos, y lo que más nos gusta de eso es que promovemos la creación de equipos diversos e inclusivos que puedan aportar diferentes perspectivas a PedidosYa. Nuestras oportunidades laborales están abiertas a todas las personas, independientemente de su identidad de género, orientación sexual, origen étnico, religión, edad, discapacidad y/o otras características individuales.\n   \n\n  \n\n En caso de necesitar algún ajuste razonable o accesibilidad particular para tener la entrevista, por favor no dejes de aclararlo en tu postulación. Además, siéntete libre de indicarnos tus pronombres (él/ella/elle) desde el primer contacto.\n   \n\n  \n\n \\#CoolturaPeYa \\#LaDiversidadNosPotencia\n   \n\n  \n\n La diversidad de talento potencia nuestra Cooltura y nuestra organización. Jugamos en equipo en todo lo que hacemos, y lo que más nos gusta de eso es que promovemos la creación de equipos diversos e inclusivos que puedan aportar diferentes perspectivas a PedidosYa. Nuestras oportunidades laborales están abiertas a todas las personas, independientemente de su identidad de género, orientación sexual, origen étnico, religión, edad, discapacidad y/o otras características individuales.\n   \n\n  \n\n En caso de necesitar algún ajuste razonable o accesibilidad particular para tener la entrevista, por favor no dejes de aclararlo en tu postulación. Además, siéntete libre de indicarnos tus pronombres (él/ella/elle) desde el primer contacto.\n   \n\n  \n\n \\#CoolturaPeYa \\#LaDiversidadNosPotencia",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4297312249",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 66.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "sql",
+        "tableau"
+      ],
+      "bonus_weak_signals": 0.5,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "sql"
+      ]
+    },
+    "tags": [
+      "sql",
+      "tableau"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4296253203",
+    "title": "Product Manager",
+    "company": "Jam City",
+    "description": "About us:Jam City is looking for a motivated and skilled Producer to join our team. You’ll work with designers, artists, engineers, product managers, QA analysts, and producers to develop live ops content like events, sales, and visuals.\n   \n\n  \n\n This role manages or participates in cross\\-functional efforts to develop and execute product development and launch plans. It involves creating new game and game feature ideas informed by product knowledge, analyses of player demographics and player behavior, and community and customer service feedback. The Senior Product Manager analyzes data, builds automated reports, and works with the analytics team to inform content and business choices during game development and post\\-launch, focusing on developing and retaining the audience and driving revenue through monetization strategies. This role works with game teams to identify, test, measure and improve high\\-impact product changes that drive growth in revenue, reach and retention. It also communicates relevant KPIs and updates to key stakeholders in a timely fashion. Additionally, this role may mentor and manage less experienced members of the team.\n   \n\n  \n\n**Key Responsibilities**\n* Conducts product management activities for a game or multiple games.\n* Participates in managing analysis of player demographics, behavior and metrics and provides information regarding player market to identify desirable product features.\n* Participates in managing product launches and/or introduction of new product features for assigned games.\n* May lead and execute all or a majority of the tasks comprising semi\\-complex projects/processes/workflows that may impact future developments.\n* Decisions and actions regularly have a moderate influence on the work of team members and other teams and assigned projects.\n* Carries out assigned activities of unit/team/ projects.\n* Participates in contributing to and adheres to product vision and strategy.\n* Participates in managing game features and gameplay strategy in response to changes in daily active users and monetization performance.Solves complex problems in resourceful and effective ways.\n* Communicates with own team and across the organization. Receives, may interpret and transmits complex information requiring some explanation or interpretation.\n* Determines methods for own work and leads other team members to complete assignments based on daily game performance information.\n* May Mentor and manage less experienced members of the team.\n\n\n**Skills, Knowledge \\& Abilities**\n* Knowledge/Skills in content areas: Mobile gaming , Game development process and game life cycle, Data analysis (game/monetization analytics), Free\\-to\\-play market/trends\n* Communications\n* Project management\n* Recognized as an operating and procedural leader.\n* Either has in\\-depth knowledge of some specialty areas or broad knowledge of many.\n* Leverages in\\-depth knowledge to identify needs of and opportunities for teams managed and facilitates development of complex solutions.\n\n\n**Education \\& Experience**\n* Typically has 5 to 8 years of progressively complex related experience.\n* Bachelor's degree or equivalent.\n\n\n**Working Conditions**\n* Remote work\n\n\n We may use artificial intelligence (AI) tools to support parts of the hiring process, such as reviewing applications, analyzing resumes, or assessing responses. These tools assist our recruitment team but do not replace human judgment. Final hiring decisions are ultimately made by humans. If you would like more information about how your data is processed, please contact us.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4296253203",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 63.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 12,
+      "it_signals_found": [
+        "qa",
+        "mobile",
+        "artificial intelligence",
+        "less"
+      ],
+      "bonus_weak_signals": 1.0
+    },
+    "tags": [
+      "mobile",
+      "qa",
+      "support"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4298316555",
+    "title": "Market Risk, Derivatives Monitoring",
+    "company": "Binance",
+    "description": "Binance is a leading global blockchain ecosystem behind the world’s largest cryptocurrency exchange by trading volume and registered users. We are trusted by over 280 million people in 100\\+ countries for our industry\\-leading security, user fund transparency, trading engine speed, deep liquidity, and an unmatched portfolio of digital\\-asset products. Binance offerings range from trading and finance to education, research, payments, institutional services, Web3 features, and more. We leverage the power of digital assets and blockchain to build an inclusive financial ecosystem to advance the freedom of money and improve financial access for people around the world.\n   \n\n  \n\n**About The Opportunity:** \n You will join a team of around 10 talented professionals, serving as the first line of defense against irregular market movements and ensuring 24/7 risk monitoring and coverage. In addition to real\\-time monitoring, you will also have the opportunity to contribute to meaningful projects and process improvements that enhance the efficiency and effectiveness of our risk monitoring framework.\n   \n\n  \n\n**Responsibilities**\n* Monitor and assess key risk areas within spot/derivatives, looking into unusual trading patterns to prevent manipulative trades\n* Conduct daily monitoring, review, and analysis of alerts; ensure timely and appropriate resolution of incidents or risk events.\n* Prepare and deliver accurate risk reports and findings to supervisors in a timely manner.\n* Proactively share timely updates on market developments/news and demonstrate deep expertise in market dynamics.\n* Implement and maintain risk policies and procedures in alignment with organizational strategy and evolving market conditions to prevent, mitigate, and eliminate risks.\n* Identify and investigate fraudulent activity \\- including large position exposures, market irregularities, and other emerging risks from macroeconomic factors\n* Provide risk analysis and investigative support by conducting tests on risk strategies and incident cases as required.\n\n\n**Requirements**\n* You’re curious and passionate about Cryptocurrency/Trading\n* Able to commit to shift work (Including some weekends) on a 5 day work week basis ensuring 24/7 coverage within the team\n* Prior experience in risk management, preferably within the financial industry\n* Strong quantitative, analytical, and problem\\-solving skills, with the ability to adapt to a fast\\-changing environment and work effectively in remote settings.\n\n\n**Why Binance**\n* Shape the future with the world’s leading blockchain ecosystem\n* Collaborate with world\\-class talent in a user\\-centric global organization with a flat structure\n* Tackle unique, fast\\-paced projects with autonomy in an innovative environment\n* Thrive in a results\\-driven workplace with opportunities for career growth and continuous learning\n* Competitive salary and company benefits\n* Work\\-from\\-home arrangement (the arrangement may vary depending on the work nature of the business team)\n\n\n Binance is committed to being an equal opportunity employer. We believe that having a diverse workforce is fundamental to our success.\n   \n\n  \n\n*By submitting a job application, you confirm that you have read and agree to our* \n***Candidate Privacy Notice***\n*.*\n We may use artificial intelligence (AI) tools to support parts of the hiring process, such as reviewing applications, analyzing resumes, or assessing responses. These tools assist our recruitment team but do not replace human judgment. Final hiring decisions are ultimately made by humans. If you would like more information about how your data is processed, please contact us.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4298316555",
+    "published_at": "2025-10-22T11:27:07+00:00",
+    "score": 56.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "artificial intelligence",
+        "security"
+      ],
+      "bonus_weak_signals": 0.5
+    },
+    "tags": [
+      "security",
+      "support"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T12:27:08+00:00"
   }
 ]
