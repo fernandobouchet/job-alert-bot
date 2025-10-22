@@ -2,25 +2,26 @@ import re
 import math
 import asyncio
 import pandas as pd
+
 try:
     from config import (
         DAYS_OLD_TRHESHOLD,
         HOURS_OLD_THRESHOLD,
         TIMEZONE,
-        SOURCES_BYPASS_SCORING
+        SOURCES_BYPASS_SCORING,
     )
 except ImportError:
     TIMEZONE = "UTC"
     SOURCES_BYPASS_SCORING = []
 import zoneinfo
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timedelta, date
 from filters_scoring import filter_jobs_with_scoring
 from json_handler import update_job_data
 from bot.utils import send_jobs
 from filters_scoring_config import TAGS_KEYWORDS
 
 
-async def scrape(sources, chat_ids, bot, admin_chat_id):
+async def scrape(sources, channel_id, bot):
     print("🚀 Iniciando búsqueda de trabajos...")
     tasks = [asyncio.to_thread(source_func) for source_func in sources]
     results = await asyncio.gather(*tasks)
@@ -33,10 +34,12 @@ async def scrape(sources, chat_ids, bot, admin_chat_id):
 
     df = pd.DataFrame(all_jobs)
 
-    df_to_score = df[~df['source'].isin(SOURCES_BYPASS_SCORING)]
-    df_to_bypass = df[df['source'].isin(SOURCES_BYPASS_SCORING)]
+    df_to_score = df[~df["source"].isin(SOURCES_BYPASS_SCORING)]
+    df_to_bypass = df[df["source"].isin(SOURCES_BYPASS_SCORING)]
 
-    df_filtered_scored = filter_jobs_with_scoring(df_to_score, min_score=50, verbose=True)
+    df_filtered_scored = filter_jobs_with_scoring(
+        df_to_score, min_score=50, verbose=True
+    )
 
     df_filtered = pd.concat([df_filtered_scored, df_to_bypass], ignore_index=True)
 
@@ -54,7 +57,7 @@ async def scrape(sources, chat_ids, bot, admin_chat_id):
 
     if new_jobs:
         print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        await send_jobs(bot, chat_ids, new_jobs, admin_chat_id)
+        await send_jobs(bot, channel_id, new_jobs)
     else:
         print("No hay jobs nuevos para enviar.")
 

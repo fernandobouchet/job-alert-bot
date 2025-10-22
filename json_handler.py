@@ -6,7 +6,7 @@ try:
 except ImportError:
     TIMEZONE = "UTC"
 import zoneinfo
-from datetime import datetime, timedelta
+from datetime import datetime
 from collections import defaultdict
 
 
@@ -201,44 +201,6 @@ def update_job_data(recent_jobs):
     print(f"💾 {LATEST_JOBS_FILE} y {TRENDS_HISTORY_FILE} actualizados.")
 
     return jobs_to_send
-
-
-def delete_jobs_by_ids(job_ids):
-    job_ids_to_delete = set(job_ids)
-    deleted_count = 0
-
-    # Eliminar de latest_jobs.json
-    latest_jobs = load_json(LATEST_JOBS_FILE)
-    filtered_latest_jobs = [
-        job for job in latest_jobs if job["id"] not in job_ids_to_delete
-    ]
-    if len(latest_jobs) != len(filtered_latest_jobs):
-        save_json(filtered_latest_jobs, LATEST_JOBS_FILE)
-        deleted_count += len(latest_jobs) - len(filtered_latest_jobs)
-
-    # Eliminar de los archivos de historial mensual
-    for i in range(13):
-        current_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
-            days=i * 30
-        )
-        monthly_path = get_monthly_history_path(current_date.strftime("%Y-%m"))
-
-        if os.path.exists(monthly_path):
-            monthly_history = load_json(monthly_path)
-            filtered_monthly_history = [
-                job for job in monthly_history if job["id"] not in job_ids_to_delete
-            ]
-
-            if len(monthly_history) != len(filtered_monthly_history):
-                save_json(filtered_monthly_history, monthly_path)
-                deleted_count += len(monthly_history) - len(filtered_monthly_history)
-
-    if deleted_count > 0:
-        print(f"🗑️ {deleted_count} trabajos eliminados.")
-    else:
-        print("No se encontraron trabajos con los IDs proporcionados.")
-
-    return deleted_count
 
 
 def handle_rejected_jobs_file(log_rejected_jobs, verbose=True):
