@@ -1135,5 +1135,153 @@
     ],
     "modality": "Remote",
     "date_scraped": "2025-10-22T12:27:08+00:00"
+  },
+  {
+    "id": "li-4317455612",
+    "title": "IOS Developer",
+    "company": "GM2",
+    "description": "We’re looking for a Senior iOS engineer who is passionate about solving complex problems and creating innovative solutions using Swift. As a Senior iOS Engineer, you will be responsible for owning the delivery of major features and components, building and shipping durable, secure, scalable, and always up and running code. You should be driven by curiosity, enthusiastic about learning new technologies, and be comfortable using IDEs, version control, and command line tools.\n   \n\n\n\n\n**Responsibilities**\n* Own the delivery of major features and components\n* Build and ship durable, secure, scalable, and always up and running code\n* Have a strong understanding of data modeling with Swift (protocols, enums, structs, classes)\n* Architect robust networking and data modeling layers\n* Have familiarity with CI/CD (e.g. Jenkins, CircleCI, Fastlane) and experience setting up deployment pipelines\n* Frequently use the XCTest framework to test your code\n* Proactively identify risks and approach them with a solution\\-oriented mindset\n* Closely follow Swift coding conventions and iOS design patterns\n* Provide recommendations on the best ways to solve a problem for a particular platform\n* Consider 'big picture' perspectives and can successfully balance business goals and technical constraints\n* Mentor other developers\n* Collaborate and communicate with teams and clients to deliver software in an agile environment\n* Improve existing code to make it more maintainable, testable, and elegant\n* Value a feedback culture that fosters personal and professional growth\n\n\n Requirements\n   \n\n  \n\n* 4\\+ years of professional programming experience\n* Experience with code signing and distribution process\n* Familiarity with Apple services like iCloud, universal linking, push notifications, and/or Keychain\n* Experience developing for multiple Apple platforms (watchOS, tvOS, CarPlay)\n* Understanding of inclusive and accessible UI implementations\n* Experience using SwiftUI/Combine\n* Experience working with emerging technologies like Machine Learning, Voice, and/or AR/VR\n* Code samples or a GitHub account to share\n\n\n Benefits\n   \n\n  \n\n* Private health insurance for the family group (spouse and children)\n* Flexible working hours\n* Hybrid work model (our offices are always open!)\n* 15 business days of vacation\n* 3 Lazy Days (days off without justification)\n* Performance bonus\n* English classes during working hours\n* Access to learning platforms\n* Discounts on a wide variety of products, stores, and services\n* Welcome kit\n* Work tools (Mac, adapter, headphones, monitor)\n* Cultural activities: Friday barbecues, soccer, game nights/afternoons, and more\n* Special gifts for occasions: birthdays, anniversaries, etc.\n* Internal training: GM2 Talks\n* Offisnack (discounts on purchases)\n* Knowledge Hubs aligned to business strategy",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4317455612",
+    "published_at": "2025-10-22T14:02:49+00:00",
+    "score": 95.5,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "jenkins",
+        "machine learning",
+        "agile",
+        "circleci",
+        "software",
+        "ci/cd",
+        "ui",
+        "ios",
+        "developer",
+        "engineer"
+      ],
+      "bonus_weak_signals": 0.5
+    },
+    "tags": [
+      "ui",
+      "swift",
+      "ios",
+      "ci/cd",
+      "machine learning",
+      "agile"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T15:02:50+00:00"
+  },
+  {
+    "id": "li-4295772119",
+    "title": "IT Data Analyst- Buenos Aires",
+    "company": "Syneos Health",
+    "description": "**Description**\n IT Data Analyst\\- Buenos Aires\n   \n\n  \n\n Syneos Health® is a leading fully integrated biopharmaceutical solutions organization built to accelerate customer success. We translate unique clinical, medical affairs and commercial insights into outcomes to address modern market realities.\n   \n\n  \n\n Every day we perform better because of how we work together, as one team, each the best at what we do. We bring a wide range of talented experts together across a wide range of business\\-critical services that support our business. Every role within Corporate is vital to furthering our vision of Shortening the Distance from Lab to Life®.\n   \n\n  \n\n Discover what our 29,000 employees, across 110 countries already know.\n   \n\n  \n\n**WORK HERE MATTERS EVERYWHERE**\n Why Syneos Health\n   \n\n  \n\n* We are passionate about developing our people, through career development and progression; supportive and engaged line management; technical and therapeutic area training; peer recognition and total rewards program.\n* We are committed to our Total Self culture – where you can authentically be yourself. Our Total Self culture is what unites us globally, and we are dedicated to taking care of our people.\n* We are continuously building the company we all want to work for and our customers want to work with. Why? Because when we bring together diversity of thoughts, backgrounds, cultures, and perspectives – we’re able to create a place where everyone feels like they belong.\n\n\n**Job Responsibilities**\n* Collaborates with project teams, leaders and managers to determine and address data and reporting needs for various company projects.\n* Assesses and documents sources, structures and types of available business data.\n* Performs profiling and integration assessments across source data sets.\n* Assembles, analyzes and documents supporting metadata and lineage\n* Determines the meaning of data and explains how various teams and leaders can leverage it to improve and streamline their processes. Recommends solutions to complex data issues.\n* Performs quality and accessibility testing and verification of ingested data sets\n* Creates reports/presentations sharing findings and usage recommendations with the internal team and other stakeholders.\n* Creates detailed descriptions, definitions and integration requirements to be used by delivery teams for creating integrated, sharable data sets.\n\n\n**Qualifications**\n* Bachelor’s degree in mathematics, statistics, computer science, information technology, or related field.\n* Experience in direct Pharma / CRO roles.\n* Experience in a data analysis or relevant role. Experience with data gathering, inspecting, cleansing, transforming and modeling/diagramming techniques.\n* Expert with Microsoft Excel and various business intelligence and analytical tools. Strong analytical skills\n* Experience with identification of useful information within data sets and defining use cases that support decision making. Experience in data querying, data relationship concepts, able to execute basic sql\\-like queries.\n* Experience with data governance and metadata management tools like Collibra. Additional benefits from knowledge of Hortonworks / Apache tools and Master Data Management processes / tools.\n* Keen attention to detail. Willingness to make decisions and solve problems.\n* Communication skills with the ability todistill complex subjects to a wider audience. Required:\n* 3\\+ years of experience in working with data management teams supporting Pharma field operations is required.\n* 3\\+ years of experience in data\\-centric implementations such as SFA/CRM and Business Intelligence Tools\n* 3\\+ years of experience with data warehouse, Master Data Management (MDM), and data integration initiatives\n* Strong experience reading and writing queries in SQL Server or Azure SQL database is required.\n* Strong organizational skills\n* Experience working in a production environment for multiple clients in a compliance industry.\n\n\n**Get to know Syneos Health**\n Over the past 5 years, we have worked with 94% of all Novel FDA Approved Drugs, 95% of EMA Authorized Products and over 200 Studies across 73,000 Sites and 675,000\\+ Trial patients.\n   \n\n  \n\n No matter what your role is, you’ll take the initiative and challenge the status quo with us in a highly competitive and ever\\-changing environment. Learn more about Syneos Health.\n   \n\n  \n\n http://www.syneoshealth.com\n   \n\n  \n\n**Additional Information**\n Tasks, duties, and responsibilities as listed in this job description are not exhaustive. The Company, at its sole discretion and with no prior notice, may assign other tasks, duties, and job responsibilities. Equivalent experience, skills, and/or education will also be considered so qualifications of incumbents may differ from those listed in the Job Description. The Company, at its sole discretion, will determine what constitutes as equivalent to the qualifications described above. Further, nothing contained herein should be construed to create an employment contract. Occasionally, required skills/experiences for jobs are expressed in brief terms. Any language contained herein is intended to fully comply with all obligations imposed by the legislation of each country in which it operates, including the implementation of the EU Equality Directive, in relation to the recruitment and employment of its employees. The Company is committed to compliance with the Americans with Disabilities Act, including the provision of reasonable accommodations, when appropriate, to assist employees or applicants to perform the essential functions of the job.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4295772119",
+    "published_at": "2025-10-22T14:02:49+00:00",
+    "score": 65.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 18,
+      "it_signals_found": [
+        "azure",
+        "testing",
+        "data warehouse",
+        "sql",
+        "data analyst",
+        "business intelligence"
+      ],
+      "bonus_weak_signals": 2.0,
+      "bonus_strong_tech": 10,
+      "strong_tech_found": [
+        "sql"
+      ],
+      "penalty_experience": -15
+    },
+    "tags": [
+      "data analyst",
+      "support",
+      "sql",
+      "azure"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T15:02:50+00:00"
+  },
+  {
+    "id": "li-4318528757",
+    "title": "Testing Program Liaison",
+    "company": "Fullscript",
+    "description": "**About Fullscript**\n Fullscript is a healthcare platform built on the belief that care should treat the whole person.\n   \n\n  \n\n More than 125,000 practitioners and 10 million patients rely on us for high\\-quality supplements, industry\\-leading labs, and tools that simplify care and improve outcomes.\n   \n\n  \n\n**About The Role**\n We're redefining supplement quality.\n   \n\n  \n\n As part of our Medical Innovation team, the Testing Program Liaison will own the end\\-to\\-end execution and evolution of Fullscript's clinician\\-led supplement testing program—ensuring every product we offer meets the highest scientific and regulatory standards.\n   \n\n  \n\n What You'll Do\n   \n\n  \n\n Own the quarterly supplement testing program end\\-to\\-end—SKU selection, sampling, lab coordination, data interpretation, and results integration.\n   \n\n  \n\n Identify high\\-risk or high\\-value supplement SKUs using data and industry insights.\n   \n\n  \n\n Develop and maintain testing standards, methodologies, and assay protocols in partnership with accredited labs (HPLC, GC\\-MS, ICP\\-MS, microbiological assays).\n   \n\n  \n\n Collaborate with QA, Medical Innovation, and Merchandising teams to resolve any out\\-of\\-specification results and maintain compliance with GMP and other regulatory standards.\n   \n\n  \n\n Partner with Engineering, Catalog, and Product teams to ensure test results are accurately integrated into the Fullscript platform and practitioner experience.\n   \n\n  \n\n Work closely with QA, Legal, and Medical teams to define testing guardrails and ensure alignment with regulatory expectations across the U.S. and Canada.\n   \n\n  \n\n Translate scientific findings into actionable insights and practitioner\\-facing educational content (slide decks, handouts, FAQs, \"Fullscript Academy\" content).\n   \n\n  \n\n Partner with Marketing, Sales, and Customer Success to craft data\\-driven messaging and external content that communicates Fullscript's leadership in supplement quality.\n   \n\n  \n\n Keep assay methodologies and lab partnerships up to date with emerging science, technologies, and regulatory changes.\n   \n\n  \n\n Contribute to process optimization, data accuracy, and content workflows that scale as the program expands to new regions (U.S. \\| Canada).\n   \n\n  \n\n What You Bring\n   \n\n  \n\n Bachelor's degree in Biochemistry, Chemistry, or a related life\\-science field.\n   \n\n  \n\n 2\\+ years in an accredited supplement\\-testing or analytical lab (HPLC, GC\\-MS, ICP\\-MS, microbiology, etc.).\n   \n\n  \n\n Strong scientific writing and data\\-translation skills.\n   \n\n  \n\n Understanding of supplement quality standards, GMP requirements, and regulatory frameworks in the U.S. and Canada.\n   \n\n  \n\n Bonus: Master's or PhD in Analytical Chemistry or related discipline.\n   \n\n  \n\n Bonus: Prior experience in a supplement company, medical affairs, or clinical liaison capacity.\n   \n\n  \n\n Bonus: Familiarity with digital platforms, data integration systems, or content management tools.\n   \n\n  \n\n Bonus: Experience creating educational or marketing content for healthcare audiences.\n   \n\n  \n\n Who You Are\n   \n\n  \n\n You're scientifically curious, operationally strong, and energized by building a new program from the ground up.\n   \n\n  \n\n You translate complex lab data into clear, credible communications for healthcare professionals.\n   \n\n  \n\n You thrive in cross\\-functional environments and enjoy collaborating with scientists, clinicians, engineers, quality and marketers alike.\n   \n\n  \n\n Why You'll Love Fullscript\n   \n\n  \n\n Market competitive compensation package including equity.\n   \n\n  \n\n 401(k) matching (U.S.) / RRSP matching (Canada).\n   \n\n  \n\n Flexible PTO policy.\n   \n\n  \n\n**Flexible Benefits Package And Additional Perks.**\n Employee discount on Fullscript catalog of products for family \\& friends.\n   \n\n  \n\n Ability to work wherever you work well.\n   \n\n  \n\n Fullscript is an equal\\-opportunity employer committed to creating an inclusive workplace.\n   \n\n  \n\n Accommodations are available upon request—email \\*\\*\\*\\*\\*\\* for support.\n   \n\n  \n\n We use AI tools to support parts of our hiring process, like screening and reviewing responses.\n   \n\n  \n\n Final decisions are always made by people.\n   \n\n  \n\n This process complies with privacy and employment laws across Canada and the U.S.\n   \n\n  \n\n \\#J\\-\\*\\*\\*\\*\\*\\-Ljbffr",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318528757",
+    "published_at": "2025-10-22T14:02:49+00:00",
+    "score": 56.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "testing",
+        "qa"
+      ],
+      "bonus_weak_signals": 0.5
+    },
+    "tags": [
+      "qa",
+      "support"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T15:02:50+00:00"
+  },
+  {
+    "id": "li-4315926924",
+    "title": "Soporte (estudiantes de alguna carrera de Cs Económicas)",
+    "company": "Axoft",
+    "description": "¡Esta es tu oportunidad de ser parte del equipo de Axoft!\n \n\n\n\n  \n\n\n\n\n\n  Estamos en búsqueda de \\#soportista con experiencia contable para formar parte del área de soporte de la empresa.\n \n\n\n\n  \n\n\n\n\n\n Acerca de la empresa:\n \n\n\n\n  \n\n\n\n\n\n Axoft es la empresa creadora de Tango software, cuenta con 300 empleados y una trayectoria de más de 30 años en el mercado en el rubro de tecnología. Nos destacamos por nuestra cultura y calidad de trabajo, estamos certificados en ISO 9001 que nos respalda como empresa que asegura su calidad en la gestión de todos sus procesos.\n \n\n\n\n  \n \n\n\n\n  \n\n\n\n\n\n Las tareas del puesto son: \n \n\n\n\n Será para brindar soporte y asesoramiento a usuarios del sistema Tango (Por lo general son atención por mail, chat, y llamadas no recurrentes)\n \n\n\n\n  \n\n\n\n\n\n Requisitos:\n \n\n\n* Estudiantes avanzados o recibidos de alguna carrera del departamento de Cs Económicas\n* Experiencia como analista de impuestos y conocimiento de liquidación de sueldos\n* Es un plus tener Conocimientos generales en los módulos Tango y/o Tango Horizontes.\n* Conocimientos en Office: Intermedios.\n* Residir en CABA Y alrededores\n* Disponibilidad full time de 9\\.30 a 18\\.30hs\n\n\n\n  \n\n\n\n\n\n Algunos de los beneficios que ofrecemos:\n \n\n\n\n ·       Una plataforma exclusiva de formación en Tango con todos los cursos gratis para los colaboradores, permitiendo certificarte en todos los módulos que tiene el software.\n \n\n\n\n ·       Plan de desarrollo de carrera: permitiendo crecimiento profesional de forma horizontal o vertical según tu desempeño.\n \n\n\n\n ·       Beneficios Tango: Descuentos en más de 1000 locales de rubros gastronómicos, electrónica, turismo, educación, entre otros.\n \n\n\n\n ·       Día de cumpleaños \\#free\n \n\n\n\n ·       Gym 100% bonificado\n \n\n\n\n Modalidad de trabajo: Durante el periodo de capacitación es presencial, luego pasa a modalidad híbrida.\n \n\n\n\n Envíanos tu CV actualizado, incluyendo remuneración pretendida a busquedas@axoft.com con asunto: Soporte estudios contables\n \n\n\n\n ¡Esperamos tu postulación!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315926924",
+    "published_at": "2025-10-22T14:02:49+00:00",
+    "score": 54.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 3,
+      "it_signals_found": [
+        "software"
+      ],
+      "bonus_weak_signals": 1.5
+    },
+    "tags": [],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T15:02:50+00:00"
+  },
+  {
+    "id": "li-4317438948",
+    "title": "Appointment Setter (Remote)",
+    "company": "Valatam",
+    "description": "**We're seeking an Appointment Setter/Cold Caller to join our team! (Fully Remote)**\n People residing in\n **all of Latin America.**\n Work Schedule:\n **Monday\\-Friday, 9 am \\- 5 pm EST**\n Language:\n **Near\\-native English (C1/C2\\) with a neutral accent.**\n**Only resumes in English will be considered!**\n**About Us**\n At Valatam, we are passionate about building extraordinary remote teams in Latin America for growth\\-minded businesses across various industries in the US. Our values drive everything we do, ensuring that we deliver exceptional service to our clients and create a supportive and dynamic work environment for our team members. You will love it here if you embrace our core values:\n   \n\n  \n\n* ACTION \\- You have an action bias. You get things done, fast\n* CARE \\- You take pleasure in helping others and doing things the right way\n* OUTSTANDING \\- You have the highest standards and run things like a well\\-oiled machine\n* DEPENDABLE \\- If someone asks you to do something, they KNOW it will get done\n* ENERGY \\- You bring a positive, enthusiastic, can\\-do attitude to work every day.\n\n\n**THE ROLE**\n The role is for an Appointment Setter/Cold Caller to prospect and contact potential clients through various channels with the goal of scheduling discovery calls on behalf of our sales people. Valatam's clients are growing US and Canadian businesses with remote entry\\-level vacancies or a high volume of computer/telephone tasks.\n   \n\n  \n\n**Provided your work generates 5 qualified sales calls per week, you are free to work as and when you please** \n , until this KPI is met you are expected to complete the below activities:\n   \n\n  \n\n* Adding 40 vetted leads to our outreach tool (Apollo.io) personalized email sequences \\& LinkedIn sequences daily\n* Keeping Hubspot CRM updated\n* Making 100 phone calls daily\n* High\\-touch manual outreach\n* Manual follow\\-ups by phone/email/LinkedIn\n* Tracking activities daily in a scorecard\n* Daily huddles and Weekly feedback sessions with the rest of the team\n* Experimenting with FB/Twitter outreach\n* Community and awareness building (responding to Quora, LinkedIn, blog posts recommending our services)\n* Attend sales huddles and trainings with enthusiasm, a genuine love for sales and a yearning for learning\n\n\n**Requirements**\n* C1/C2 English writing and speaking skills\n* Experience with Hubspot, apollo.io, or similar tools\n* 1\\+ years of BDR and sales cold\\-calling experience to set sales appointments\n* Independent, problem solver, adaptable, and great communication skills. Must LOVE cold\\-calling and the art of selling\n* A quiet home office with a desk and office chair\n* Stable internet with at least 10 MBPS download \\& 2 MBPS upload speed\n* A laptop/desktop with 8GB RAM, a 1\\.6GHz processor, and 50GB of free hard\\-drive space, a headset, and a smartphone\n* Access to a quiet \"home office\"\n* Access to a backup place of work in case they suffer a power cut or internet failure, as well as a secondary backup internet option (mobile hotspot, Multibam, WiPod, etc.)\n\n\n**Benefits**\n**WHY VALATAM**\n* Work\\-from\\-home, fully remote positions.\n* Competitive base in USD \\+ UNCAPPED Sales Commissions\n* Secure long\\-term work opportunities\n* Gain international experience working with US companies\n* Enhance your English proficiency in a multicultural work environment\n* Paid training opportunities and gain experience in a new industry\n* Work with a dynamic team dedicated to excellence and innovation\n* Experience a healthy work/life balance\n\n\n**PAYMENT**\n Our current pay rate for this full\\-time (40hrs/week) role is $3/hr base, $500/month \\+ $50 per qualified appointment (US$1500 On Target Earnings). More information about the payment structure will be discussed further in the process.\n   \n\n  \n\n Please click the button below and fill out our application form, ensuring you answer all the questions. We will get back to you with more information shortly after receiving your application.\n   \n\n  \n\n Once you have completed the application form, imagine Valatam's Founder (Dan Baker) is a Valatam lead and do your best multi\\-channel, multi\\-touch outreach process to contact him. Use as many channels as you can to find him, and contact him in as innovative a way as you can, with as convincing a message as you can, to persuade him why he needs Valatam's virtual assistants to help his business.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4317438948",
+    "published_at": "2025-10-22T14:02:49+00:00",
+    "score": 53.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 3,
+      "it_signals_found": [
+        "mobile"
+      ],
+      "bonus_weak_signals": 0.5
+    },
+    "tags": [
+      "mobile"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T15:02:50+00:00"
   }
 ]
