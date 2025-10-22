@@ -1352,5 +1352,138 @@
     ],
     "modality": "Not Specified",
     "date_scraped": "2025-10-22T15:38:19+00:00"
+  },
+  {
+    "id": "li-4317172059",
+    "title": "Python Developer - Relocation to Spain",
+    "company": "Talan",
+    "description": "**Talan – Positive Innovation**\n Talan is an international consulting group specializing in innovation and business transformation through technology. With over 7,200 consultants in 21 countries and a turnover of €850M, we are committed to delivering impactful, future\\-ready solutions.\n   \n\n  \n\n**Talan at a Glance**\n Headquartered in Paris and operating globally, Talan combines technology, innovation, and empowerment to deliver measurable results for our clients. Over the past 22 years, we’ve built a strong presence in the IT and consulting landscape, and we’re on track to reach €1 billion in revenue this year.\n   \n\n  \n\n**Our Core Areas of Expertise**\n* **Data \\& Technologies:** \n We design and implement large\\-scale, end\\-to\\-end architecture and data solutions, including data integration, data science, visualization, Big Data, AI, and Generative AI.\n* **Cloud \\& Application Services:** \n We integrate leading platforms such as SAP, Salesforce, Oracle, Microsoft, AWS, and IBM Maximo, helping clients transition to the cloud and improve operational efficiency.\n* **Management \\& Innovation Consulting:** \n We lead business and digital transformation initiatives through project and change management best practices (PM, PMO, Agile, Scrum, Product Ownership), and support domains such as Supply Chain, Cybersecurity, and ESG/Low\\-Carbon strategies.\n\n\n**We work with major global clients across diverse sectors, including Transport \\& Logistics, Financial Services, Energy \\& Utilities, Retail, and Media \\& Telecommunications.**\n**Job Description**\n  \n\n  \n\n Are you a passionate\n **Python Developer** \n looking to take on new technical challenges in the\n **finance industry** \n ? We’re looking for a talented professional based in\n **Málaga or nearby areas** \n to join a dynamic and innovative team.\n   \n\n  \n\n**Responsibilities and Requirements:**\n* Minimum\n **3 years of experience** \n as a\n **Python Developer** \n .\n* Strong expertise in\n **Python** \n (Expert level).\n* Experience with Azure Databricks and PySpark.\n* Advanced experience with\n **Microsoft Azure** \n for cloud\\-based development and deployment.\n* Proficiency with\n **GitHub** \n for version control and collaborative development.\n* Solid understanding of\n **relational and non\\-relational databases** \n (Oracle, MySQL, PostgreSQL).\n* Experience in\n **testing** \n ,\n **environment management** \n , and\n **DevOps processes** \n .\n* Previous development experience in\n **Java** \n and\n **SQL** \n is a plus.\n\n\n**Additional Information**\n**What do we offer you?**\n* Full\\-time contract.\n* Smart Office Pack so that you can work comfortably from home.\n* Training and career development.\n* Benefits and perks such as\n **private medical insurance** \n , life insurance.\n* Possibility to be part of a multicultural team and work on international projects.\n* **This is a hybrid position based in Málaga, Spain. Relocation is mandatory.**\n* Possibility to manage work\\-permits.\n\n\n**If you are passionate about development \\& tech, we want to meet you!**\n  \n\n  \n\n Talan Spain’s commitment to non\\-discrimination based on gender, race, ideology, or any other reason, in accordance with the company’s \"Equality Plan\" and the current regulations on gender equality between women and men (Royal Decree\\-Law 6/2019\\).",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4317172059",
+    "published_at": "2025-10-22T17:19:44+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "oracle",
+        "data science",
+        "azure",
+        "agile",
+        "mysql",
+        "devops",
+        "testing",
+        "java",
+        "sql",
+        "python"
+      ],
+      "bonus_weak_signals": 2.0,
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "aws",
+        "java",
+        "sql",
+        "python"
+      ],
+      "penalty_experience": -15
+    },
+    "tags": [
+      "devops",
+      "data science",
+      "support",
+      "python",
+      "java",
+      "sql",
+      "mysql",
+      "aws",
+      "azure",
+      "agile"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T18:19:45+00:00"
+  },
+  {
+    "id": "li-4318566969",
+    "title": "Junior/Intermediate Software Engineer (React.js, Python, AWS) - OPS00019",
+    "company": "Dev.Pro",
+    "description": "We are a US\\-based outsource software development company that has been delivering exceptional software experience to our clients since 2011, helping technology companies to become industry leaders.\n   \n\n  \n\n Over the past few years, we've been hiring specialists all over the world while our main development centers were in Ukraine. Now, we keep expanding and start growing our centers in different parts of the world. Dev.Pro is open to hire specialists from other countries as well as Ukrainians who live outside of Ukraine now. We stand with Ukraine and keep supporting our people by offering a friendly remote environment while adhering to the values of democracy, human rights, and state sovereignty.\n   \n\n  \n\n**About This Opportunity**\n We invite a talented Software Engineer to join our remote, globally distributed team at the forefront of AI and product innovation. In this role, you'll build intelligent, data\\-driven applications using AI and ML technologies to solve complex, real\\-world problems. You'll collaborate with cross\\-functional teams to develop full\\-stack solutions, prototypes, and proofs of concept that have a tangible impact on the business and end users.\n   \n\n  \n\n**What's in it for you:**\n* Design, build, and integrate solutions across backend, frontend, and APIs, gaining hands\\-on full\\-stack development experience\n* Work with seasoned AI engineers and researchers to grow expertise in modern AI and ML technologies\n* Join a remote, distributed team that values innovation, growth, and cross\\-border collaboration\n\n\n**Is that you?**\n* 1\\-4 years of full\\-stack engineering experience, including recent graduates with strong projects\n* Proficiency in Python for backend development, data pipelines, and AI/ML integrations\n* Frontend development experience in React.js, Angular, or Vue.js\n* Backend development skills in Node.js, Django, or Flask\n* Strong skills in API design and integration\n* Exposure to cloud platforms (AWS, Azure, GCP)\n* Demonstrated interest in AI/ML, generative AI, and R\\&D experimentation\n* Excellent communication and collaboration skills\n* Proficiency in English and Italian at an upper\\-intermediate level or higher\n\n\n**Desirable:**\n* Hands\\-on experience with proofs of concept (PoCs) and technical prototype development\n* Familiarity with healthcare, surgical, or agribusiness applications of AI/ML\n\n\n**Key Responsibilities And Your Contribution**\n In this role, you'll work hands\\-on across the full stack, collaborating with AI engineers and researchers to build applications, prototypes, and proofs of concept that drive real impact.\n   \n\n  \n\n* Build and maintain full\\-stack applications with Python and JavaScript/React.js or similar\n* Design and implement RESTful APIs and system integrations\n* Work with researchers and AI engineers on generative AI, agentic AI, and computer vision projects\n* Contribute to building proofs of concept (PoCs) for healthcare and agribusiness use cases\n* Create technical prototypes for client demos to support go\\-to\\-market initiatives\n* Work with leadership to quickly iterate on features and drive value in 30/60/90\\-day cycles\n* Write clean, documented code and contribute to public\\-facing documentation/GitHub repos",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318566969",
+    "published_at": "2025-10-22T17:19:44+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "bonus_seniority": 20,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 30,
+      "it_signals_found": [
+        "azure",
+        "angular",
+        "full stack",
+        "node.js",
+        "javascript",
+        "gcp",
+        "frontend",
+        "react",
+        "vue",
+        "flask"
+      ],
+      "bonus_weak_signals": 1.5,
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "angular",
+        "javascript",
+        "node.js",
+        "react",
+        "vue"
+      ],
+      "penalty_experience": -15
+    },
+    "tags": [
+      "frontend",
+      "backend",
+      "support",
+      "python",
+      "javascript",
+      "react",
+      "vue",
+      "angular",
+      "node.js",
+      "django",
+      "flask",
+      "aws",
+      "azure",
+      "gcp",
+      "api"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T18:19:45+00:00"
+  },
+  {
+    "id": "li-4318516179",
+    "title": "Ingeniero/a de Procesos",
+    "company": "ManpowerGroup Argentina",
+    "description": "Importante empresa Multinacional Automotriz en Zona Norte busca incorporar un/a\n **Ingeniero/a de Procesos** \n para sumar a su equipo de\n **Ingeniería de Manufactura** \n\n\n\n\n  \n\n\n\n\n\n**Responsabilidades:** \n\n\n\n* Analizar diferencias de procesos entre el modelo actual y los nuevos modelos a implementar en la planta de Pacheco.\n* Diagnosticar y resolver problemas de calidad internos y externos en sistemas de Powertrain e interior.\n* Implementar soluciones y mejoras para optimizar la eficiencia de la línea de producción.\n* Trabajar de forma independiente y proactiva para identificar y solucionar problemas.\n* Mantener una comunicación clara y efectiva con el equipo local y con los equipos de Tailandia y Sudáfrica.\n* Implementar proyectos de innovación y reducción de desperdicios.\n* Liderar iniciativas de mejora continua en la línea de producción.\n* Colaborar con el equipo de planta para implementar nuevas tecnologías y procesos.\n* Analizar datos de producción para identificar áreas de mejora.\n* Aplicar herramientas de manufactura como Value Stream Mapping, Six Sigma y Lean Manufacturing.\n* Utilizar herramientas de análisis de datos (Alteryx, Qlik, Minitab o similares) para la toma de decisiones.\n* Participar activamente en procesos de mejora continua y resolución de problemas de calidad.\n* Promover una cultura de innovación y mentalidad de crecimiento dentro del equipo.\n* Demostrar sólido conocimiento en Ingeniería de Manufactura, capacidad de liderazgo y trabajo en equipo.\n* Ser capaz de resolver problemas de forma autónoma y aportar experiencia en calidad, mejora continua y eficiencia operativa.\n\n\n\n\n\n\n\n**Requisitos:** \n\n\n\n* Título universitario en Ingeniería (Industrial, Mecánica, Electrónica o afines).\n* Mínimo 4 años de experiencia en manufactura.\n* Inglés Avanzado (excluyente)\n* Conocimiento de estándares de manufactura, Value Stream Mapping, Six Sigma.\n* Experiencia en mejora continua y herramientas de análisis de datos (Alteryx, Qlik, Minitab o similares).\n\n\n\n  \n\n\n\n\n\n**Ofrecemos:** \n\n\n\n* Entorno de trabajo dinámico y colaborativo.\n* Oportunidades de desarrollo profesional y crecimiento dentro de la empresa.\n* Beneficios competitivos y paquete salarial acorde a la experiencia.\n* Contratación en relación de dependencia por empresa.\n* Jornada de trabajo: Hibrido (4 dias presenciales – 1 Remoto)\n\n\n\n  \n\n\n\n\n\n ¡Si cumples con los requisitos y estás buscando un nuevo desafío, te invitamos a postularte!\n \n\n\n\n  \n\n\n\n\n\n ¡Esperamos conocerte pronto!\n \n\n\n\n  \n\n\n\n\n\n Al postularte o avanzar en este proceso, aceptas el tratamiento de tus datos personales conforme a nuestra Política de Privacidad, en cumplimiento de la Ley 25\\.326\\. ManpowerGroup Argentina tratará tu información exclusivamente con fines de evaluación y contacto en relación con oportunidades laborales. Podés ejercer tus derechos de acceso, rectificación o supresión cuando lo desees.\n \n\n\n\n  \n\n\n\n\n\n En ManpowerGroup promovemos una cultura inclusiva y diversa basada en el respeto y en la igualdad de oportunidades.\n \n\n\n\n \\[Ley 6471/2021 \\- Búsqueda laboral equitativa: El empleador sólo podrá solicitarle la información estrictamente necesaria para el desempeño en el trabajo que se ofrece.]",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318516179",
+    "published_at": "2025-10-22T17:19:44+00:00",
+    "score": 53.5,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 3,
+      "it_signals_found": [
+        "ingeniero"
+      ],
+      "bonus_weak_signals": 0.5,
+      "penalty_experience": -15
+    },
+    "tags": [],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T18:19:45+00:00"
   }
 ]
