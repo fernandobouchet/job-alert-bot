@@ -1283,5 +1283,74 @@
     ],
     "modality": "Remote",
     "date_scraped": "2025-10-22T15:02:50+00:00"
+  },
+  {
+    "id": "li-4318500888",
+    "title": "Frontend Engineer (Contract, Buenos Aires)",
+    "company": "Nexus",
+    "description": "**About Nexus**\n Nexus is building the foundation for verifiable finance, an economic system where every transaction, order, and settlement can be proven on\\-chain with cryptographic assurance. To do this we’re developing a DEX Layer 1 blockchain purpose\\-built for the AI economy, powered by idle compute from millions of people around the world, and verified with zero\\-knowledge proofs. This is finance rebuilt for the future: verifiable, scalable, and open to all.\n   \n\n  \n\n Nexus has raised $25M in Series A funding from Lightspeed, Pantera, Dragonfly, SV Angel, and more.\n   \n\n  \n\n Location: Remote (commutable distance to Buenos Aires)\n   \n\n  \n\n Type: Contract\n   \n\n  \n\n Duration: 12 months with potential for extension\n   \n\n  \n\n The Role\n   \n\n  \n\n We’re expanding our frontend engineering team in Latin America to build next\\-generation interfaces for the Nexus ecosystem. As a Frontend Engineer, you’ll design and deliver intuitive, high\\-performance user experiences for our DEX, developer tools, and verifiable finance applications — making complex financial systems transparent and accessible.\n   \n\n  \n\n You’ll collaborate with product, backend, and protocol teams in San Francisco while contributing remotely from Argentina or Mexico. We move fast, ship often, and expect engineers to take full ownership of their work.\n   \n\n  \n\n What You’ll Do\n   \n\n  \n\n* Build responsive, performant web applications in React and TypeScript.\n* Create interfaces for our enshrined DEX, analytics dashboards, and developer tooling.\n* Integrate APIs and blockchain services to surface verifiable on\\-chain data.\n* Implement interactive visualizations for trades, liquidity, and transaction flows.\n* Collaborate closely with design to deliver polished, intuitive user experiences.\n* Iterate quickly based on real\\-world feedback from traders and developers.\n\n\n What We’re Looking For\n   \n\n  \n\n* Strong experience building production React/TypeScript applications.\n* Solid understanding of web performance, state management, and component architecture.\n* Comfort integrating backend APIs and blockchain or financial data sources.\n* A sharp eye for UX, interaction design, and visual clarity.\n* Excellent communication skills in Business English (spoken \\& written).\n\n\n Bonus Points For\n   \n\n  \n\n* Experience with financial applications, trading interfaces, or data visualization.\n* Familiarity with Node.js, Rust, or WebAssembly.\n* Experience in Web3 or blockchain\\-based systems.\n* Background at high\\-impact startups or fast\\-paced environments.\n\n\n Why Join Us\n   \n\n  \n\n* Build the interfaces powering the next generation of verifiable financial systems.\n* Collaborate with world\\-class engineers, designers, and researchers across continents.\n* Help define how users experience an on\\-chain DEX embedded in a Layer 1\\.\n* Thrive in a fast\\-paced, ambitious environment where ownership drives growth.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318500888",
+    "published_at": "2025-10-22T14:38:18+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "bonus_it_signals": 27,
+      "it_signals_found": [
+        "developer",
+        "engineer",
+        "node.js",
+        "typescript",
+        "backend",
+        "frontend",
+        "ux",
+        "react",
+        "rust"
+      ],
+      "bonus_strong_tech": 25,
+      "strong_tech_found": [
+        "typescript",
+        "react",
+        "node.js"
+      ]
+    },
+    "tags": [
+      "frontend",
+      "backend",
+      "ux",
+      "typescript",
+      "react",
+      "node.js"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T15:38:19+00:00"
+  },
+  {
+    "id": "li-4318542199",
+    "title": "Testing Program Liaison",
+    "company": "Fullscript",
+    "description": "**About The Role**\n Fullscript is redefining supplement quality for healthcare professionals and their patients.\n   \n\n  \n\n As part of our Medical Innovation team, the Testing Program Liaison will own the end\\-to\\-end execution and evolution of Fullscript's clinician\\-led supplement testing program — ensuring every product we offer meets the highest scientific and regulatory standards.\n   \n\n  \n\n What You'll Do\n   \n\n  \n\n Program Strategy \\& Execution – Own the quarterly testing program from start to finish: SKU selection, sampling, lab coordination, data interpretation, and results integration.\n   \n\n  \n\n Identify high\\-risk or high\\-value SKUs using data and industry insights.\n   \n\n  \n\n Develop and maintain testing standards, methodologies, and assay protocols in partnership with accredited labs.\n   \n\n  \n\n Cross\\-Functional Collaboration – Partner with Engineering, Catalog, and Product teams to integrate test results into the Fullscript platform and practitioner experience.\n   \n\n  \n\n Work with QA, Legal, and Medical teams to define testing guardrails and alignment across the U.S. and Canada.\n   \n\n  \n\n Liaison \\& Vendor Management – Liaise with vendors, manufacturers, and labs to align on test methods, reporting specifications, and sample handling.\n   \n\n  \n\n Data Interpretation \\& Communication – Analyze Certificates of Analysis to extract potency and purity data and translate findings into actionable insights.\n   \n\n  \n\n Develop internal SOPs, QA summaries, and educational assets for practitioners.\n   \n\n  \n\n Create clear practitioner\\-facing materials — slide decks, handouts, FAQs — that translate scientific data into accessible knowledge.\n   \n\n  \n\n Continuous Improvement – Keep assay methodologies and lab partnerships up to date with emerging science, technologies, and regulatory changes.\n   \n\n  \n\n Contribute to process optimization, data accuracy, and content workflows that scale as the program expands to new regions (U.S. \\& Canada).\n   \n\n  \n\n What You Bring\n   \n\n  \n\n Bachelor's degree in Biochemistry, Chemistry, or a related life\\-science field.\n   \n\n  \n\n 2\\+ years in an accredited supplement\\-testing or analytical lab (HPLC, GC\\-MS, ICP\\-MS, microbiology, etc.).\n   \n\n  \n\n Strong scientific writing and data\\-translation skills.\n   \n\n  \n\n Understanding of supplement quality standards, GMP requirements, and regulatory frameworks in the U.S. and Canada.\n   \n\n  \n\n Bonus: Master's or PhD in Analytical Chemistry or a related discipline; prior experience in a supplement company, medical affairs, or clinical liaison capacity; familiarity with digital platforms, data integration systems, or content management tools; experience creating educational or marketing content for healthcare audiences.\n   \n\n  \n\n Why You'll Love Fullscript\n   \n\n  \n\n Competitive compensation package including equity.\n   \n\n  \n\n 401(k) matching (within U.S.) / RRSP matching (within CAD).\n   \n\n  \n\n Flexible PTO policy.\n   \n\n  \n\n**Flexible Benefits Package And Additional Perks.**\n Employee discount on Fullscript catalog of products for family \\& friends.\n   \n\n  \n\n Ability to work wherever you work well.\n   \n\n  \n\n Apply Now\n   \n\n  \n\n We kindly ask that all applications be submitted directly through our careers page.\n   \n\n  \n\n Due to the high volume of interest, we are not able to respond to individual emails or messages about job postings.\n   \n\n  \n\n If your background aligns with what we're looking for, a member of our team will reach out to you directly.\n   \n\n  \n\n Fullscript is an equal\\-opportunity employer committed to creating an inclusive workplace.\n   \n\n  \n\n Accommodations are available upon request—email \\*\\*\\*\\*\\*\\* for support.\n   \n\n  \n\n Before joining the team, all candidates who receive and accept an offer will complete a background check.\n   \n\n  \n\n We use AI tools to support parts of our hiring process, like screening and reviewing responses.\n   \n\n  \n\n Final decisions are always made by people.\n   \n\n  \n\n This process complies with privacy and employment laws across Canada and the U.S.\n   \n\n  \n\n We are an equal opportunity employer committed to diversity and inclusion.\n   \n\n  \n\n \\#J\\-\\*\\*\\*\\*\\*\\-Ljbffr",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318542199",
+    "published_at": "2025-10-22T14:38:18+00:00",
+    "score": 56.5,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_found": [
+        "testing",
+        "qa"
+      ],
+      "bonus_weak_signals": 0.5
+    },
+    "tags": [
+      "qa",
+      "support"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T15:38:19+00:00"
   }
 ]
