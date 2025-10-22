@@ -1,0 +1,31 @@
+[
+  {
+    "date": "2025-10",
+    "total_jobs": 16,
+    "tags": {
+      "data analyst": 1,
+      "data science": 2,
+      "support": 5,
+      "python": 1,
+      "sql": 4,
+      "power bi": 2,
+      "tableau": 2,
+      "machine learning": 1,
+      "mobile": 1,
+      "react": 1,
+      "react native": 1,
+      "android": 1,
+      "ios": 1,
+      "agile": 2,
+      "aws": 1,
+      "spark": 1,
+      "express": 1,
+      "ux": 2,
+      "ui": 2,
+      "ux/ui": 2,
+      "qa": 2,
+      "javascript": 1,
+      "git": 1
+    }
+  }
+]
