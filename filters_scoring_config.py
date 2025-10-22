@@ -1,3 +1,23 @@
+MIN_SCORE = 60
+
+MIN_YEARS_SENIORITY = 3
+
+SENIOR_EXPERIENCE_PATTERNS = [
+    r"(\d+)\s*a[ñn]os",
+    r"(\d+)\s*years",
+    r"(\d+)\+\s*a[ñn]os",
+    r"(\d+)\+\s*years",
+    r"m[íi]nimo\s*(\d+)\s*a[ñn]os",
+    r"minimum\s*(\d+)\s*years",
+    r"m[íi]nimo\s*(\d+)\s*years",
+    r"al\s*menos\s*(\d+)\s*a[ñn]os",
+    r"al\s*menos\s*(\d+)\s*years",
+    r"at\s*least\s*(\d+)\s*years",
+    r"(\d+)\s*-\s*\d+\s*a[ñn]os",
+    r"(\d+)\s*-\s*\d+\s*years",
+]
+
+
 POSITIVE_SENIORITY_TERMS = {
     # Inglés
     "trainee",
@@ -35,11 +55,14 @@ EXCLUDED_SENIORITYS = [
     "líder",
     "lider",
     "tech lead",
+    "team lead",
+    "manager",
     "director",
     "head",
     "jefe",
     "jefa",
     "chief",
+    "gerente",
     "principal",
     "staff",
     "architect",
@@ -55,6 +78,7 @@ EXCLUDED_SENIORITYS = [
     "level 2",
     "level 3",
     "level 4",
+    "pl",
 ]
 
 EXCLUDED_AREA_TERMS_TITLE = [
@@ -72,11 +96,15 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "auditora",
     "treasury",
     "tesoreria",
+    "tesorero",
+    "treasury analyst",
     "kyc",
+    "aml",
     "cobranzas",
     "collector",
     "credit",
     "credito",
+    "credit analyst",
     "reaseguros",
     "cuentas",
     "convenios",
@@ -86,6 +114,9 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "buyer",
     "comprador",
     "supplier",
+    "controller financiero",
+    "financial controller",
+    "underwriter",
     # Legal
     "abogado",
     "abogada",
@@ -107,11 +138,13 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "administrativo",
     "administrativa",
     "asistente administrativo",
+    "asistente comercial",
+    "asistente de ventas",
     "secretaria",
     "secretario",
     "recepcionista",
     "auxiliar administrativo",
-    # Marketing & Ventas
+    # Marketing & Ventas (AMPLIADO)
     "marketing manager",
     "marketing specialist",
     "mkt specialist",
@@ -121,6 +154,20 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "vendedora",
     "sales representative",
     "sales executive",
+    "sales manager",
+    "gerente de ventas",
+    "account manager",
+    "gerente de cuentas",
+    "salesperson",
+    "agente de ventas",
+    "sales associate",
+    "asociado de ventas",
+    "business development representative",
+    "representante de desarrollo de negocio",
+    "inside sales",
+    "ventas internas",
+    "appointment setter",
+    "generador de citas",
     "comercial",
     "ejecutivo comercial",
     "televentas",
@@ -128,6 +175,9 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "community manager",
     "marketplace specialist",
     "catalog management",
+    "business development",
+    "growth",
+    "account executive sales",
     # Operaciones & Logística
     "almacén",
     "warehouse",
@@ -152,10 +202,7 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "customer support",
     "call center agent",
     "call center representative",
-    # Marketing & Ventas
-    "business development",
-    "growth",
-    # Creativo & Contenido (específicos, NO "designer" genérico)
+    # Creativo & Contenido
     "diseñador gráfico",
     "diseñadora gráfica",
     "graphic designer",
@@ -177,7 +224,7 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "translator",
     "interpreter",
     "english writer",
-    "creative strategist"
+    "creative strategist",
     # Educación
     "profesor",
     "profesora",
@@ -210,58 +257,13 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "clinical",
     "clínico",
     "microbiologia",
-    # Otros específicos
+    # Otros
     "seguridad fisica",
     "security guard",
-    "account executive sales",
     "land surveyor",
-    "asistente de ventas",
-    "asistente comercial",
-    "controller financiero",
-    "tesorero",
-    "treasury analyst",
-    "credit analyst",
-    "underwriter",
     "agente inmobiliario",
     "real estate",
     "property manager",
-]
-
-EXCLUDED_EXPERIENCE_PHRASES = [
-    # English
-    "3 years",
-    "4 years",
-    "5 years",
-    "6 years",
-    "7 years",
-    "3+ years",
-    "4+ years",
-    "5+ years",
-    "6+ years",
-    "3-5 years",
-    "4-6 years",
-    "5-7 years",
-    "minimum 3 years",
-    "minimum 4 years",
-    "minimum 5 years",
-    # Spanish
-    "3 años",
-    "4 años",
-    "5 años",
-    "6 años",
-    "7 años",
-    "minimo 3 años",
-    "minimo 4 años",
-    "minimo 5 años",
-    "mínimo 3 años",
-    "mínimo 4 años",
-    "mínimo 5 años",
-    "3-5 años",
-    "4-6 años",
-    "5-7 años",
-    "al menos 3 años",
-    "al menos 4 años",
-    "al menos 5 años",
 ]
 
 TAGS_KEYWORDS = [
@@ -362,9 +364,8 @@ WEAK_IT_SIGNALS = {
     "especialista",
 }
 
-
 REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
-    # Roles generales IT
+    # Roles generales IT (SIN los términos ambiguos que están en WEAK)
     "developer",
     "desarrollador",
     "dev",
@@ -382,17 +383,20 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "full stack",
     "full-stack",
     # Data & Analytics
+    "data analyst",
     "analista de datos",
-    "analista de sistemas",
-    "systems analyst",
-    "analista funcional",
-    "business intelligence",
     "data scientist",
     "científico de datos",
+    "data engineer",
     "ingeniero de datos",
+    "systems analyst",
+    "analista de sistemas",
+    "analista funcional",
+    "business intelligence",
     "bi analyst",
     "bi developer",
     # Sysadmin & DevOps
+    "sysadmin",
     "system administrator",
     "administrador de sistemas",
     "devops engineer",
@@ -402,7 +406,7 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "infrastructure engineer",
     "cloud engineer",
     "ingeniero cloud",
-    # QA & Testing
+    # QA & Testing (CON CONTEXTO)
     "qa engineer",
     "quality assurance engineer",
     "qa analyst",
@@ -410,7 +414,7 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "test automation engineer",
     "automation engineer",
     "quality engineer",
-    # Seguridad
+    # Seguridad (CON CONTEXTO)
     "security analyst",
     "analista de seguridad",
     "cybersecurity analyst",
@@ -425,10 +429,10 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "it compliance",
     "security compliance",
     "compliance engineer",
-    "compliance analyst it",
     "sox compliance",
     "gdpr compliance",
     "iso 27001",
+    "pci dss",
     # Machine Learning & AI
     "machine learning engineer",
     "ml engineer",
@@ -436,7 +440,7 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "artificial intelligence",
     "deep learning engineer",
     "mlops engineer",
-    # Soporte Técnico
+    # Soporte Técnico (CON CONTEXTO)
     "technical support",
     "soporte técnico",
     "it support",
@@ -485,6 +489,7 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "software",
     # Tecnologías específicas
     "c++",
+    "c",
     "rust",
     "scala",
     "perl",
@@ -533,9 +538,8 @@ REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
     "microservices architecture",
 ]
 
-# Remove weak signals from required signals to avoid double counting
+# Remove weak signals from required signals
 REQUIRED_IT_SIGNALS = [s for s in REQUIRED_IT_SIGNALS if s not in WEAK_IT_SIGNALS]
-
 
 STRONG_TECH_SIGNALS = {
     "python",
@@ -555,6 +559,8 @@ STRONG_TECH_SIGNALS = {
     "angular",
     "figma",
     "sketch",
+    "c++",
+    "golang",
 }
 
 STRONG_ROLE_SIGNALS = {
@@ -564,9 +570,23 @@ STRONG_ROLE_SIGNALS = {
     "ingeniero",
     "programmer",
     "programador",
-    "designer ux",
-    "designer ui",
-    "ux/ui",
+    # Roles más específicos
+    "software engineer",
+    "ingeniero de software",
+    "frontend developer",
+    "desarrollador frontend",
+    "backend developer",
+    "desarrollador backend",
+    "fullstack developer",
+    "desarrollador fullstack",
+    "data scientist",
+    "científico de datos",
+    "data engineer",
+    "ingeniero de datos",
+    # Roles de diseño
+    "ux designer",
+    "ui designer",
+    "ux/ui designer",
     "product designer",
 }
 

@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, date
 from filters_scoring import filter_jobs_with_scoring
 from json_handler import update_job_data
 from bot.utils import send_jobs
-from filters_scoring_config import TAGS_KEYWORDS
+from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
 
 
 async def scrape(sources, channel_id, bot):
@@ -38,7 +38,7 @@ async def scrape(sources, channel_id, bot):
     df_to_bypass = df[df["source"].isin(SOURCES_BYPASS_SCORING)]
 
     df_filtered_scored = filter_jobs_with_scoring(
-        df_to_score, min_score=50, verbose=True
+        df_to_score, min_score=MIN_SCORE, verbose=True
     )
 
     df_filtered = pd.concat([df_filtered_scored, df_to_bypass], ignore_index=True)

@@ -4,7 +4,6 @@ from filters_scoring_config import (
     POSITIVE_SENIORITY_TERMS,
     EXCLUDED_SENIORITYS,
     EXCLUDED_AREA_TERMS_TITLE,
-    EXCLUDED_EXPERIENCE_PHRASES,
     REQUIRED_IT_SIGNALS,
     WEAK_IT_SIGNALS,
     STRONG_ROLE_SIGNALS,
@@ -26,10 +25,6 @@ _REGEX_SENIORITY_EXCLUDED = re.compile(
 _REGEX_POSITIVE_SENIORITY = re.compile(
     r"\b(?:" + "|".join(re.escape(s) for s in POSITIVE_SENIORITY_TERMS) + r")",
     re.IGNORECASE,
-)
-
-_REGEX_EXPERIENCE = re.compile(
-    "|".join(re.escape(e) for e in EXCLUDED_EXPERIENCE_PHRASES), re.IGNORECASE
 )
 
 _REGEX_IT_SIGNALS = re.compile(
