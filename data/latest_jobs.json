@@ -1008,5 +1008,296 @@
     "tags": [],
     "modality": "Remote",
     "date_scraped": "2025-10-22T18:19:45+00:00"
+  },
+  {
+    "id": "li-4318559666",
+    "title": "QA Automation Engineer",
+    "company": "Ryz Labs",
+    "description": "*Remote position within Argentina or Uruguay*\n RYZ is seeking a QA Automation Engineer to join one of our clients in e\\-commerce. As a QA Automation Engineer, you will be a key member of the QA team, helping to reduce manual work through automated testing. Your job will involve writing tests, improving the automation framework, and developing scripts for preparing and clearing test data.\n   \n\n  \n\n**Qualifications** \n :\n   \n\n  \n\n* 4\\+ years of experience in automation testing of web applications (UI \\+ API)\n* Strong knowledge of TypeScript, Playwright, Cypress, etc\n* Hands\\-on knowledge with API testing frameworks like Postman, REST Assured\n* Experience in cross\\-browser testing using tools such as BrowserStack\n* Familiarity with Allure TestOps or similar test management tools\n* Solid understanding of QA automation \\& CICD best practices\n* Experience in mobile application automation testing\n* Hands\\-on knowledge of software development and QA life cycle (test planning, test case design, execution, defect tracking, and reporting)\n\n\n*Nice to have:*\n* Experience with GPTs and AI\\-powered automation tools\n* Background in e\\-commerce application testing\n* Familiarity with performance testing tools\n* Experience in preparing complex test data configurations and writing auxiliary services to support test automation\n\n\n**Key Responsibilities:**\n* Building and improving the test framework – We already use Playwright and TypeScript, and as our test suite grows, we aim to enhance and optimize it to ensure efficiency and scalability. Your role will focus on improving test execution speed and maintaining a well\\-structured framework\n* Writing automated tests – Work closely with colleagues to gather requirements, even if they are not fully defined, and develop reliable automation scripts\n* Performing occasional manual testing – While automation is our main focus, some manual testing will still be required, particularly in areas not yet covered by automated tests. Your work on automation will directly reduce the need for manual testing over time\n* Code review and ownership – Review automation code written by other QA team members (both manual and automation engineers), provide feedback, share best practices, and maintain the automation test repository\n* Troubleshooting and stabilization – Investigate failed tests, optimize scripts, and create tasks for fixes or improvements\n* Automation as a service – Work closely with manual QA specialists across multiple products, who will request automated tests\n* Setting up CI/CD – Collaborate with developers and DevOps to configure automated test execution after deployment to the test environment\n\n\n About RYZ Labs:\n   \n\n  \n\n RYZ Labs is a startup studio built in 2021 by two lifelong entrepreneurs. The founders of RYZ have worked at some of the world's largest tech companies and some of the most iconic consumer brands. They have lived and worked in Argentina for many years and have decades of experience in Latam. What brought them together is the passion for the early phases of company creation and the idea of attracting the brightest talents in order to build industry\\-defining companies in a post\\-pandemic world.\n   \n\n  \n\n Our teams are remote and distributed throughout the US and Latam. They use the latest cutting\\-edge technologies in cloud computing to create applications that are scalable and resilient. We aim to provide diverse product solutions for different industries, planning to build a large number of startups in the upcoming years.\n   \n\n  \n\n At RYZ, you will find yourself working with autonomy and efficiency, owning every step of your development. We provide an environment of opportunities, learning, growth, expansion, and challenging projects. You will deepen your experience while sharing and learning from a team of great professionals and specialists.\n   \n\n  \n\n Our values and what to expect:\n   \n\n  \n\n* Customer First Mentality \\- every decision we make should be made through the lens of the customer\n* Bias for Action \\- urgency is critical, expect that the timeline to get something done is accelerated\n* Ownership \\- step up if you see an opportunity to help, even if not your core responsibility\n* Humility and Respect \\- be willing to learn, be vulnerable, and treat everyone who interacts with RYZ with respect\n* Frugality \\- being frugal and cost\\-conscious helps us do more with less\n* Deliver Impact \\- get things done in the most efficient way\n* Raise our Standards \\- always be looking to improve our processes, our team, and our expectations. The status quo is not good enough and never should be",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318559666",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "strong_role_signal": 15,
+      "strong_roles_found": [
+        "engineer"
+      ],
+      "bonus_it_signals": 30,
+      "it_signals_count": 13,
+      "it_signals_found": [
+        "api",
+        "automation",
+        "automation engineer",
+        "ci/cd",
+        "cloud computing",
+        "devops",
+        "less",
+        "mobile",
+        "qa",
+        "software"
+      ],
+      "bonus_weak_signals": 2.0,
+      "weak_signals_found": [
+        "computing",
+        "it",
+        "support",
+        "tech"
+      ],
+      "bonus_strong_tech": 10,
+      "strong_tech_count": 1,
+      "strong_tech_found": [
+        "typescript"
+      ],
+      "bonus_rich_description": 10,
+      "quality_tier": "excellent"
+    },
+    "tags": [
+      "mobile",
+      "devops",
+      "qa",
+      "support",
+      "ui",
+      "typescript",
+      "ci/cd",
+      "api"
+    ],
+    "modality": "Remote",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
+  },
+  {
+    "id": "li-4318586885",
+    "title": "Power BI Developer (Argentina)",
+    "company": "Indero (formerly Innovaderm)",
+    "description": "The Power BI Developer is responsible to design proper data models that support business analytics, proper workspace management, governance, data security, source code management and Power BI (PBI) administration. The Developer leverages best practices for developing high\\-quality datasets and visually stunning reports to ensure informed data\\-driven decision\\-making.\n   \n\n  \n\n**Responsabilities**\n More specifically, the Power BI Developer must:\n   \n\n  \n\n* Collaborate with business stakeholders to understand their data requirements and business questions and translate them into effective visual date\\-driven Power BI dashboards and reports.\n* Develop reports and dashboards that encourage user self\\-sufficiency and provide actionable insights.\n* Utilize expertise in Power BI development to create interactive visualizations, dashboards, and KPI scorecards that adhere to modern UI/UX best practices.\n* Create insightful reports, carefully crafted visualizations, interactive dashboards, and performance\\-driven KPI scorecards by utilizing cutting\\-edge visualization techniques.\n* Extract, transform, and load (ETL) data from multiple sources, ensuring data accuracy, consistency, and reliability for reporting purposes.\n* Utilize Power Query to shape, clean, and transform raw data into usable formats.\n* Apply your experience, particularly SQL Server, to design, optimize, and maintain database structures that support efficient data storage and retrieval.\n* Monitor and enhance the performance of Power BI reports and dashboards, optimizing queries, data refresh schedules, and overall user experience.\n* Proactively monitor and evaluate the impact of monthly Power BI releases, ensuring that the organization stays up\\-to\\-date with the latest features and enhancements.\n* Proficiently configure and manage the Microsoft Power BI Service environment to ensure optimal performance, security, and user satisfaction.\n* Conduct training sessions for end\\-users to empower them to effectively navigate and utilize Power BI dashboards.\n* Provide technical support and troubleshoot issues related to Power BI reports and data visualizations.\n\n\n Requirements:\n   \n\n  \n\n**EDUCATION**\n* Bachelor’s degree in computer science, business; or science, technology, engineering, mathematics or equivalent preferred.\n* Microsoft Power BI Certification is considered and asset.\n\n\n**Experience**\n* Minimum of four (4\\) years’ proven experience as a Power BI Developer or similar role, with a strong portfolio showcasing impactful dashboards and reports.\n\n\n**Knowledge And Skills**\n* In depth knowledge of Power BI, daily use, setup, configurations and best practices.\n* Expert level in designing and developing BI reports/dashboards.\n* Understanding of the Microsoft services environment.\n* Ability to document, design and model solutions and explain, present and discuss with internal and external teams.\n* Experience with the Microsoft BI stack, including SQL, Power BI, Power Query, DAX and M.\n* Good communication skills; fluent English (oral \\& written) required. The position will train and support users in all our global offices.\n* Very customer focused and professional.\n* Excellent time management and organizational skills.\n* Must be detail oriented, and able to work independently and self\\-prioritize tasks.\n\n\n Good knowledge of good clinical practices, and applicable Health Canada and Food and Drug Administration (FDA) regulations/guidelines\n   \n\n  \n\n Our company:\n   \n\n  \n\n**The work environment**\n At Indero, you will work with brilliant and driven colleagues. Our values are collaboration, innovation, reliability and responsiveness. We offer a stimulating work environment and attractive advancement opportunities.\n   \n\n  \n\n In this position, you will be eligible for the following perks:\n   \n\n  \n\n* Flexible work schedule / work schedule\n* Home\\-based position\n* Ongoing learning and development\n\n\n**About Indero**\n Indero is a contract research organization (CRO) specialized in dermatology. Since its beginnings in 2000, our organization has benefited from a solid reputation for the quality of its research and services exceeding the expectations of its clients. Based in Montreal, Indero continues to grow and expand in North America and Europe.\n   \n\n  \n\n**Indero\n *is committed to providing equitable treatment and equal opportunity to all individuals. As such,* \n Indero\n *will provide accommodations throughout the recruitment and selection process to applicants with disabilities, upon request.***\n**Indero\n *only accepts applicants who can legally work in Argentina.***",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318586885",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "bonus_seniority": 20,
+      "strong_role_signal": 15,
+      "strong_roles_found": [
+        "developer"
+      ],
+      "bonus_it_signals": 24,
+      "it_signals_count": 8,
+      "it_signals_found": [
+        "developer",
+        "etl",
+        "power bi",
+        "security",
+        "sql",
+        "technical support",
+        "ui",
+        "ux"
+      ],
+      "bonus_weak_signals": 1.0,
+      "weak_signals_found": [
+        "support",
+        "technology"
+      ],
+      "bonus_strong_tech": 10,
+      "strong_tech_count": 1,
+      "strong_tech_found": [
+        "sql"
+      ],
+      "bonus_rich_description": 5,
+      "quality_tier": "excellent"
+    },
+    "tags": [
+      "security",
+      "support",
+      "ux",
+      "ui",
+      "sql",
+      "power bi"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
+  },
+  {
+    "id": "li-4315975962",
+    "title": "Junior Data Analyst",
+    "company": "Dataxis",
+    "description": "**Key responsibilities** \n\n\n\n\n  \n\n\n\n\n\n\n As a Data Analyst your role will be to use advanced collection and analytical methods to extract, analyse, and present data enabling users to dive into media and telecom markets issues and lead data\\-driven business decisions.\n \n\n\n\n\n  \n\n\n\n\n\n\n Over time and collaborating with market analysts and IT teams, you will take the responsibility of the end\\-to\\-end implementation of cutting\\-edge media and telecom projects. You will also be responsible for maintaining and continuously improving existing dashboards to ensure data accuracy, performance, and alignment with evolving business needs. Finally, you will identify new technologies and solutions, including AI, that could lead to additional meaningful data insights, methods and processes and drive the business forward.\n \n\n\n\n\n  \n\n\n\n\n\n\n In your scope, you will be responsible for the following missions:\n \n\n\n\n\n  \n\n\n\n\n* Act as a liaison between various business units (analysts, sales, marketing, IT) to integrate all requirements and drive key operational metrics\n* Part of a three\\-member team, overseeing the whole company’s data integrity and ensuring existing processes run smoothly\n* Supervise the entire data lifecycle of new and existing projects, from organizing the data collection, optimizing workflows and processes to designing critical analytical dashboards, reports and queries to drive data analysis and identify prescriptive solutions customers\n* Proactively contribute ideas for generating new insights from existing data\n* Explore new technologies and systems to implement additional analytical techniques and kickstart new data acquisition projects\n* Take personal accountability for delivery of projects and committed timelines\n\n\n\n  \n\n\n\n\n\n**Your profile** \n\n\n\n\n  \n\n\n\n\n* Master’s degree in Information Systems, Engineering, Mathematics/Statistics, Business or related analytical field\n* Analytical thinking, technical affinity and quick comprehension skills\n* Strong verbal and written communication skills, with an ability to express complex technical concepts in business terms to cross functional teams\n* Capable of working independently and remotely from the rest of the team\n* Good project management and organisational skills\n* Proficiency in creating data visualisations using tools like Tableau (preferred) or Power BI\n* Strong SQL skills\n* Good knowledge of programming languages in Python or R\n* Full professional proficiency in English\n* Relevant projects or experiences with web scraping libraries (requests, scrapy, selenium…) are a plus\n* Prior experience in media and telecom sectors is a plus\n\n\n\n  \n\n\n\n\n\n**What we offer** \n\n\n\n\n  \n\n\n\n\n* With this role you will join an enthusiastic, skilled and dynamic team, encouraging new ideas in a friendly and motivational atmosphere\n* Flexible remote work policy – while in\\-person work is in general favoured, occasional remote work is largely adopted by employees\n* Central office in Buenos Aires\n\n\n\n  \n\n\n\n\n\n\n The recruitment process consists of three interviews and a one take\\-home use case. We look forward to receiving your application!",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4315975962",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "bonus_seniority": 20,
+      "bonus_it_signals": 18,
+      "it_signals_count": 6,
+      "it_signals_found": [
+        "data analyst",
+        "express",
+        "power bi",
+        "python",
+        "sql",
+        "tableau"
+      ],
+      "bonus_weak_signals": 1.0,
+      "weak_signals_found": [
+        "analyst",
+        "it"
+      ],
+      "bonus_strong_tech": 20,
+      "strong_tech_count": 2,
+      "strong_tech_found": [
+        "python",
+        "sql"
+      ],
+      "bonus_rich_description": 4,
+      "quality_tier": "excellent"
+    },
+    "tags": [
+      "data analyst",
+      "python",
+      "express",
+      "sql",
+      "power bi",
+      "tableau"
+    ],
+    "modality": "Hybrid",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
+  },
+  {
+    "id": "li-4318577033",
+    "title": "Developer Node - React - React Native",
+    "company": "Dabrein Solutions",
+    "description": "**Sr. Frontend Developer**\n**Project Duration** \n : Long Term\n   \n\n  \n\n**Years of Experience** \n : 4\\+ years\n   \n\n  \n\n**Urgency:** \n Immediately\n   \n\n  \n\n**Required Technologies** \n : React, React Native, Next.js, Typescript\n   \n\n  \n\n**Position Type:** \n Full Time\n   \n\n  \n\n**L** \n**anguages: English \\- Advanced**\n**Description**\n Our client — a fast\\-growing real estate analytics platform with 180,000\\+ active users is helping homebuyers and investors make data\\-driven decisions through real\\-time housing insights across the U.S.\n   \n\n  \n\n We’re looking for a Senior Frontend Developer skilled in Next.js, React.js, React Native, and Node.js to improve app performance, speed, and scalability across web and mobile. You’ll collaborate directly with the CEO and Tech Lead, contributing to architecture, optimization, and user experience.\n   \n\n  \n\n**Requirements**\n* 5\\+ years of experience in frontend or fullstack development\n* Expertise in Next.js and React.js (SSR, SSG, client\\-side routing)\n* Strong TypeScript skills (generics, interfaces, type inference)\n* Experience with Node.js backends (Express.js or NestJS)\n* Solid React Native knowledge (navigation, native modules, performance optimization)\n* Excellent HTML5, CSS3, and responsive design abilities\n* Familiar with Tailwind CSS or Styled Components\n* Experience with REST and GraphQL APIs\n* Testing experience (Jest, Cypress, React Testing Library)\n* Fluent English communication\n* Based in LATAM, available to work in EST time zone\n\n\n We value proactive problem\\-solvers who thrive in collaborative, international teams and enjoy building clean, scalable solutions.",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318577033",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 100.0,
+    "score_details": {
+      "base": 50,
+      "bonus_seniority": 20,
+      "strong_role_signal": 15,
+      "strong_roles_found": [
+        "developer"
+      ],
+      "bonus_it_signals": 30,
+      "it_signals_count": 12,
+      "it_signals_found": [
+        "css",
+        "developer",
+        "express",
+        "frontend",
+        "fullstack",
+        "graphql",
+        "mobile",
+        "next.js",
+        "node.js",
+        "react"
+      ],
+      "bonus_weak_signals": 0.5,
+      "weak_signals_found": [
+        "tech"
+      ],
+      "bonus_strong_tech": 25,
+      "strong_tech_count": 3,
+      "strong_tech_found": [
+        "node.js",
+        "react",
+        "typescript"
+      ],
+      "bonus_rich_description": 10,
+      "quality_tier": "excellent"
+    },
+    "tags": [
+      "frontend",
+      "fullstack",
+      "mobile",
+      "typescript",
+      "react",
+      "next.js",
+      "node.js",
+      "express",
+      "react native"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
+  },
+  {
+    "id": "li-4318589402",
+    "title": "Fixed Asset Jr Analyst - Santiago de Chile, Chile / Buenos Aires, Argentina",
+    "company": "Johnson & Johnson MedTech",
+    "description": "At Johnson \\& Johnson, we believe health is everything. Our strength in healthcare innovation empowers us to build a world where complex diseases are prevented, treated, and cured, where treatments are smarter and less invasive, and solutions are personal. Through our expertise in Innovative Medicine and MedTech, we are uniquely positioned to innovate across the full spectrum of healthcare solutions today to deliver the breakthroughs of tomorrow, and profoundly impact health for humanity. Learn more at https://www.jnj.com\n   \n\n  \n\n**Job Function**\n MedTech Sales\n   \n\n  \n\n**Job Sub Function**\n Inside Sales \\-\\- MedTech (No Commission)\n   \n\n  \n\n**Job Category**\n Business Enablement/Support\n   \n\n  \n\n**All Job Posting Locations:**\n Buenos Aires, Argentina, Las Condes, Santiago,, Region Metropolitana de Santiago, Chile\n   \n\n  \n\n**Job Description**\n**Acerca de MedTech**\n Con el impulso por la innovación en la intersección de la biología y la tecnología, estamos desarrollando la próxima generación de tratamientos más inteligentes, menos invasivos y personalizados.\n   \n\n  \n\n Tus talentos únicos ayudarán a pacientes en su viaje hacia el bienestar. Obtén más información en https://www.jnj.com/medtech\n   \n\n  \n\n**Estamos buscando al mejor talento para la posición de Fixed Assets Jr Analyst que estará localizada en Santiago de Chile, Chile / Buenos Aires, Argentina.**\n**Responsabilidades Clave**\n* Supervisar los gastos de capital asignados en el seguimiento de las ubicaciones de los clientes y el rendimiento de los contratos frente a las ventas estimadas.\n* Participar activamente en la detección de oportunidades comerciales con los equipos de ventas.\n* Monitorear la ejecución del Capex para las diferentes unidades de negocio y países en el Clúster Sur.\n* Interacciones de contabilidad de activos fijos con J\\&J Global Service en Manila (Filipinas).\n* Gestionar el equipo de demostración asignado a los representantes de ventas.\n* Planificación del inventario de activos fijos.\n\n\n**Calificaciones**\n**Educación**\n* Se requiere un mínimo de título de licenciatura o estar en el último semestre de estudios. Enfocado en Administración de Empresas, Economía, Contabilidad o relacionado.\n* Idioma requerido: español, inglés intermedio.\n* Gestión de oficina (Excel, Word, PowerPoint, Outlook intermedio / avanzado).\n\n\n**Requerido**\n**Experiencia y Habilidades:**\n* Años de experiencia: 0\\-2 años.\n\n\n**Preferido**\n* Análisis e interpretación de datos (Tableau, Power BI, Power Apps).",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318589402",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 80.5,
+    "score_details": {
+      "base": 50,
+      "bonus_seniority": 20,
+      "bonus_it_signals": 9,
+      "it_signals_count": 3,
+      "it_signals_found": [
+        "less",
+        "power bi",
+        "tableau"
+      ],
+      "bonus_weak_signals": 1.5,
+      "weak_signals_found": [
+        "analyst",
+        "support",
+        "tecnología"
+      ],
+      "quality_tier": "excellent"
+    },
+    "tags": [
+      "support",
+      "power bi",
+      "tableau"
+    ],
+    "modality": "On-site",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
+  },
+  {
+    "id": "li-4318704061",
+    "title": "Analista de Soporte Operativo (fin de semana)",
+    "company": "Remitee",
+    "description": "En Remitee nos encontramos en la búsqueda de un\n **Analista de Soporte Operativo** \n para sumar a nuestros equipo de Payments Operations. La jornada de trabajo es de\n **Miércoles a Domingo (excluyente), part time o full time.**\n**¿Cuáles van a ser tus funciones?**\n* Brindar soporte directo a nuestros clientes a través de la resolución de los casos asignados.\n* Velar por un servicio de excelencia a nuestros clientes.\n* Interactuar con otras áreas para garantizar la resolución de los casos a cargo.\n* Extraer y manipular información de las diferentes bases de datos.\n* Detectar desvíos en la operación y llevar adelante las acciones necesarias para solución.\n* Analizar los datos disponibles para mejorar indicadores y tableros de seguimiento de la operación.\n* Monitoreo de principales KPIs y formulación de nuevas métricas de seguimiento de performance.\n\n\n**¿Qué buscamos?**\n* Capacidad resolutiva.\n* Habilidades interpersonales y trabajo en equipo.\n* Experiencia mínima de 1 año en posiciones similares\n* Conocimientos en SQL y Power BI (deseable)\n* Disponibilidad para realizar guardias fines de semana y feriados (excluyente)\n* Conocimiento de herramientas de gestión de tickets (Jira)",
+    "source": "Linkedin",
+    "salary": "No especificado",
+    "url": "https://www.linkedin.com/jobs/view/4318704061",
+    "published_at": "2025-10-22T20:40:32+00:00",
+    "score": 67.0,
+    "score_details": {
+      "base": 50,
+      "bonus_it_signals": 6,
+      "it_signals_count": 2,
+      "it_signals_found": [
+        "power bi",
+        "sql"
+      ],
+      "bonus_weak_signals": 1.0,
+      "weak_signals_found": [
+        "analista",
+        "soporte"
+      ],
+      "bonus_strong_tech": 10,
+      "strong_tech_count": 1,
+      "strong_tech_found": [
+        "sql"
+      ],
+      "quality_tier": "good"
+    },
+    "tags": [
+      "sql",
+      "power bi"
+    ],
+    "modality": "Not Specified",
+    "date_scraped": "2025-10-22T21:40:33+00:00"
   }
 ]
