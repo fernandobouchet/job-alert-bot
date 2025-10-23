@@ -1,4 +1,14 @@
+UPLOAD_TO_FIREBASE = True
+
+LOG_JSON_TO_GIT = True
+
+DAYS_OLD_TRHESHOLD = 1
+
+HOURS_OLD_THRESHOLD = 14
+
 TIMEZONE = "America/Argentina/Buenos_Aires"
+
+SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]
 
 JOBSPY_SEARCH_TERMS = (
     '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) '
@@ -13,10 +23,6 @@ JOBSPY_SEARCH_TERMS = (
     '"machine learning" OR "inteligencia artificial"'
     ")"
 )
-
-DAYS_OLD_TRHESHOLD = 1
-
-HOURS_OLD_THRESHOLD = 14
 
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
@@ -49,8 +55,3 @@ FETCHER_CONFIG = {
         "timeout": 15,
     },
 }
-
-
-LOG_REJECTED_JOBS = True
-
-SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]

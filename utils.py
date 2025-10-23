@@ -1,31 +1,33 @@
-import re
 import math
+import re
 import asyncio
 import pandas as pd
-
-try:
-    from config import (
-        DAYS_OLD_TRHESHOLD,
-        HOURS_OLD_THRESHOLD,
-        TIMEZONE,
-        SOURCES_BYPASS_SCORING,
-    )
-except ImportError:
-    TIMEZONE = "UTC"
-    SOURCES_BYPASS_SCORING = []
 import zoneinfo
 from datetime import datetime, timedelta, date
+from collections import Counter
+from config import (
+    HOURS_OLD_THRESHOLD,
+    TIMEZONE,
+    SOURCES_BYPASS_SCORING,
+    UPLOAD_TO_FIREBASE,
+    LOG_JSON_TO_GIT,
+)
 from filters_scoring import filter_jobs_with_scoring
-from json_handler import update_job_data
+from json_handler import save_json
 from bot.utils import send_jobs
 from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
+from firestore_handler import (
+    get_all_job_ids_from_firestore,
+    save_jobs_to_firestore,
+    save_trend_data_to_firestore,
+)
 
 
 async def scrape(sources, channel_id, bot):
     print("🚀 Iniciando búsqueda de trabajos...")
+    # 1. FETCH
     tasks = [asyncio.to_thread(source_func) for source_func in sources]
     results = await asyncio.gather(*tasks)
-
     all_jobs = [job for result in results for job in result]
 
     if not all_jobs:
@@ -34,32 +36,136 @@ async def scrape(sources, channel_id, bot):
 
     df = pd.DataFrame(all_jobs)
 
+    # 2. CLEANUP & ENRICHMENT (formerly updateDataFrame)
+    df["dedupe_key"] = (
+        df["title"].str.lower().str.strip()
+        + "|"
+        + df["company"].str.lower().str.strip()
+    )
+    df.drop_duplicates(subset=["dedupe_key"], inplace=True)
+    df.drop(columns=["dedupe_key"], inplace=True)
+
+    cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+        hours=HOURS_OLD_THRESHOLD
+    )
+    df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
+    df.dropna(subset=["published_at"], inplace=True)
+    df = df[df["published_at"] >= cutoff].copy()
+
+    if df.empty:
+        print("No hay trabajos recientes o únicos para procesar.")
+        return
+
+    print(f"Total de jobs únicos y recientes: {len(df)}")
+
+    df["text_for_extraction"] = (
+        df["title"].fillna("").astype(str)
+        + " "
+        + df["description"].fillna("").astype(str)
+    )
+    df["tags"] = df["text_for_extraction"].apply(extract_tags)
+    df["modality"] = df["text_for_extraction"].apply(extract_job_modality)
+    df.drop(columns=["text_for_extraction"], inplace=True)
+
+    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime(
+        "%Y-%m-%dT%H:%M:%S+00:00"
+    )
+    df["date_scraped"] = current_time_iso
+    df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+
+    # 3. DEDUPLICATION (against Firebase)
+    if UPLOAD_TO_FIREBASE:
+        print("🔍 Consultando IDs existentes en Firebase para deduplicación...")
+        existing_ids = get_all_job_ids_from_firestore()
+        df = df[~df["id"].isin(existing_ids)]
+
+    if df.empty:
+        print(
+            "No se encontraron trabajos nuevos después de la deduplicación con Firebase."
+        )
+        return
+
+    # 4. SCORING
     df_to_score = df[~df["source"].isin(SOURCES_BYPASS_SCORING)]
     df_to_bypass = df[df["source"].isin(SOURCES_BYPASS_SCORING)]
 
-    df_filtered_scored = filter_jobs_with_scoring(
+    df_accepted_scored, df_rejected = filter_jobs_with_scoring(
         df_to_score, min_score=MIN_SCORE, verbose=True
     )
 
-    df_filtered = pd.concat([df_filtered_scored, df_to_bypass], ignore_index=True)
+    df_accepted = pd.concat([df_accepted_scored, df_to_bypass], ignore_index=True)
 
-    if df_filtered.empty:
-        print("No se encontraron trabajos nuevos con los filtros aplicados.")
-        return
+    # 5. HANDLE OUTPUTS
+    if not df_accepted.empty:
+        print(
+            f"✅ Se encontraron {len(df_accepted)} jobs nuevos y aceptados. Procesando..."
+        )
+        accepted_jobs_list = df_accepted.to_dict("records")
 
-    recent_jobs = updateDataFrame(df_filtered)
+        if UPLOAD_TO_FIREBASE:
+            # Upload accepted jobs
+            save_jobs_to_firestore(accepted_jobs_list)
 
-    if not recent_jobs:
-        print("No hay trabajos nuevos para enviar.")
-        return
+            # Calculate and upload trend data
+            tags_list = [tag for tags in df_accepted["tags"] for tag in tags]
+            tags_counts = Counter(tags_list)
+            month_key = datetime.now().strftime("%Y_%m")
+            trend_data = {
+                "total_jobs": len(df_accepted),
+                "tags": dict(tags_counts),
+            }
+            save_trend_data_to_firestore(trend_data, month_key)
 
-    new_jobs = update_job_data(recent_jobs)
+        if LOG_JSON_TO_GIT:
+            print("💾 Guardando jobs aceptados en data/accepted_jobs.json...")
+            save_json(accepted_jobs_list, "data/accepted_jobs.json")
 
-    if new_jobs:
-        print(f"✅ Se encontraron {len(new_jobs)} jobs nuevos. Enviando a Telegram...")
-        await send_jobs(bot, channel_id, new_jobs)
+        # Send to Telegram
+        await send_jobs(bot, channel_id, accepted_jobs_list)
+
     else:
-        print("No hay jobs nuevos para enviar.")
+        print("No hay trabajos nuevos para enviar después del scoring.")
+
+    if not df_rejected.empty and LOG_JSON_TO_GIT:
+        print(
+            f"💾 Guardando {len(df_rejected)} jobs rechazados en data/rejected_jobs.json..."
+        )
+        save_json(df_rejected.to_dict("records"), "data/rejected_jobs.json")
+
+
+def extract_tags(text_for_extraction):
+    text = text_for_extraction.lower()
+    found_tags = []
+    for kw in TAGS_KEYWORDS:
+        pattern = r"(?<!\w)" + re.escape(kw) + r"(?!\w)"
+        if re.search(pattern, text, re.IGNORECASE):
+            found_tags.append(kw)
+    return found_tags
+
+
+def extract_job_modality(text_for_extraction):
+    text = text_for_extraction.lower()
+    if re.search(
+        r"\b(100%\s*(on-site|onsite|presencial)|exclusivamente\s*presencial)\b", text
+    ):
+        return "On-site"
+    remote_terms = (
+        r"\b(remoto|remote|desde\s*casa|work\s*from\s*home|wfh|teletrabajo|anywhere)\b"
+    )
+    onsite_terms = (
+        r"\b(presencial|on-site|onsite|oficina|sede|caba|buenos\s*aires|viajes)\b"
+    )
+    is_remote_mentioned = re.search(remote_terms, text)
+    is_onsite_mentioned = re.search(onsite_terms, text)
+    if re.search(r"\b(híbrido|hybrid|mixto)\b", text) or (
+        is_remote_mentioned and is_onsite_mentioned
+    ):
+        return "Hybrid"
+    if is_onsite_mentioned:
+        return "On-site"
+    if is_remote_mentioned:
+        return "Remote"
+    return "Not Specified"
 
 
 def safe_parse_date_to_ISO(d):
@@ -121,104 +227,7 @@ def safe_parse_date_to_ISO(d):
     return now.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
 
-def updateDataFrame(df):
-
-    df["dedupe_key"] = (
-        df["title"].str.lower().str.strip()
-        + "|"
-        + df["company"].str.lower().str.strip()
-    )
-    df.drop_duplicates(subset=["dedupe_key"], inplace=True)
-    df.drop(columns=["dedupe_key"], inplace=True)
-
-    cutoff = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
-        hours=HOURS_OLD_THRESHOLD
-    )
-
-    df["published_at"] = pd.to_datetime(df["published_at"], utc=True, errors="coerce")
-
-    df = df.dropna(subset=["published_at"])
-
-    df = df[df["published_at"] >= cutoff].copy()
-
-    if df.empty:
-        print("No hay trabajos recientes o únicos para procesar.")
-        return []
-    print(f"Total de jobs únicos y recientes: {len(df)}")
-
-    df["text_for_extraction"] = (
-        df["title"].fillna("").astype(str)
-        + " "
-        + df["description"].fillna("").astype(str)
-    )
-
-    df["tags"] = df["text_for_extraction"].apply(extract_tags)
-    df["modality"] = df["text_for_extraction"].apply(extract_job_modality)
-
-    df.drop(columns=["text_for_extraction"], inplace=True)
-
-    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime(
-        "%Y-%m-%dT%H:%M:%S+00:00"
-    )
-    df["date_scraped"] = current_time_iso
-
-    df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-    recent_jobs = df.to_dict(orient="records")
-
-    return recent_jobs
-
-
-def extract_tags(text_for_extraction):
-
-    text = text_for_extraction.lower()
-
-    found_tags = []
-    for kw in TAGS_KEYWORDS:
-        pattern = r"(?<!\w)" + re.escape(kw) + r"(?!\w)"
-        if re.search(pattern, text, re.IGNORECASE):
-            found_tags.append(kw)
-
-    return found_tags
-
-
-def extract_job_modality(text_for_extraction):
-    text = text_for_extraction.lower()
-
-    if re.search(
-        r"\b(100%\s*(on-site|onsite|presencial)|exclusivamente\s*presencial)\b", text
-    ):
-        return "On-site"
-
-    remote_terms = (
-        r"\b(remoto|remote|desde\s*casa|work\s*from\s*home|wfh|teletrabajo|anywhere)\b"
-    )
-
-    onsite_terms = (
-        r"\b(presencial|on-site|onsite|oficina|sede|caba|buenos\s*aires|viajes)\b"
-    )
-
-    is_remote_mentioned = re.search(remote_terms, text)
-    is_onsite_mentioned = re.search(onsite_terms, text)
-
-    # --- 1. Check for Explicit Hybrid or Ambiguity ---
-    if re.search(r"\b(híbrido|hybrid|mixto)\b", text) or (
-        is_remote_mentioned and is_onsite_mentioned
-    ):
-        return "Hybrid"
-
-    # --- 2. Check for On-site ---
-    if is_onsite_mentioned:
-        return "On-site"
-
-    # --- 3. Check for Remote ---
-    if is_remote_mentioned:
-        return "Remote"
-
-    # --- 4. Fallback ---
-    return "Not Specified"
-
-
-def its_job_days_old(published_at_iso, days_limit=DAYS_OLD_TRHESHOLD):
+def its_job_days_old(published_at_iso, days_limit=1):
     """Comprueba si un trabajo es más antiguo que el límite de días."""
     try:
         published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))

@@ -11,8 +11,7 @@ from constants import (
     _REGEX_WEAK_IT_SIGNALS,
 )
 from filters_scoring_config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
-from json_handler import save_json, handle_rejected_jobs_file
-from config import LOG_REJECTED_JOBS
+
 
 
 def pre_filter_jobs(df, verbose=True):
@@ -234,14 +233,12 @@ def has_senior_experience_requirement(text, has_junior_terms):
 
 def filter_jobs_with_scoring(df, min_score=50, verbose=True):
     """
-    Filtrado basado en pre-filtros y scoring, con detalle de rechazo.
+    Filtrado basado en pre-filtros y scoring. Devuelve jobs aceptados y rechazados.
     """
-    handle_rejected_jobs_file(LOG_REJECTED_JOBS, verbose=verbose)
-
     if df.empty:
         if verbose:
             print("⚠️ Empty DataFrame, skipping filtering.")
-        return df
+        return df, pd.DataFrame()  # Devuelve dos dataframes vacíos
 
     initial_total = len(df)
 
@@ -250,41 +247,25 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
     if df_pre_filtered.empty:
         if verbose:
             print("⚠️ No jobs left after pre-filtering.")
-        if LOG_REJECTED_JOBS and not df_rejected_pre_filter.empty:
-            save_json(
-                df_rejected_pre_filter.to_dict("records"), "data/rejected_jobs.json"
-            )
-            print(
-                f"💾 Saved {len(df_rejected_pre_filter)} rejected jobs to data/rejected_jobs.json"
-            )
-        return df_pre_filtered
+        return df_pre_filtered, df_rejected_pre_filter
 
     if verbose:
         print(f"\n📊 Calculating scores for {len(df_pre_filtered)} jobs...")
 
     df_scored = df_pre_filtered.copy()
-    # Aplicar la función y desempaquetar los resultados en dos nuevas columnas
     scores_and_details = df_scored.apply(calculate_job_score, axis=1)
     df_scored["score"] = [item[0] for item in scores_and_details]
     df_scored["score_details"] = [item[1] for item in scores_and_details]
 
     df_final = df_scored[df_scored["score"] >= min_score].copy()
 
-    # Capturar los trabajos rechazados por score
     df_rejected_score = df_scored[df_scored["score"] < min_score].copy()
-    df_rejected_score["rejection_reason"] = "low_score"
+    if not df_rejected_score.empty:
+        df_rejected_score.loc[:, "rejection_reason"] = "low_score"
 
-    if LOG_REJECTED_JOBS:
-        # Combinar ambos dataframes de rechazados
-        all_rejected = pd.concat(
-            [df_rejected_pre_filter, df_rejected_score], ignore_index=True
-        )
-        if not all_rejected.empty:
-            save_json(all_rejected.to_dict("records"), "data/rejected_jobs.json")
-            if verbose:
-                print(
-                    f"💾 Saved {len(all_rejected)} rejected jobs to data/rejected_jobs.json"
-                )
+    all_rejected = pd.concat(
+        [df_rejected_pre_filter, df_rejected_score], ignore_index=True
+    )
 
     df_final = df_final.sort_values("score", ascending=False).reset_index(drop=True)
 
@@ -313,4 +294,4 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
                 f"   - Max: {df_final['score'].max():.0f}, Mean: {df_final['score'].mean():.1f}, Min: {df_final['score'].min():.0f}"
             )
 
-    return df_final
+    return df_final, all_rejected

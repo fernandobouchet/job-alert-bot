@@ -1,13 +1,15 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import os
 import asyncio
-from dotenv import load_dotenv
 from telegram import Bot as TelegramBot
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
 from utils import scrape
 
-load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
