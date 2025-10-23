@@ -10,8 +10,6 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     env:
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -23,53 +21,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Initialize 'data' branch if it doesn't exist
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          if ! git ls-remote --exit-code origin data; then
-            git checkout --orphan temp_data
-            git rm -rf .
-            
-            echo "Initial setup for data branch" > README_data.md
-            git add README_data.md
-            git commit -m "Initial setup of data branch"
-            
-            git branch -m data
-            git push -u origin data
-            
-            git checkout ${{ github.ref_name }}
-          fi
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Fetch and Merge 'data' branch
+      - name: Configure Google credentials
         run: |
-          git fetch origin data:data || true
-
-          if git show-ref --quiet refs/heads/data; then
-            git merge --allow-unrelated-histories --no-ff origin/data -X ours || true
-          fi
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json
 
       - name: Run Job Alert Bot
-        run: python main.py --scraper
-
-      - name: Commit and push data
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Data update: latest jobs, monthly history, and trends."
-          branch: data
-          file_pattern: "data/*.json"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials.json
+        run: python main.py
