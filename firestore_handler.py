@@ -1,5 +1,9 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+from datetime import datetime, timedelta
+import zoneinfo
+
+from config import TIMEZONE
 
 if not firebase_admin._apps:
     try:
@@ -15,61 +19,128 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
+def get_new_jobs(jobs_list):
+    """
+    Filtra una lista de trabajos, devolviendo solo aquellos que no existen en Firestore.
+    Utiliza lecturas directas de documentos por ID para mayor eficiencia.
+    """
+    if not jobs_list:
+        return []
+
+    print("🔍 Verificando nuevos trabajos en Firestore por ID...")
+    job_ids_to_check = {str(job["id"]) for job in jobs_list if job.get("id")}
+
+    if not job_ids_to_check:
+        return jobs_list
+
+    existing_ids = set()
+    try:
+        # Preparar referencias de documentos para ambas colecciones
+        today_refs = [
+            db.collection("jobs_today").document(job_id) for job_id in job_ids_to_check
+        ]
+        previous_refs = [
+            db.collection("jobs_previous").document(job_id)
+            for job_id in job_ids_to_check
+        ]
+
+        # Obtener todos los documentos en una sola llamada por colección
+        all_docs_today = db.getAll(today_refs)
+        all_docs_previous = db.getAll(previous_refs)
+
+        # Procesar resultados
+        for doc in all_docs_today:
+            if doc.exists:
+                existing_ids.add(doc.id)
+        for doc in all_docs_previous:
+            if doc.exists:
+                existing_ids.add(doc.id)
+
+    except Exception as e:
+        print(f"❌ Error al verificar trabajos en Firestore: {e}")
+        return jobs_list
+
+    new_job_ids = job_ids_to_check - existing_ids
+    new_jobs = [job for job in jobs_list if str(job.get("id")) in new_job_ids]
+
+    print(f"✨ {len(new_jobs)} trabajos nuevos encontrados.")
+    return new_jobs
+
+
 def save_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
 
     print(f"💾 Guardando {len(jobs_list)} jobs en Firestore...")
-    batch = db.batch()
-    jobs_collection = db.collection("jobs")
+    today_batch = db.batch()
+    previous_batch = db.batch()
+
+    today_collection = db.collection("jobs_today")
+    previous_collection = db.collection("jobs_previous")
+
+    today_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date()
+    today_jobs_count = 0
+    previous_jobs_count = 0
 
     for job in jobs_list:
         job_id = job.get("id")
-        if job_id:
-            # Usamos el ID del job como ID del documento en Firestore
-            doc_ref = jobs_collection.document(str(job_id))
-            batch.set(doc_ref, job)
-        else:
+        if not job_id:
             print(f"⚠️ Job sin ID encontrado, no se guardará: {job.get('title', 'N/A')}")
+            continue
+
+        try:
+            published_date = datetime.fromisoformat(
+                job["published_at"].replace("Z", "+00:00")
+            ).date()
+        except (ValueError, TypeError):
+            published_date = today_date
+
+        doc_ref_today = today_collection.document(str(job_id))
+        doc_ref_previous = previous_collection.document(str(job_id))
+
+        if published_date == today_date:
+            today_batch.set(doc_ref_today, job)
+            today_jobs_count += 1
+        else:
+            previous_batch.set(doc_ref_previous, job)
+            previous_jobs_count += 1
 
     try:
-        batch.commit()
-        print(f"✅ {len(jobs_list)} jobs guardados/actualizados en Firestore.")
+        if today_jobs_count > 0:
+            today_batch.commit()
+            print(f"✅ {today_jobs_count} jobs de hoy guardados en 'jobs_today'.")
+        if previous_jobs_count > 0:
+            previous_batch.commit()
+            print(
+                f"✅ {previous_jobs_count} jobs anteriores guardados en 'jobs_previous'."
+            )
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
 
 
-def get_all_job_ids_from_firestore():
-    """
-    Obtiene todos los IDs de jobs existentes en Firestore.
-    Útil para la deduplicación.
-    """
-    try:
-        job_ids = set()
-        docs = db.collection("jobs").select(["id"]).stream()
-        for doc in docs:
-            job_ids.add(doc.id)
-        return job_ids
-    except Exception as e:
-        print(f"❌ Error al obtener IDs de jobs de Firestore: {e}")
-        return set()
-
-
-def save_rejected_job_to_firestore(job_data):
-    if not job_data:
+def save_rejected_jobs_to_firestore(jobs_list):
+    if not jobs_list:
         return
 
+    print(f"🗑️ Guardando {len(jobs_list)} jobs rechazados en Firestore...")
+    batch = db.batch()
     rejected_jobs_collection = db.collection("rejected_jobs")
-    job_id = job_data.get("id")
-    if job_id:
-        doc_ref = rejected_jobs_collection.document(str(job_id))
-        try:
-            doc_ref.set(job_data)
-            print(f"🗑️ Job rechazado con ID {job_id} guardado en Firestore.")
-        except Exception as e:
-            print(f"❌ Error al guardar job rechazado en Firestore: {e}")
-    else:
-        print(f"⚠️ Job rechazado sin ID, no se guardará: {job_data.get('title', 'N/A')}")
+
+    for job in jobs_list:
+        job_id = job.get("id")
+        if job_id:
+            doc_ref = rejected_jobs_collection.document(str(job_id))
+            batch.set(doc_ref, job)
+        else:
+            print(
+                f"⚠️ Job rechazado sin ID encontrado, no se guardará: {job.get('title', 'N/A')}"
+            )
+
+    try:
+        batch.commit()
+        print(f"✅ {len(jobs_list)} jobs rechazados guardados en Firestore.")
+    except Exception as e:
+        print(f"❌ Error al guardar jobs rechazados en Firestore: {e}")
 
 
 def save_trend_data_to_firestore(trend_data, month_key):
@@ -77,21 +148,55 @@ def save_trend_data_to_firestore(trend_data, month_key):
         return
 
     trends_collection = db.collection("trends")
-    doc_ref = trends_collection.document(month_key)  # month_key como 'YYYY_MM'
+    doc_ref = trends_collection.document(month_key)
 
     try:
-        # Obtener el documento actual si existe
-        current_trend = doc_ref.get().to_dict()
-        if current_trend:
-            # Actualizar el documento existente
-            current_trend["total_jobs"] += trend_data["total_jobs"]
-            for tag, count in trend_data["tags"].items():
-                current_trend["tags"][tag] = current_trend["tags"].get(tag, 0) + count
-            doc_ref.set(current_trend)
-            print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
-        else:
-            # Crear un nuevo documento
-            doc_ref.set(trend_data)
-            print(f"📈 Tendencias para {month_key} creadas en Firestore.")
+        doc_ref.set(trend_data, merge=True)
+        print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
     except Exception as e:
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
+
+
+def delete_old_documents(collection_name, days_to_keep):
+    """
+    Elimina documentos de una colección que son más antiguos que un número de días.
+    """
+    if not days_to_keep or days_to_keep <= 0:
+        print(f"⚠️ La retención de '{collection_name}' está desactivada (días <= 0).")
+        return
+
+    print(
+        f"🧹 Limpiando documentos antiguos de '{collection_name}' (retención: {days_to_keep} días)..."
+    )
+
+    try:
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+            days=days_to_keep
+        )
+        cutoff_iso = cutoff_date.isoformat()
+
+        docs_to_delete = (
+            db.collection(collection_name)
+            .where("date_scraped", "<", cutoff_iso)
+            .limit(500)
+            .stream()
+        )
+
+        batch = db.batch()
+        deleted_count = 0
+        for doc in docs_to_delete:
+            batch.delete(doc.reference)
+            deleted_count += 1
+
+        if deleted_count > 0:
+            batch.commit()
+            print(
+                f"✅ Se eliminaron {deleted_count} documentos antiguos de '{collection_name}'."
+            )
+        else:
+            print(
+                f"No se encontraron documentos antiguos para eliminar en '{collection_name}'."
+            )
+
+    except Exception as e:
+        print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")

@@ -10,16 +10,19 @@ from config import (
     TIMEZONE,
     SOURCES_BYPASS_SCORING,
     UPLOAD_TO_FIREBASE,
-    LOG_JSON_TO_GIT,
+    LOG_REJECTED_JOBS_TO_FIREBASE,
+    ACCEPTED_JOBS_RETENTION_DAYS,
+    REJECTED_JOBS_RETENTION_DAYS,
 )
 from filters_scoring import filter_jobs_with_scoring
-from json_handler import save_json
 from bot.utils import send_jobs
 from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
 from firestore_handler import (
-    get_all_job_ids_from_firestore,
+    get_new_jobs,
     save_jobs_to_firestore,
+    save_rejected_jobs_to_firestore,
     save_trend_data_to_firestore,
+    delete_old_documents,
 )
 
 
@@ -36,7 +39,7 @@ async def scrape(sources, channel_id, bot):
 
     df = pd.DataFrame(all_jobs)
 
-    # 2. CLEANUP & ENRICHMENT (formerly updateDataFrame)
+    # 2. CLEANUP & ENRICHMENT
     df["dedupe_key"] = (
         df["title"].str.lower().str.strip()
         + "|"
@@ -67,17 +70,17 @@ async def scrape(sources, channel_id, bot):
     df["modality"] = df["text_for_extraction"].apply(extract_job_modality)
     df.drop(columns=["text_for_extraction"], inplace=True)
 
-    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime(
-        "%Y-%m-%dT%H:%M:%S+00:00"
-    )
+    current_time_iso = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
     df["date_scraped"] = current_time_iso
     df["published_at"] = df["published_at"].dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
 
     # 3. DEDUPLICATION (against Firebase)
     if UPLOAD_TO_FIREBASE:
-        print("🔍 Consultando IDs existentes en Firebase para deduplicación...")
-        existing_ids = get_all_job_ids_from_firestore()
-        df = df[~df["id"].isin(existing_ids)]
+        new_jobs_list = get_new_jobs(df.to_dict("records"))
+        if not new_jobs_list:
+            print("No se encontraron trabajos nuevos después de la deduplicación.")
+            return
+        df = pd.DataFrame(new_jobs_list)
 
     if df.empty:
         print(
@@ -103,10 +106,8 @@ async def scrape(sources, channel_id, bot):
         accepted_jobs_list = df_accepted.to_dict("records")
 
         if UPLOAD_TO_FIREBASE:
-            # Upload accepted jobs
             save_jobs_to_firestore(accepted_jobs_list)
 
-            # Calculate and upload trend data
             tags_list = [tag for tags in df_accepted["tags"] for tag in tags]
             tags_counts = Counter(tags_list)
             month_key = datetime.now().strftime("%Y_%m")
@@ -116,21 +117,21 @@ async def scrape(sources, channel_id, bot):
             }
             save_trend_data_to_firestore(trend_data, month_key)
 
-        if LOG_JSON_TO_GIT:
-            print("💾 Guardando jobs aceptados en data/accepted_jobs.json...")
-            save_json(accepted_jobs_list, "data/accepted_jobs.json")
-
         # Send to Telegram
         await send_jobs(bot, channel_id, accepted_jobs_list)
 
     else:
         print("No hay trabajos nuevos para enviar después del scoring.")
 
-    if not df_rejected.empty and LOG_JSON_TO_GIT:
-        print(
-            f"💾 Guardando {len(df_rejected)} jobs rechazados en data/rejected_jobs.json..."
-        )
-        save_json(df_rejected.to_dict("records"), "data/rejected_jobs.json")
+    if not df_rejected.empty:
+        rejected_jobs_list = df_rejected.to_dict("records")
+        if LOG_REJECTED_JOBS_TO_FIREBASE and UPLOAD_TO_FIREBASE:
+            save_rejected_jobs_to_firestore(rejected_jobs_list)
+
+    # 6. CLEANUP OLD DOCUMENTS
+    if UPLOAD_TO_FIREBASE:
+        delete_old_documents("jobs_previous", ACCEPTED_JOBS_RETENTION_DAYS)
+        delete_old_documents("rejected_jobs", REJECTED_JOBS_RETENTION_DAYS)
 
 
 def extract_tags(text_for_extraction):
