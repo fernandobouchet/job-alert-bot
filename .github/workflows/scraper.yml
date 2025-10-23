@@ -41,7 +41,7 @@ jobs:
 
       - name: Configure Google credentials
         run: |
-          printf '%s' "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
+          echo "${{ secrets.FIREBASE_CREDENTIALS_BASE64 }}" | base64 --decode > /tmp/credentials.json
 
       - name: Run Job Alert Bot
         env:
