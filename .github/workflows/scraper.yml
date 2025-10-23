@@ -41,8 +41,7 @@ jobs:
 
       - name: Configure Google credentials
         run: |
-          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json
+          printf '%s' "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
 
       - name: Run Job Alert Bot
         env:
