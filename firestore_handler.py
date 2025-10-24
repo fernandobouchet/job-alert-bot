@@ -1,15 +1,13 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import zoneinfo
 from google.cloud.firestore_v1.field_path import FieldPath
+from google.cloud.firestore_v1.base_query import FieldFilter
 
-from config import (
-    TIMEZONE,
-    ACCEPTED_JOBS_RETENTION_DAYS,
-    REJECTED_JOBS_RETENTION_DAYS,
-)
+from config import TIMEZONE
 
+# Inicialización de Firebase Admin
 if not firebase_admin._apps:
     try:
         cred = credentials.ApplicationDefault()
@@ -23,43 +21,54 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
+
 def get_new_jobs(jobs_list):
     """
-    Filtra una lista de trabajos, devolviendo solo aquellos que no existen en Firestore.
-    Utiliza consultas 'in' en lotes para mayor eficiencia.
+    Filtra una lista de trabajos y devuelve solo aquellos que no existen en Firestore.
+    Trabaja en lotes de 10 por la limitación del operador 'in'.
     """
     if not jobs_list:
         return []
 
     print("🔍 Verificando nuevos trabajos en Firestore por ID...")
-    job_ids_to_check = {str(job["id"]) for job in jobs_list if job.get("id")}
 
+    job_ids_to_check = {str(job["id"]) for job in jobs_list if job.get("id")}
     if not job_ids_to_check:
         return jobs_list
 
     existing_ids = set()
-    
-    # Convert set to list to be able to chunk it
     job_ids_list = list(job_ids_to_check)
 
     try:
-        # Process in chunks of 10 for the 'in' operator limitation
+        # Lotes de 10
         for i in range(0, len(job_ids_list), 10):
-            chunk = job_ids_list[i:i + 10]
+            chunk = job_ids_list[i : i + 10]
 
-            # Check in 'jobs_today'
-            docs_today = db.collection("jobs_today").where(FieldPath.documentId(), "in", chunk).stream()
-            for doc in docs_today:
-                existing_ids.add(doc.id)
+            today_refs = [
+                db.collection("jobs_today").document(doc_id) for doc_id in chunk
+            ]
+            previous_refs = [
+                db.collection("jobs_previous").document(doc_id) for doc_id in chunk
+            ]
 
-            # Check in 'jobs_previous'
-            docs_previous = db.collection("jobs_previous").where(FieldPath.documentId(), "in", chunk).stream()
-            for doc in docs_previous:
-                existing_ids.add(doc.id)
+            # Buscar en jobs_today
+            docs_today = (
+                db.collection("jobs_today")
+                .where(filter=FieldFilter(FieldPath.document_id(), "in", today_refs))
+                .stream()
+            )
+            existing_ids.update(doc.id for doc in docs_today)
+
+            # Buscar en jobs_previous
+            docs_previous = (
+                db.collection("jobs_previous")
+                .where(filter=FieldFilter(FieldPath.document_id(), "in", previous_refs))
+                .stream()
+            )
+            existing_ids.update(doc.id for doc in docs_previous)
 
     except Exception as e:
         print(f"❌ Error al verificar trabajos en Firestore: {e}")
-        # In case of error, assume all jobs are new to avoid losing data.
         return jobs_list
 
     new_job_ids = job_ids_to_check - existing_ids
@@ -68,18 +77,19 @@ def get_new_jobs(jobs_list):
     print(f"✨ {len(new_jobs)} trabajos nuevos encontrados.")
     return new_jobs
 
+
 def save_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
 
     print(f"💾 Guardando {len(jobs_list)} jobs en Firestore...")
+
     today_batch = db.batch()
     previous_batch = db.batch()
-
     today_collection = db.collection("jobs_today")
     previous_collection = db.collection("jobs_previous")
-
     today_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date()
+
     today_jobs_count = 0
     previous_jobs_count = 0
 
@@ -89,6 +99,7 @@ def save_jobs_to_firestore(jobs_list):
             print(f"⚠️ Job sin ID encontrado, no se guardará: {job.get('title', 'N/A')}")
             continue
 
+        # La fecha ya viene normalizada
         try:
             published_date = datetime.fromisoformat(
                 job["published_at"].replace("Z", "+00:00")
@@ -118,6 +129,7 @@ def save_jobs_to_firestore(jobs_list):
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
 
+
 def save_rejected_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
@@ -142,6 +154,7 @@ def save_rejected_jobs_to_firestore(jobs_list):
     except Exception as e:
         print(f"❌ Error al guardar jobs rechazados en Firestore: {e}")
 
+
 def save_trend_data_to_firestore(trend_data, month_key):
     if not trend_data:
         return
@@ -154,6 +167,7 @@ def save_trend_data_to_firestore(trend_data, month_key):
         print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
     except Exception as e:
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
+
 
 def delete_old_documents(collection_name, days_to_keep):
     """
@@ -175,7 +189,7 @@ def delete_old_documents(collection_name, days_to_keep):
 
         docs_to_delete = (
             db.collection(collection_name)
-            .where("date_scraped", "<", cutoff_iso)
+            .where(filter=FieldFilter("date_scraped", "<", cutoff_iso))
             .limit(500)
             .stream()
         )
@@ -192,7 +206,9 @@ def delete_old_documents(collection_name, days_to_keep):
                 f"✅ Se eliminaron {deleted_count} documentos antiguos de '{collection_name}'."
             )
         else:
-            print(f"No se encontraron documentos antiguos para eliminar en '{collection_name}'.")
+            print(
+                f"No se encontraron documentos antiguos para eliminar en '{collection_name}'."
+            )
 
     except Exception as e:
         print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")
