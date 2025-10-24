@@ -26,23 +26,6 @@ from firestore_handler import (
 )
 
 
-import asyncio
-from collections import Counter
-from datetime import datetime, timedelta
-import zoneinfo
-import pandas as pd
-
-from config import (
-    TIMEZONE,
-    HOURS_OLD_THRESHOLD,
-    SOURCES_BYPASS_SCORING,
-    UPLOAD_TO_FIREBASE,
-    LOG_REJECTED_JOBS_TO_FIREBASE,
-    ACCEPTED_JOBS_RETENTION_DAYS,
-    REJECTED_JOBS_RETENTION_DAYS,
-)
-
-
 async def scrape(sources, channel_id, bot):
     print("🚀 Iniciando búsqueda de trabajos...")
 
