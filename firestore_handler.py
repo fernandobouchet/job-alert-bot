@@ -2,8 +2,13 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
 import zoneinfo
+from google.cloud.firestore_v1.field_path import FieldPath
 
-from config import TIMEZONE
+from config import (
+    TIMEZONE,
+    ACCEPTED_JOBS_RETENTION_DAYS,
+    REJECTED_JOBS_RETENTION_DAYS,
+)
 
 if not firebase_admin._apps:
     try:
@@ -18,11 +23,10 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-
 def get_new_jobs(jobs_list):
     """
     Filtra una lista de trabajos, devolviendo solo aquellos que no existen en Firestore.
-    Utiliza lecturas directas de documentos por ID para mayor eficiencia.
+    Utiliza consultas 'in' en lotes para mayor eficiencia.
     """
     if not jobs_list:
         return []
@@ -34,30 +38,28 @@ def get_new_jobs(jobs_list):
         return jobs_list
 
     existing_ids = set()
+    
+    # Convert set to list to be able to chunk it
+    job_ids_list = list(job_ids_to_check)
+
     try:
-        # Preparar referencias de documentos para ambas colecciones
-        today_refs = [
-            db.collection("jobs_today").document(job_id) for job_id in job_ids_to_check
-        ]
-        previous_refs = [
-            db.collection("jobs_previous").document(job_id)
-            for job_id in job_ids_to_check
-        ]
+        # Process in chunks of 10 for the 'in' operator limitation
+        for i in range(0, len(job_ids_list), 10):
+            chunk = job_ids_list[i:i + 10]
 
-        # Obtener todos los documentos en una sola llamada por colección
-        all_docs_today = db.getAll(today_refs)
-        all_docs_previous = db.getAll(previous_refs)
-
-        # Procesar resultados
-        for doc in all_docs_today:
-            if doc.exists:
+            # Check in 'jobs_today'
+            docs_today = db.collection("jobs_today").where(FieldPath.documentId(), "in", chunk).stream()
+            for doc in docs_today:
                 existing_ids.add(doc.id)
-        for doc in all_docs_previous:
-            if doc.exists:
+
+            # Check in 'jobs_previous'
+            docs_previous = db.collection("jobs_previous").where(FieldPath.documentId(), "in", chunk).stream()
+            for doc in docs_previous:
                 existing_ids.add(doc.id)
 
     except Exception as e:
         print(f"❌ Error al verificar trabajos en Firestore: {e}")
+        # In case of error, assume all jobs are new to avoid losing data.
         return jobs_list
 
     new_job_ids = job_ids_to_check - existing_ids
@@ -65,7 +67,6 @@ def get_new_jobs(jobs_list):
 
     print(f"✨ {len(new_jobs)} trabajos nuevos encontrados.")
     return new_jobs
-
 
 def save_jobs_to_firestore(jobs_list):
     if not jobs_list:
@@ -117,7 +118,6 @@ def save_jobs_to_firestore(jobs_list):
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
 
-
 def save_rejected_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
@@ -142,7 +142,6 @@ def save_rejected_jobs_to_firestore(jobs_list):
     except Exception as e:
         print(f"❌ Error al guardar jobs rechazados en Firestore: {e}")
 
-
 def save_trend_data_to_firestore(trend_data, month_key):
     if not trend_data:
         return
@@ -155,7 +154,6 @@ def save_trend_data_to_firestore(trend_data, month_key):
         print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
     except Exception as e:
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
-
 
 def delete_old_documents(collection_name, days_to_keep):
     """
@@ -194,9 +192,7 @@ def delete_old_documents(collection_name, days_to_keep):
                 f"✅ Se eliminaron {deleted_count} documentos antiguos de '{collection_name}'."
             )
         else:
-            print(
-                f"No se encontraron documentos antiguos para eliminar en '{collection_name}'."
-            )
+            print(f"No se encontraron documentos antiguos para eliminar en '{collection_name}'.")
 
     except Exception as e:
         print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")
