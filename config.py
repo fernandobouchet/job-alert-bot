@@ -15,16 +15,17 @@ TIMEZONE = "America/Argentina/Buenos_Aires"
 SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]
 
 JOBSPY_SEARCH_TERMS = (
-    '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR asociado OR associate OR graduado OR becario) '
+    '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR associate) '
     "("
     "IT OR sistemas OR developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR "
-    "software OR technology OR tecnología OR informática OR computing OR computación OR "
+    "software OR technology OR tecnología OR informática OR "
     "frontend OR backend OR fullstack OR devops OR sysadmin OR "
     '"data analyst" OR "data engineer" OR "data science" OR '
-    "qa OR tester OR security OR ciberseguridad OR cybersecurity OR "
-    'cloud OR redes OR network OR "technical support" OR "soporte técnico" OR '
+    "qa OR tester OR security OR cybersecurity OR "
+    "cloud OR network OR redes OR "
+    '"technical support" OR "soporte técnico" OR '
     '"ux/ui" OR "ux designer" OR "ui designer" OR '
-    '"machine learning" OR "inteligencia artificial"'
+    '"machine learning"'
     ")"
 )
 
@@ -46,7 +47,8 @@ FETCHER_CONFIG = {
         ],
     },
     "JobSpyFetcher": {
-        "site_name": ["indeed", "linkedin"],
+        "name": "Argentina (LinkedIn & Indeed)",
+        "site_name": ["linkedin", "indeed"],
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 50,
