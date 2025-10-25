@@ -100,10 +100,9 @@ def save_jobs_to_firestore(jobs_list):
             continue
 
         # La fecha ya viene normalizada
+        # La data es pasada en formato panda Timestamp.
         try:
-            published_date = datetime.fromisoformat(
-                job["published_at"].replace("Z", "+00:00")
-            ).date()
+            published_date = job["published_at"].date()
         except (ValueError, TypeError):
             published_date = today_date
 
