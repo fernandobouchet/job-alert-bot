@@ -140,11 +140,15 @@ async def scrape(sources, channel_id, bot):
 
 def extract_tags(text_for_extraction):
     text = text_for_extraction.lower()
-    found_tags = []
-    for kw in TAGS_KEYWORDS:
-        pattern = r"(?<!\w)" + re.escape(kw) + r"(?!\w)"
-        if re.search(pattern, text, re.IGNORECASE):
-            found_tags.append(kw)
+    found_tags = {}
+    for category, keywords in TAGS_KEYWORDS.items():
+        found_keywords = []
+        for kw in keywords:
+            pattern = r"(?<!\\w)" + re.escape(kw) + r"(?!\\w)"
+            if re.search(pattern, text, re.IGNORECASE):
+                found_keywords.append(kw)
+        if found_keywords:
+            found_tags[category] = found_keywords
     return found_tags
 
 

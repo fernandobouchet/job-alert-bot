@@ -293,87 +293,25 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "property manager",
 ]
 
-TAGS_KEYWORDS = [
-    # Roles principales
-    "frontend",
-    "backend",
-    "fullstack",
-    "mobile",
-    "devops",
-    "qa",
-    "tester",
-    "data analyst",
-    "data science",
-    "data engineer",
-    "sysadmin",
-    "security",
-    "support",
-    "ux",
-    "ui",
-    "ux/ui",
-    "product design",
-    # Lenguajes mainstream
-    "python",
-    "java",
-    "javascript",
-    "typescript",
-    "c#",
-    "golang",
-    "ruby",
-    "php",
-    "kotlin",
-    "swift",
-    # Frontend
-    "react",
-    "vue",
-    "angular",
-    "next.js",
-    # Backend
-    "node.js",
-    "django",
-    "flask",
-    "spring",
-    ".net",
-    "express",
-    "fastapi",
-    "laravel",
-    # Mobile
-    "react native",
-    "flutter",
-    "android",
-    "ios",
-    # Databases
-    "sql",
-    "postgres",
-    "mysql",
-    "mongodb",
-    "redis",
-    # Cloud & DevOps
-    "aws",
-    "azure",
-    "gcp",
-    "docker",
-    "kubernetes",
-    "terraform",
-    "git",
-    "ci/cd",
-    # Data & Analytics
-    "pandas",
-    "power bi",
-    "tableau",
-    "spark",
-    "machine learning",
-    "tensorflow",
-    # UX/UI Tools
-    "figma",
-    "sketch",
-    "adobe xd",
-    # General
-    "api",
-    "rest api",
-    "agile",
-    "microservices",
-]
+TAGS_KEYWORDS = {
+    "Roles": [
+        "frontend", "backend", "fullstack", "mobile", "devops", "qa", "tester",
+        "data analyst", "data science", "data engineer", "sysadmin", "security",
+        "support", "ux", "ui", "ux/ui", "product design"
+    ],
+    "Languages": [
+        "python", "java", "javascript", "typescript", "c#", "golang", "ruby",
+        "php", "kotlin", "swift", "sql"
+    ],
+    "Others": [
+        "react", "vue", "angular", "next.js", "node.js", "django", "flask",
+        "spring", ".net", "express", "fastapi", "laravel", "react native",
+        "flutter", "pandas", "power bi", "tableau", "spark", "machine learning",
+        "tensorflow", "figma", "sketch", "adobe xd", "aws", "azure", "gcp",
+        "docker", "kubernetes", "terraform", "git", "ci/cd", "postgres",
+        "mysql", "mongodb", "redis", "api", "rest api", "agile", "microservices"
+    ]
+}
 
 WEAK_IT_SIGNALS = {
     "tech",
@@ -391,7 +329,7 @@ WEAK_IT_SIGNALS = {
     "especialista",
 }
 
-REQUIRED_IT_SIGNALS = TAGS_KEYWORDS + [
+REQUIRED_IT_SIGNALS = [keyword for category in TAGS_KEYWORDS.values() for keyword in category] + [
     # Roles generales IT (SIN los términos ambiguos que están en WEAK)
     "developer",
     "desarrollador",
