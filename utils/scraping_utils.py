@@ -1,9 +1,8 @@
-import math
 import re
 import asyncio
 import pandas as pd
 import zoneinfo
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from collections import Counter
 from config import (
     HOURS_OLD_THRESHOLD,
@@ -14,10 +13,10 @@ from config import (
     ACCEPTED_JOBS_RETENTION_DAYS,
     REJECTED_JOBS_RETENTION_DAYS,
 )
-from filters_scoring import filter_jobs_with_scoring
+from utils.scoring_utils import filter_jobs_with_scoring
 from bot.utils import send_jobs
 from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
-from firestore_handler import (
+from utils.firestore_utils import (
     get_new_jobs,
     save_jobs_to_firestore,
     save_rejected_jobs_to_firestore,
@@ -169,93 +168,3 @@ def extract_job_modality(text_for_extraction):
     if is_remote_mentioned:
         return "Remote"
     return "Not Specified"
-
-
-def safe_parse_date_to_ISO(d):
-    tz = zoneinfo.ZoneInfo(TIMEZONE)
-    now = datetime.now(tz)
-
-    # Caso None o NaN
-    if d is None or (isinstance(d, float) and math.isnan(d)):
-        return now.isoformat()
-
-    # Caso timestamp numérico
-    if isinstance(d, (int, float)):
-        try:
-            return datetime.fromtimestamp(d, tz=tz).isoformat()
-        except Exception:
-            return now.isoformat()
-
-    # Caso string
-    if isinstance(d, str):
-        d_lower = d.lower()
-        try:
-            # "X hours/days/weeks ago"
-            match = re.search(r"(\d+)", d)
-            if match:
-                n = int(match.group(1))
-                if "hour" in d_lower or "hora" in d_lower:
-                    return (now - timedelta(hours=n)).isoformat()
-                if "day" in d_lower or "día" in d_lower:
-                    return (now - timedelta(days=n)).isoformat()
-                if "week" in d_lower or "semana" in d_lower:
-                    return (now - timedelta(weeks=n)).isoformat()
-        except Exception:
-            pass
-
-        # Intentar parsear formatos
-        for fmt in (
-            "%Y-%m-%dT%H:%M:%S.%f%z",
-            "%Y-%m-%dT%H:%M:%S%z",
-            "%Y-%m-%dT%H:%M:%S",
-            "%Y-%m-%d",
-            "%d-%m-%Y",
-        ):
-            try:
-                dt = datetime.strptime(d, fmt)
-                # Si no tiene tzinfo → asignar TIMEZONE
-                if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=tz)
-                # Si solo tiene fecha → asignar hora actual
-                if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
-                    dt = dt.replace(
-                        hour=now.hour,
-                        minute=now.minute,
-                        second=now.second,
-                        microsecond=now.microsecond,
-                    )
-                return dt.isoformat()
-            except ValueError:
-                continue
-
-    # Caso datetime
-    if isinstance(d, datetime):
-        dt = d if d.tzinfo else d.replace(tzinfo=tz)
-        if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
-            dt = dt.replace(
-                hour=now.hour,
-                minute=now.minute,
-                second=now.second,
-                microsecond=now.microsecond,
-            )
-        return dt.isoformat()
-
-    # Caso date
-    if isinstance(d, date):
-        dt = datetime.combine(d, now.time()).replace(tzinfo=tz)
-        return dt.isoformat()
-
-    # Fallback
-    return now.isoformat()
-
-
-def its_job_days_old(published_at_iso, days_limit=1):
-    """Comprueba si un trabajo es más antiguo que el límite de días."""
-    try:
-        published_date = datetime.fromisoformat(published_at_iso.replace("Z", "+00:00"))
-        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
-            days=days_limit
-        )
-        return published_date < cutoff_date
-    except (ValueError, TypeError):
-        return False

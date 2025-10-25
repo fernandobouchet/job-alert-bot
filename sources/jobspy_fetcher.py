@@ -1,6 +1,6 @@
 from jobspy import scrape_jobs
-from utils import safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
+from utils.dates_utils import safe_parse_date_to_ISO
 
 
 def fetch_jobspy():

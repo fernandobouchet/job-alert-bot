@@ -1,6 +1,6 @@
 import requests
-from utils import its_job_days_old, safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
+from utils.dates_utils import its_job_older_than_threshold, safe_parse_date_to_ISO
 
 
 def fetch_getonboard():
@@ -33,7 +33,7 @@ def fetch_getonboard():
                 published_at_ts = jobData.get("published_at")
                 published_at_iso = safe_parse_date_to_ISO(published_at_ts)
 
-                if its_job_days_old(published_at_iso):
+                if its_job_older_than_threshold(published_at_iso):
                     continue
 
                 # Extraer seniority y filtrar solo Trainee y Junior

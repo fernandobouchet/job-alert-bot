@@ -3,5 +3,6 @@ python-telegram-bot
 requests
 beautifulsoup4
 pandas
+dateparser
 python-jobspy
 firebase-admin

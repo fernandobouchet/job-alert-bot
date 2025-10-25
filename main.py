@@ -8,7 +8,7 @@ from telegram import Bot as TelegramBot
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
-from utils import scrape
+from utils.scraping_utils import scrape
 
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
