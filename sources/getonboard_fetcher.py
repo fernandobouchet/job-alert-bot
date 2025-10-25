@@ -1,6 +1,5 @@
 import requests
 from config import FETCHER_CONFIG
-from utils.dates_utils import its_job_older_than_threshold, safe_parse_date_to_ISO
 
 
 def fetch_getonboard():
@@ -31,10 +30,7 @@ def fetch_getonboard():
                 job_id = f"getonboard-{job.get('id', '').strip()}"
 
                 published_at_ts = jobData.get("published_at")
-                published_at_iso = safe_parse_date_to_ISO(published_at_ts)
-
-                if its_job_older_than_threshold(published_at_iso):
-                    continue
+                published_at = published_at_ts
 
                 # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
@@ -71,7 +67,7 @@ def fetch_getonboard():
                         "source": "GetOnBoard",
                         "salary": salary,
                         "url": job.get("links", {}).get("public_url", ""),
-                        "published_at": published_at_iso,
+                        "published_at": published_at,
                     }
                 )
             except Exception as e:

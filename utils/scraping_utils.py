@@ -13,6 +13,7 @@ from config import (
     ACCEPTED_JOBS_RETENTION_DAYS,
     REJECTED_JOBS_RETENTION_DAYS,
 )
+from utils.dates_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring
 from bot.utils import send_jobs
 from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
@@ -54,14 +55,16 @@ async def scrape(sources, channel_id, bot):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
-    # 3. FILTRADO POR FECHA (jobs recientes según HOURS_OLD_THRESHOLD)
+    # 3. NORMALIZACIÓN Y FILTRADO POR FECHA (jobs recientes según HOURS_OLD_THRESHOLD)
+    df["published_at"] = df["published_at"].apply(safe_parse_date_to_ISO)
+    df["published_at"] = pd.to_datetime(df["published_at"], errors="coerce")
+
+    # Filtrado por horas (usando tu threshold global)
     cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
         hours=HOURS_OLD_THRESHOLD
     )
-    df["published_at"] = pd.to_datetime(df["published_at"], errors="coerce")
-    df.dropna(subset=["published_at"], inplace=True)
     df = df[df["published_at"] >= cutoff_date]
-
+    df.dropna(subset=["published_at"], inplace=True)
     if df.empty:
         print("No hay trabajos recientes o únicos para procesar.")
         return

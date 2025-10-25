@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from filters_scoring_config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
 from utils.constants import (
     _REGEX_AMBIGUOUS_ROLES,
     _REGEX_AREA_PREFILTER,
@@ -10,7 +11,6 @@ from utils.constants import (
     _REGEX_STRONG_TECH_SIGNALS,
     _REGEX_WEAK_IT_SIGNALS,
 )
-from filters_scoring_config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
 
 
 def pre_filter_jobs(df, verbose=True):

@@ -1,6 +1,5 @@
 from jobspy import scrape_jobs
 from config import FETCHER_CONFIG
-from utils.dates_utils import safe_parse_date_to_ISO
 
 
 def fetch_jobspy():
@@ -28,8 +27,7 @@ def fetch_jobspy():
         try:
             title = str(job.get("title") or "").strip()
             description = str(job.get("description") or "").strip()
-
-            published_at_iso = safe_parse_date_to_ISO(job.get("date_posted"))
+            published_at = job.get("date_posted")
 
             all_jobs.append(
                 {
@@ -40,7 +38,7 @@ def fetch_jobspy():
                     "source": str(job.get("site") or "").capitalize(),
                     "salary": job.get("salary", "No especificado"),
                     "url": job.get("job_url", ""),
-                    "published_at": published_at_iso,
+                    "published_at": published_at,
                 }
             )
         except Exception as e:

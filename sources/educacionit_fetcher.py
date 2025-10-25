@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from config import FETCHER_CONFIG
-from utils.dates_utils import its_job_older_than_threshold, safe_parse_date_to_ISO
 
 
 def fetch_educacionit():
@@ -20,14 +19,6 @@ def fetch_educacionit():
 
     for card in job_cards:
         try:
-
-            date_el = card.select_one("p.fechaEmpleo")
-            published_at_iso = safe_parse_date_to_ISO(
-                date_el.text.strip() if date_el else None
-            )
-
-            if its_job_older_than_threshold(published_at_iso):
-                continue
 
             job_id = f"educacionit-{card.get('id', '').strip()}"
 
@@ -51,9 +42,7 @@ def fetch_educacionit():
                 salary = "No especificado"
 
             date_el = card.select_one("p.fechaEmpleo")
-            published_at_iso = safe_parse_date_to_ISO(
-                date_el.text.strip() if date_el else None
-            )
+            published_at = date_el.text.strip() if date_el else None
 
             all_jobs.append(
                 {
@@ -64,7 +53,7 @@ def fetch_educacionit():
                     "source": "EducaciónIT",
                     "salary": salary,
                     "url": url,
-                    "published_at": published_at_iso,
+                    "published_at": published_at,
                 }
             )
 
