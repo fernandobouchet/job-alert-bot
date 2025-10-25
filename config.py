@@ -6,11 +6,13 @@ ACCEPTED_JOBS_RETENTION_DAYS = 30
 
 REJECTED_JOBS_RETENTION_DAYS = 7
 
-HOURS_OLD_THRESHOLD = 14
+DAYS_OLD_THRESHOLD = 1
 
 TIMEZONE = "America/Argentina/Buenos_Aires"
 
 SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]
+
+JOBSPY_OURS_OLD = 14
 
 JOBSPY_SEARCH_TERMS = (
     '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR associate) '
@@ -30,7 +32,7 @@ JOBSPY_SEARCH_TERMS = (
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
-        "per_page": 10,
+        "per_page": 5,
         "page": 1,
         "timeout": 15,
         "seniority_ids": [1, 2],
@@ -50,7 +52,7 @@ FETCHER_CONFIG = {
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 50,
-        "hours_old": HOURS_OLD_THRESHOLD,
+        "hours_old": JOBSPY_OURS_OLD,
         "linkedin_fetch_description": True,
         "search_terms": JOBSPY_SEARCH_TERMS,
     },

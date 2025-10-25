@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 from config import FETCHER_CONFIG
@@ -42,7 +44,18 @@ def fetch_educacionit():
                 salary = "No especificado"
 
             date_el = card.select_one("p.fechaEmpleo")
-            published_at = date_el.text.strip() if date_el else None
+            published_at_str = date_el.text.strip() if date_el else None
+
+            published_at = None
+            if published_at_str:
+                try:
+                    # Convert from DD-MM-YYYY to YYYY-MM-DD
+                    published_at = datetime.strptime(
+                        published_at_str, "%d-%m-%Y"
+                    ).strftime("%Y-%m-%d")
+                except ValueError:
+                    # Keep the original string if parsing fails
+                    published_at = published_at_str
 
             all_jobs.append(
                 {
