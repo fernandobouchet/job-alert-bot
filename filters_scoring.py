@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import logging
 from constants import (
     _REGEX_AMBIGUOUS_ROLES,
     _REGEX_AREA_PREFILTER,
@@ -10,27 +11,22 @@ from constants import (
     _REGEX_STRONG_TECH_SIGNALS,
     _REGEX_WEAK_IT_SIGNALS,
 )
-from filters_scoring_config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
+from config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
 
-
+logger = logging.getLogger(__name__)
 
 def pre_filter_jobs(df, verbose=True):
-    """
-    Aplica filtros iniciales y devuelve tanto el DataFrame filtrado como los rechazados.
-    """
     if df.empty:
         return df, pd.DataFrame()
 
     initial_count = len(df)
     if verbose:
-        print(f"\\n🔍 Starting pre-filtering for {initial_count} jobs...")
+        logger.info(f"\\n🔍 Starting pre-filtering for {initial_count} jobs...")
 
-    # Identificar trabajos a rechazar
     mask_reject = df["title"].str.contains(_REGEX_AREA_PREFILTER, na=False)
     df_rejected = df[mask_reject].copy()
     df_filtered = df[~mask_reject].copy()
 
-    # Añadir razón de rechazo (el término específico que causó el rechazo)
     if not df_rejected.empty:
         df_rejected["rejection_reason"] = df_rejected["title"].apply(
             lambda x: f"pre-filter: {', '.join(set(_REGEX_AREA_PREFILTER.findall(x)))}"
@@ -38,8 +34,8 @@ def pre_filter_jobs(df, verbose=True):
 
     rejected_count = len(df_rejected)
     if verbose:
-        print(f"   - Rejected by Area: {rejected_count} jobs")
-        print(
+        logger.info(f"   - Rejected by Area: {rejected_count} jobs")
+        logger.info(
             f"   -> Jobs remaining for scoring: {len(df_filtered)} ({len(df_filtered)/initial_count*100:.1f}%)"
         )
 
@@ -237,8 +233,8 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
     """
     if df.empty:
         if verbose:
-            print("⚠️ Empty DataFrame, skipping filtering.")
-        return df, pd.DataFrame()  # Devuelve dos dataframes vacíos
+            logger.warning("⚠️ Empty DataFrame, skipping filtering.")
+        return df, pd.DataFrame()
 
     initial_total = len(df)
 
@@ -246,11 +242,11 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
 
     if df_pre_filtered.empty:
         if verbose:
-            print("⚠️ No jobs left after pre-filtering.")
+            logger.warning("⚠️ No jobs left after pre-filtering.")
         return df_pre_filtered, df_rejected_pre_filter
 
     if verbose:
-        print(f"\n📊 Calculating scores for {len(df_pre_filtered)} jobs...")
+        logger.info(f"\n📊 Calculating scores for {len(df_pre_filtered)} jobs...")
 
     df_scored = df_pre_filtered.copy()
     scores_and_details = df_scored.apply(calculate_job_score, axis=1)
@@ -274,23 +270,23 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
         initial_after_prefilter = len(df_scored)
         rejected_by_score_count = initial_after_prefilter - final_count
 
-        print(f"\n📈 Score distribution (on {initial_after_prefilter} jobs):")
+        logger.info(f"\n📈 Score distribution (on {initial_after_prefilter} jobs):")
         if initial_after_prefilter > 0:
-            print(
+            logger.info(
                 f"   - Max: {df_scored['score'].max():.0f}, Mean: {df_scored['score'].mean():.1f}, Min: {df_scored['score'].min():.0f}"
             )
 
-        print(f"\n✅ Filtering complete:")
-        print(f"   - Initial jobs: {initial_total}")
-        print(f"   - Jobs after pre-filtering: {initial_after_prefilter}")
-        print(f"   - Rejected by low score (<{min_score}): {rejected_by_score_count}")
-        print(
+        logger.info(f"\n✅ Filtering complete:")
+        logger.info(f"   - Initial jobs: {initial_total}")
+        logger.info(f"   - Jobs after pre-filtering: {initial_after_prefilter}")
+        logger.info(f"   - Rejected by low score (<{min_score}): {rejected_by_score_count}")
+        logger.info(
             f"   - Final jobs passed: {final_count} ({final_count/initial_total*100:.1f}% of total)"
         )
 
         if final_count > 0:
-            print(f"\n⭐ Final score distribution (for jobs with score ≥{min_score}):")
-            print(
+            logger.info(f"\n⭐ Final score distribution (for jobs with score ≥{min_score}):")
+            logger.info(
                 f"   - Max: {df_final['score'].max():.0f}, Mean: {df_final['score'].mean():.1f}, Min: {df_final['score'].min():.0f}"
             )
 

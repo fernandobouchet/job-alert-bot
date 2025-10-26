@@ -1,10 +1,14 @@
 import requests
-from utils import its_job_days_old, safe_parse_date_to_ISO
+import logging
+from dates import its_job_days_old, safe_parse_date_to_ISO
 from config import FETCHER_CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_getonboard():
     config = FETCHER_CONFIG.get("GetOnBoardFetcher", {})
+    logger.info("Iniciando fetch de GetOnBoard...")
 
     all_jobs = []
     for category in config.get("categories", []):
@@ -18,46 +22,44 @@ def fetch_getonboard():
                 },
                 timeout=config.get("timeout", 15),
             )
-
             req.raise_for_status()
             data = req.json().get("data", [])
+            logger.info(f"GetOnBoard: {len(data)} trabajos encontrados en la categoría '{category}'.")
         except requests.RequestException as e:
-            print(f"Error fetching GetOnBoard ({category}): {e}")
+            logger.error(f"Error en fetch de GetOnBoard ({category}): {e}")
             continue
 
         for job in data:
             try:
                 jobData = job.get("attributes", {})
                 job_id = f"getonboard-{job.get('id', '').strip()}"
-
                 published_at_ts = jobData.get("published_at")
                 published_at_iso = safe_parse_date_to_ISO(published_at_ts)
 
                 if its_job_days_old(published_at_iso):
                     continue
 
-                # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
                 if seniority_id not in config.get("seniority_ids", []):
                     continue
 
-                if jobData.get("remote") is False:
+                if not jobData.get("remote"):
                     continue
 
-                if jobData.get("remote_modality") not in ["fully_remote"]:
+                if jobData.get("remote_modality") != "fully_remote":
                     continue
 
                 salary_min = jobData.get("min_salary")
                 salary_max = jobData.get("max_salary")
-
-                if salary_min and salary_max:
-                    salary = f"${salary_min} - ${salary_max}"
-                elif salary_min:
-                    salary = f"Mínimo ${salary_min}"
-                elif salary_max:
-                    salary = f"Máximo ${salary_max}"
-                else:
-                    salary = "No especificado"
+                salary = (
+                    f"${salary_min} - ${salary_max}"
+                    if salary_min and salary_max
+                    else f"Mínimo ${salary_min}"
+                    if salary_min
+                    else f"Máximo ${salary_max}"
+                    if salary_max
+                    else "No especificado"
+                )
 
                 all_jobs.append(
                     {
@@ -75,6 +77,8 @@ def fetch_getonboard():
                     }
                 )
             except Exception as e:
-                print(f"⚠️ Error normalizing job from Getonboard: {e}")
+                logger.warning(f"⚠️ Error normalizando job de Getonboard: {e}")
                 continue
+
+    logger.info(f"GetOnBoard: Fetch finalizado. Total de trabajos procesados: {len(all_jobs)}")
     return all_jobs

@@ -1,5 +1,6 @@
 import re
-from filters_scoring_config import (
+import logging
+from config import (
     AMBIGUOUS_ROLES,
     POSITIVE_SENIORITY_TERMS,
     EXCLUDED_SENIORITYS,
@@ -10,7 +11,9 @@ from filters_scoring_config import (
     STRONG_TECH_SIGNALS,
 )
 
-print("🔄 Compiling regex patterns from config...")
+logger = logging.getLogger(__name__)
+
+logger.info("🔄 Compiling regex patterns from config...")
 
 _REGEX_AREA_PREFILTER = re.compile(
     r"\b(?:" + "|".join(re.escape(t) for t in EXCLUDED_AREA_TERMS_TITLE) + r")",
@@ -52,4 +55,4 @@ _REGEX_AMBIGUOUS_ROLES = re.compile(
     re.IGNORECASE,
 )
 
-print("✅ Regex patterns compiled")
+logger.info("✅ Regex patterns compiled")

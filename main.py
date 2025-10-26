@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
+from logging_config import setup_logging
 
 load_dotenv()
+setup_logging()
 
 import os
 import asyncio
