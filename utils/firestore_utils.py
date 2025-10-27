@@ -155,16 +155,19 @@ def save_rejected_jobs_to_firestore(jobs_list):
         print(f"❌ Error al guardar jobs rechazados en Firestore: {e}")
 
 
-def save_trend_data_to_firestore(trend_data, month_key):
+def save_daily_trend_data(trend_data, day_key):
     if not trend_data:
         return
 
     trends_collection = db.collection("trends")
-    doc_ref = trends_collection.document(month_key)
+    doc_ref = trends_collection.document(day_key)
+
+    # Se añade un timestamp para facilitar el borrado futuro
+    trend_data["date_saved"] = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
 
     try:
-        doc_ref.set(trend_data, merge=True)
-        print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
+        doc_ref.set(trend_data)
+        print(f"📈 Tendencias para {day_key} guardadas en Firestore.")
     except Exception as e:
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
 
@@ -212,3 +215,47 @@ def delete_old_documents(collection_name, days_to_keep):
 
     except Exception as e:
         print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")
+
+def delete_old_trends(days_to_keep):
+    """
+    Elimina documentos de la colección 'trends' que son más antiguos que un número de días.
+    """
+    collection_name = "trends"
+    if not days_to_keep or days_to_keep <= 0:
+        print(f"⚠️ La retención de '{collection_name}' está desactivada (días <= 0).")
+        return
+
+    print(
+        f"🧹 Limpiando tendencias antiguas de '{collection_name}' (retención: {days_to_keep} días)..."
+    )
+
+    try:
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
+            days=days_to_keep
+        )
+        cutoff_iso = cutoff_date.isoformat()
+
+        docs_to_delete = (
+            db.collection(collection_name)
+            .where(filter=FieldFilter("date_saved", "<", cutoff_iso))
+            .limit(500)  # Limite para no exceder limites de API
+            .stream()
+        )
+
+        batch = db.batch()
+        deleted_count = 0
+        for doc in docs_to_delete:
+            batch.delete(doc.reference)
+            deleted_count += 1
+
+        if deleted_count > 0:
+            batch.commit()
+            print(
+                f"✅ Se eliminaron {deleted_count} tendencias antiguas de '{collection_name}'."
+            )
+        else:
+            print(f"No se encontraron tendencias antiguas para eliminar.")
+
+    except Exception as e:
+        print(f"❌ Error al limpiar tendencias antiguas de '{collection_name}': {e}")
+

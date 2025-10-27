@@ -21,8 +21,9 @@ from utils.firestore_utils import (
     get_new_jobs,
     save_jobs_to_firestore,
     save_rejected_jobs_to_firestore,
-    save_trend_data_to_firestore,
+    save_daily_trend_data,
     delete_old_documents,
+    delete_old_trends,
 )
 
 
@@ -125,9 +126,9 @@ async def scrape(sources, channel_id, bot):
                 for tag in tag_group
             ]
             tags_counts = Counter(tags_list)
-            month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
+            day_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m_%d")
             trend_data = {"total_jobs": len(df_accepted), "tags": dict(tags_counts)}
-            save_trend_data_to_firestore(trend_data, month_key)
+            save_daily_trend_data(trend_data, day_key)
 
         await send_jobs(bot, channel_id, accepted_jobs_list)
     else:
@@ -141,6 +142,7 @@ async def scrape(sources, channel_id, bot):
     if UPLOAD_TO_FIREBASE:
         delete_old_documents("jobs_previous", ACCEPTED_JOBS_RETENTION_DAYS)
         delete_old_documents("rejected_jobs", REJECTED_JOBS_RETENTION_DAYS)
+        delete_old_trends(ACCEPTED_JOBS_RETENTION_DAYS)
 
 
 def extract_tags(text_for_extraction):
