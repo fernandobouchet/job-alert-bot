@@ -37,8 +37,10 @@ def pre_filter_jobs(df, verbose=True):
 
         # FILTRO 1: Área no-IT
         if _REGEX_AREA_PREFILTER.search(title):
-            matches = _REGEX_AREA_PREFILTER.findall(title)
-            rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
+            # Excepción: no rechazar si contiene un rol de IT fuerte.
+            if not _REGEX_STRONG_ROLE_SIGNALS.search(title):
+                matches = _REGEX_AREA_PREFILTER.findall(title)
+                rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
 
         # FILTRO 2: Seniority (solo si pasó filtro de área)
         elif _REGEX_SENIORITY_EXCLUDED.search(title):
@@ -133,7 +135,7 @@ def calculate_job_score(row):
     # ===== SENIORITY =====
     # Bonus por junior (solo si tiene señales IT reales)
     if (it_signals_found or strong_tech_signals_found) and has_positive_seniority:
-        bonus = 20
+        bonus = 25
         score += bonus
         score_details["bonus_seniority"] = bonus
 

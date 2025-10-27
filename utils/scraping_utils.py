@@ -118,7 +118,12 @@ async def scrape(sources, channel_id, bot):
         if UPLOAD_TO_FIREBASE:
             save_jobs_to_firestore(accepted_jobs_list)
 
-            tags_list = [tag for tags in df_accepted["tags"] for tag in tags]
+            tags_list = [
+                tag
+                for tags_dict in df_accepted["tags"]
+                for tag_group in tags_dict.values()
+                for tag in tag_group
+            ]
             tags_counts = Counter(tags_list)
             month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
             trend_data = {"total_jobs": len(df_accepted), "tags": dict(tags_counts)}
