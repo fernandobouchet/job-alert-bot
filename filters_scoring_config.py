@@ -145,6 +145,9 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "broker",
     "actuario",
     "actuary",
+    # Regulatorio / Legal
+    "asuntos regulatorios",
+    "regulatory affairs",
     # Legal
     "abogado",
     "abogada",
@@ -341,7 +344,7 @@ TAGS_KEYWORDS = {
         "javascript",
         "typescript",
         "java",
-        "go",
+        "golang",
         "c#",
         "kotlin",
         "swift",
@@ -397,12 +400,26 @@ WEAK_IT_SIGNALS = {
     "informática",
     "computing",
     "it",
-    "analyst",
-    "analista",
     "support",
     "soporte",
-    "specialist",
-    "especialista",
+    "software",
+    "engineer",
+    "ingeniero",
+    "ingeniera",
+    "automation",
+    "automatización",
+    "testing",
+    "pruebas",
+    "quality assurance",
+    "chef",
+    "dev",
+    "security",
+    "agile",
+    "scrum",
+    "kanban",
+    "mobile",
+    "qa",
+    "product design",
 }
 
 STRONG_TECH_SIGNALS = {
@@ -432,7 +449,6 @@ STRONG_TECH_SIGNALS = {
     "sketch",
     "c++",
     "golang",
-    "go",
     "rust",
     "flask",
     "fastapi",
@@ -518,9 +534,6 @@ AMBIGUOUS_ROLES = {
     "scrum master",
     "agile coach",
     "owner",
-    "ingeniero",
-    "ingeniera",
-    "engineer",
 }
 
 
