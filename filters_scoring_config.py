@@ -804,6 +804,13 @@ REQUIRED_IT_SIGNALS = (
         "devsecops",
         "continuous integration",
         "continuous deployment",
+        # Keywords para roles de Soporte de Producto / TI
+        "incidencias",
+        "ticket",
+        "tickets",
+        "ticketing",
+        "Zoho",
+        "chatbot",
     ]
 )
 
