@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import zoneinfo
 from google.cloud.firestore_v1.field_path import FieldPath
 from google.cloud.firestore_v1.base_query import FieldFilter
+import pandas as pd
 
 from config import TIMEZONE
 
@@ -25,7 +26,7 @@ db = firestore.client()
 def get_new_jobs(jobs_list):
     """
     Filtra una lista de trabajos y devuelve solo aquellos que no existen en Firestore.
-    Trabaja en lotes de 10 por la limitación del operador 'in'.
+    Trabaja en lotes de 30 por la limitación del operador 'in'.
     """
     if not jobs_list:
         return []
@@ -40,9 +41,9 @@ def get_new_jobs(jobs_list):
     job_ids_list = list(job_ids_to_check)
 
     try:
-        # Lotes de 10
-        for i in range(0, len(job_ids_list), 10):
-            chunk = job_ids_list[i : i + 10]
+        # Lotes de 30
+        for i in range(0, len(job_ids_list), 30):
+            chunk = job_ids_list[i : i + 30]
 
             today_refs = [
                 db.collection("jobs_today").document(doc_id) for doc_id in chunk
@@ -102,7 +103,7 @@ def save_jobs_to_firestore(jobs_list):
         # La fecha ya viene normalizada
         # La data es pasada en formato panda Timestamp.
         try:
-            published_date = job["published_at"].date()
+            published_date = pd.to_datetime(job["published_at"]).date()
         except (ValueError, TypeError):
             published_date = today_date
 
