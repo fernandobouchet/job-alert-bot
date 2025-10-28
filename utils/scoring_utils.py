@@ -189,6 +189,16 @@ def calculate_job_score(row):
             _REGEX_AMBIGUOUS_ROLES.findall(title)
         )[:3]
 
+    # ===== PENALIZACIÓN: ÁREA EXCLUIDA EN DESCRIPCIÓN =====
+    excluded_area_in_description = set(_REGEX_AREA_PREFILTER.findall(description))
+    if excluded_area_in_description and not strong_tech_signals_found:
+        penalty = 30
+        score -= penalty
+        score_details["penalty_excluded_area_in_description"] = -penalty
+        score_details["excluded_area_found_in_description"] = sorted(
+            excluded_area_in_description
+        )
+
     # ===== EXPERIENCIA =====
     should_penalize, years_required = has_senior_experience_requirement(
         full_text, has_positive_seniority
