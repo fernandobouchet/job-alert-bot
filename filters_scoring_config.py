@@ -322,6 +322,8 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "bartender",
     "camarero",
     "mesero",
+    "seguridad e higiene",
+    "safety and hygiene",
 ]
 
 TAGS_KEYWORDS = {
