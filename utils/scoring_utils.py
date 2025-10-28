@@ -134,7 +134,7 @@ def calculate_job_score(row):
 
     # ===== SENIORITY =====
     # Bonus por junior (solo si tiene señales IT reales)
-    if (it_signals_found or strong_tech_signals_found) and has_positive_seniority:
+    if (len(it_signals_found) >= 2 or strong_tech_signals_found) and has_positive_seniority:
         bonus = 25
         score += bonus
         score_details["bonus_seniority"] = bonus
