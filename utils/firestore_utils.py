@@ -83,6 +83,9 @@ def save_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
 
+    # Primero, mover jobs antiguos de jobs_today a jobs_previous
+    move_old_jobs_from_today()
+
     print(f"💾 Guardando {len(jobs_list)} jobs en Firestore...")
 
     today_batch = db.batch()
@@ -128,6 +131,54 @@ def save_jobs_to_firestore(jobs_list):
             )
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
+
+
+def move_old_jobs_from_today():
+    """
+    Revisa los jobs en 'jobs_today' y mueve a 'jobs_previous' aquellos
+    que no son del día actual.
+    """
+    print("🔄 Revisando jobs en 'jobs_today' para mover los antiguos...")
+
+    today_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date()
+    today_collection = db.collection("jobs_today")
+    previous_collection = db.collection("jobs_previous")
+
+    try:
+        docs = today_collection.stream()
+
+        write_batch = db.batch()
+        delete_batch = db.batch()
+        moved_count = 0
+
+        for doc in docs:
+            job_data = doc.to_dict()
+
+            # Verificar la fecha del job
+            try:
+                published_date = pd.to_datetime(job_data.get("published_at")).date()
+            except (ValueError, TypeError, AttributeError):
+                # Si no tiene fecha válida, asumimos que es antiguo
+                published_date = None
+
+            # Si no es de hoy, mover a jobs_previous
+            if published_date != today_date:
+                previous_doc_ref = previous_collection.document(doc.id)
+                write_batch.set(previous_doc_ref, job_data)
+                delete_batch.delete(doc.reference)
+                moved_count += 1
+
+        if moved_count > 0:
+            write_batch.commit()
+            delete_batch.commit()
+            print(
+                f"✅ Se movieron {moved_count} jobs antiguos de 'jobs_today' a 'jobs_previous'."
+            )
+        else:
+            print("✓ No hay jobs antiguos para mover en 'jobs_today'.")
+
+    except Exception as e:
+        print(f"❌ Error al mover jobs antiguos: {e}")
 
 
 def save_rejected_jobs_to_firestore(jobs_list):
@@ -216,6 +267,7 @@ def delete_old_documents(collection_name, days_to_keep):
     except Exception as e:
         print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")
 
+
 def delete_old_trends(days_to_keep):
     """
     Elimina documentos de la colección 'trends' que son más antiguos que un número de días.
@@ -258,4 +310,3 @@ def delete_old_trends(days_to_keep):
 
     except Exception as e:
         print(f"❌ Error al limpiar tendencias antiguas de '{collection_name}': {e}")
-
