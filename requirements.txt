@@ -6,3 +6,4 @@ pandas
 dateparser
 python-jobspy
 firebase-admin
+packaging
