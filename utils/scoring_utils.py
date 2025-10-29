@@ -16,7 +16,6 @@ from utils.constants import (
 def pre_filter_jobs(df, verbose=True):
     """
     Aplica filtros iniciales y devuelve tanto el DataFrame filtrado como los rechazados.
-
     Filtros aplicados:
     1. Área no-IT en título
     2. Seniority excluida en título (EXCEPTO si también menciona seniority positiva)
@@ -73,7 +72,6 @@ def pre_filter_jobs(df, verbose=True):
             if not df_rejected.empty
             else 0
         )
-
         print(f"   - Rejected by Area: {rejected_by_area} jobs")
         print(f"   - Rejected by Seniority: {rejected_by_seniority} jobs")
         print(
@@ -89,7 +87,6 @@ def pre_filter_jobs(df, verbose=True):
 def calculate_job_score(row):
     """
     Sistema de scoring 0-100 optimizado.
-
     Escala:
     - 80-100: Excelente (junior IT clarísimo)
     - 65-79: Bueno (junior IT válido)
@@ -120,7 +117,64 @@ def calculate_job_score(row):
         score_details["reason"] = "No IT signals found"
         return 0, score_details
 
-    # ===== ⚠️ PENALIZACIÓN: SOLO señales débiles  =====
+    # ===== SENIORITY JR/TRAINEE (PRIORIDAD #1) =====
+    if has_positive_seniority:
+        # Si tiene buen contexto IT, bonus alto
+        if len(it_signals_found) >= 2 or strong_tech_signals_found or strong_role_found:
+            bonus = 30  # Alto para que llegue a 80+
+            score += bonus
+            score_details["bonus_seniority_strong"] = bonus
+        # Si tiene al menos 1 señal IT o rol fuerte, bonus moderado
+        elif len(it_signals_found) >= 1 or strong_role_found:
+            bonus = 22
+            score += bonus
+            score_details["bonus_seniority_moderate"] = bonus
+        # Si solo tiene señales débiles, bonus mínimo pero válido
+        else:
+            bonus = 15
+            score += bonus
+            score_details["bonus_seniority_weak"] = bonus
+
+    # ===== ROLES FUERTES =====
+    if strong_role_found:
+        bonus = 18
+        score += bonus
+        score_details["strong_role_signal"] = bonus
+        score_details["strong_roles_found"] = sorted(
+            _REGEX_STRONG_ROLE_SIGNALS.findall(title)
+        )[:3]
+
+    # ===== BONUS: "IT" EXPLÍCITO EN TÍTULO =====
+    has_it_in_title = bool(re.search(r"\bit\b", title, re.IGNORECASE))
+    if has_it_in_title:
+        bonus = 15
+        score += bonus
+        score_details["bonus_it_in_title"] = bonus
+
+    # ===== TECNOLOGÍAS ESPECÍFICAS (muy confiables) =====
+    if strong_tech_signals_found:
+        bonus = min(len(strong_tech_signals_found) * 6, 22)
+        score += bonus
+        score_details["bonus_strong_tech"] = bonus
+        score_details["strong_tech_count"] = len(strong_tech_signals_found)
+        score_details["strong_tech_found"] = sorted(strong_tech_signals_found)[:5]
+
+    # ===== SEÑALES IT GENERALES =====
+    if it_signals_found:
+        bonus = min(len(it_signals_found) * 1.5, 18)
+        score += bonus
+        score_details["bonus_it_signals"] = bonus
+        score_details["it_signals_count"] = len(it_signals_found)
+        score_details["it_signals_found"] = sorted(it_signals_found)[:10]
+
+    # ===== SEÑALES DÉBILES =====
+    if weak_it_signals_found:
+        bonus = min(len(weak_it_signals_found) * 0.5, 5)
+        score += bonus
+        score_details["bonus_weak_signals"] = bonus
+        score_details["weak_signals_found"] = sorted(weak_it_signals_found)
+
+    # ===== ⚠️ PENALIZACIÓN: SOLO señales débiles sin contexto =====
     if (
         weak_it_signals_found
         and not it_signals_found
@@ -128,50 +182,18 @@ def calculate_job_score(row):
         and not has_positive_seniority
         and not strong_role_found
     ):
-        penalty = 25
+        penalty = 18
         score -= penalty
         score_details["penalty_only_weak_signals"] = -penalty
 
-    # ===== SENIORITY =====
-    # Bonus por junior (solo si tiene señales IT reales)
-    if (len(it_signals_found) >= 2 or strong_tech_signals_found) and has_positive_seniority:
-        bonus = 25
-        score += bonus
-        score_details["bonus_seniority"] = bonus
-
-    # ===== ROLES FUERTES =====
-    if strong_role_found:
-        bonus = 15
-        score += bonus
-        score_details["strong_role_signal"] = bonus
-        score_details["strong_roles_found"] = sorted(
-            _REGEX_STRONG_ROLE_SIGNALS.findall(title)
-        )[:3]
-
-    # ===== IT SIGNALS =====
-    if it_signals_found:
-        bonus = min(len(it_signals_found) * 2, 20)
-        score += bonus
-        score_details["bonus_it_signals"] = bonus
-        score_details["it_signals_count"] = len(it_signals_found)
-        score_details["it_signals_found"] = sorted(it_signals_found)[:10]
-
-    if weak_it_signals_found:
-        bonus = min(len(weak_it_signals_found) * 0.5, 5)
-        score += bonus
-        score_details["bonus_weak_signals"] = bonus
-        score_details["weak_signals_found"] = sorted(weak_it_signals_found)
-
-    if strong_tech_signals_found:
-        bonus = min(len(strong_tech_signals_found) * 12, 30)
-        score += bonus
-        score_details["bonus_strong_tech"] = bonus
-        score_details["strong_tech_count"] = len(strong_tech_signals_found)
-        score_details["strong_tech_found"] = sorted(strong_tech_signals_found)[:5]
-
     # ===== PENALIZACIÓN: MUY POCAS SEÑALES =====
-    if len(it_signals_found) < 2 and not strong_tech_signals_found:
-        penalty = 15
+    total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
+    if (
+        total_strong_signals < 2
+        and not strong_tech_signals_found
+        and not strong_role_found
+    ):
+        penalty = 10
         score -= penalty
         score_details["penalty_few_signals"] = -penalty
 
@@ -179,43 +201,38 @@ def calculate_job_score(row):
     if (
         has_ambiguous_role
         and not strong_tech_signals_found
-        and len(it_signals_found) < 2
+        and total_strong_signals < 2
         and not has_positive_seniority
+        and not strong_role_found
     ):
-        penalty = 25
+        penalty = 18
         score -= penalty
         score_details["penalty_ambiguous"] = -penalty
         score_details["ambiguous_roles_found"] = sorted(
             _REGEX_AMBIGUOUS_ROLES.findall(title)
         )[:3]
 
-    # ===== PENALIZACIÓN: ÁREA EXCLUIDA EN DESCRIPCIÓN =====
-    excluded_area_in_description = set(_REGEX_AREA_PREFILTER.findall(description))
-    if excluded_area_in_description and not strong_tech_signals_found:
-        penalty = 30
-        score -= penalty
-        score_details["penalty_excluded_area_in_description"] = -penalty
-        score_details["excluded_area_found_in_description"] = sorted(
-            excluded_area_in_description
-        )
-
-    # ===== EXPERIENCIA =====
+    # ===== EXPERIENCIA SENIOR =====
     should_penalize, years_required = has_senior_experience_requirement(
         full_text, has_positive_seniority
     )
-
     if should_penalize:
-        penalty = 20
+        penalty = 28
         score -= penalty
         score_details["penalty_experience"] = -penalty
         score_details["years_required"] = years_required
 
     # ===== BONUS: Múltiples señales de calidad =====
-    total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
     if total_strong_signals >= 5:
-        bonus = min(total_strong_signals - 4, 10)
+        bonus = min((total_strong_signals - 4) * 2, 12)
         score += bonus
         score_details["bonus_rich_description"] = bonus
+
+    # ===== BONUS ADICIONAL: Combinación perfecta =====
+    if has_positive_seniority and strong_role_found and strong_tech_signals_found:
+        bonus = 10
+        score += bonus
+        score_details["bonus_perfect_match"] = bonus
 
     # Limitar entre 0-100
     final_score = max(0, min(100, score))
@@ -263,9 +280,14 @@ def has_senior_experience_requirement(text, has_junior_terms):
     return False, max_years_found if found_senior_req else 0
 
 
-def filter_jobs_with_scoring(df, min_score=50, verbose=True):
+def filter_jobs_with_scoring(df, min_score=60, verbose=True):
     """
     Filtrado basado en pre-filtros y scoring. Devuelve jobs aceptados y rechazados.
+
+    Args:
+        df: DataFrame con los jobs
+        min_score: Score mínimo para aceptar (default: 60, configurable)
+        verbose: Mostrar estadísticas detalladas
     """
     if df.empty:
         if verbose:
@@ -319,8 +341,21 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
             print(
                 f"   - Max: {df_scored['score'].max():.0f}, "
                 f"Mean: {df_scored['score'].mean():.1f}, "
+                f"Median: {df_scored['score'].median():.1f}, "
                 f"Min: {df_scored['score'].min():.0f}"
             )
+
+            # Distribución por tier
+            tiers = df_scored["score_details"].apply(
+                lambda x: x.get("quality_tier", "unknown")
+            )
+            tier_counts = tiers.value_counts()
+            print(f"\n   Quality tiers:")
+            for tier in ["excellent", "good", "review", "reject"]:
+                if tier in tier_counts.index:
+                    count = tier_counts[tier]
+                    pct = count / initial_after_prefilter * 100
+                    print(f"   - {tier.capitalize()}: {count} ({pct:.1f}%)")
 
         print(f"\n✅ Filtering complete:")
         print(f"   - Initial jobs: {initial_total}")
@@ -336,7 +371,20 @@ def filter_jobs_with_scoring(df, min_score=50, verbose=True):
             print(
                 f"   - Max: {df_final['score'].max():.0f}, "
                 f"Mean: {df_final['score'].mean():.1f}, "
+                f"Median: {df_final['score'].median():.1f}, "
                 f"Min: {df_final['score'].min():.0f}"
             )
+
+            # Distribución final por tier
+            final_tiers = df_final["score_details"].apply(
+                lambda x: x.get("quality_tier", "unknown")
+            )
+            final_tier_counts = final_tiers.value_counts()
+            print(f"\n   Accepted jobs by tier:")
+            for tier in ["excellent", "good", "review"]:
+                if tier in final_tier_counts.index:
+                    count = final_tier_counts[tier]
+                    pct = count / final_count * 100
+                    print(f"   - {tier.capitalize()}: {count} ({pct:.1f}%)")
 
     return df_final, all_rejected
