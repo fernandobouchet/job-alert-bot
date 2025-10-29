@@ -1,3 +1,4 @@
+import asyncio
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
@@ -7,6 +8,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 import pandas as pd
 
 from config import TIMEZONE
+from utils.revalidation_utils import revalidate_path
 
 # Inicialización de Firebase Admin
 if not firebase_admin._apps:
@@ -124,11 +126,15 @@ def save_jobs_to_firestore(jobs_list):
         if today_jobs_count > 0:
             today_batch.commit()
             print(f"✅ {today_jobs_count} jobs de hoy guardados en 'jobs_today'.")
+
+            asyncio.create_task(asyncio.to_thread(revalidate_path, "/"))
         if previous_jobs_count > 0:
             previous_batch.commit()
             print(
                 f"✅ {previous_jobs_count} jobs anteriores guardados en 'jobs_previous'."
             )
+        asyncio.create_task(asyncio.to_thread(revalidate_path, "/archive"))
+
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
 
@@ -174,6 +180,7 @@ def move_old_jobs_from_today():
             print(
                 f"✅ Se movieron {moved_count} jobs antiguos de 'jobs_today' a 'jobs_previous'."
             )
+            asyncio.create_task(asyncio.to_thread(revalidate_path, "/archive"))
         else:
             print("✓ No hay jobs antiguos para mover en 'jobs_today'.")
 
