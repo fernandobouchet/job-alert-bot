@@ -12,6 +12,10 @@ SENIOR_EXPERIENCE_PATTERNS = [
     r"at\s*least\s*(\d+)\s*years",
     r"(\d+)\s*-\s*\d+\s*a[ñn]os",
     r"(\d+)\s*-\s*\d+\s*years",
+    r"experiencia\s*de\s*(\d+)\s*a[ñn]os",
+    r"experience\s*of\s*(\d+)\s*years",
+    r"(\d+)\s*a[ñn]os\s*de\s*experiencia",
+    r"(\d+)\s*years\s*of\s*experience",
 ]
 
 POSITIVE_SENIORITY_TERMS = {
@@ -113,8 +117,6 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "accountant",
     "contable",
     "accounting",
-    "auditor",
-    "auditora",
     "treasury",
     "tesoreria",
     "tesorero",
@@ -311,13 +313,10 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "medical assistant",
     # Otros
     "seguridad fisica",
-    "security guard",
-    "vigilante",
     "land surveyor",
     "agente inmobiliario",
     "real estate",
     "property manager",
-    "chef",
     "cocinero",
     "bartender",
     "camarero",
@@ -446,7 +445,10 @@ STRONG_TECH_SIGNALS = {
     "k8s",
     "sql",
     "postgresql",
+    "mysql",
     "mongodb",
+    "redis",
+    "elasticsearch",
     "figma",
     "sketch",
     "c++",
@@ -456,6 +458,14 @@ STRONG_TECH_SIGNALS = {
     "fastapi",
     "laravel",
     "ruby on rails",
+    "terraform",
+    "jenkins",
+    "ansible",
+    "pandas",
+    "spark",
+    "tableau",
+    "power bi",
+    "kafka",
 }
 
 STRONG_ROLE_SIGNALS = {
@@ -519,6 +529,24 @@ STRONG_ROLE_SIGNALS = {
     "diseñadora ux/ui",
     "diseñador de producto",
     "diseñadora de producto",
+    # Support & Infrastructure
+    "soporte técnico informático",
+    "soporte tecnico informatico",
+    "técnico de soporte it",
+    "tecnico de soporte it",
+    "especialista en soporte it",
+    "técnico informático",
+    "tecnico informatico",
+    "administrador de sistemas",
+    "técnico de redes",
+    "tecnico de redes",
+    "it support specialist",
+    "technical support specialist",
+    "help desk technician",
+    "service desk analyst",
+    "systems administrator",
+    "network technician",
+    "desktop support",
 }
 
 AMBIGUOUS_ROLES = {
@@ -537,7 +565,6 @@ AMBIGUOUS_ROLES = {
     "agile coach",
     "owner",
 }
-
 
 REQUIRED_IT_SIGNALS = (
     # Extraer todos los keywords de categorías
@@ -613,6 +640,9 @@ REQUIRED_IT_SIGNALS = (
         "pentester",
         "soc analyst",
         "infosec",
+        "seguridad informática",
+        "seguridad informatica",
+        "information security",
         # Soporte
         "soporte técnico",
         "technical support",
@@ -643,6 +673,13 @@ REQUIRED_IT_SIGNALS = (
         # Redes
         "network analyst",
         "analista de redes",
+        "redes informáticas",
+        "redes informaticas",
+        "administración de redes",
+        "administracion de redes",
+        "network administration",
+        "infraestructura de red",
+        "network infrastructure",
         # Tecnologías adicionales
         "sqlserver",
         "puppet",
@@ -661,6 +698,12 @@ REQUIRED_IT_SIGNALS = (
         "linux",
         "unix",
         "windows server",
+        # Sistemas Operativos
+        "sistemas operativos",
+        "operating systems",
+        "sistema operativo windows",
+        "sistema operativo linux",
+        "linux server",
         # Conceptos
         "etl",
         "data warehouse",
@@ -681,10 +724,11 @@ REQUIRED_IT_SIGNALS = (
         "containers",
         "contenedores",
         "software",
-        "microservicios",
         "test-driven development",
         "integración continua",
-        # Keywords movidos de TAGS_KEYWORDS para mantener el scoring
+        "continuous integration",
+        "continuous deployment",
+        # Roles específicos
         "full stack",
         "tester",
         "desarrollador frontend",
@@ -736,6 +780,7 @@ REQUIRED_IT_SIGNALS = (
         "ux researcher",
         "interaction designer",
         "visual designer",
+        # Lenguajes adicionales
         "c++",
         "golang",
         "ruby",
@@ -748,6 +793,7 @@ REQUIRED_IT_SIGNALS = (
         "powershell",
         "dart",
         "elixir",
+        # Frameworks adicionales
         "nextjs",
         "nodejs",
         "spring boot",
@@ -764,6 +810,7 @@ REQUIRED_IT_SIGNALS = (
         "rails",
         "asp.net",
         "blazor",
+        # Data tools
         "numpy",
         "looker",
         "pyspark",
@@ -780,9 +827,11 @@ REQUIRED_IT_SIGNALS = (
         "databricks",
         "master data",
         "mdm",
+        # Design tools
         "invision",
         "zeplin",
         "framer",
+        # Cloud & DevOps
         "google cloud",
         "k8s",
         "git",
@@ -800,6 +849,7 @@ REQUIRED_IT_SIGNALS = (
         "cloudformation",
         "pulumi",
         "ftth",
+        # Databases
         "postgresql",
         "oracle",
         "mssql",
@@ -810,6 +860,7 @@ REQUIRED_IT_SIGNALS = (
         "mariadb",
         "sqlite",
         "firestore",
+        # API & Architecture
         "rest",
         "restful",
         "graphql",
@@ -817,15 +868,50 @@ REQUIRED_IT_SIGNALS = (
         "tdd",
         "bdd",
         "devsecops",
-        "continuous integration",
-        "continuous deployment",
-        # Keywords para roles de Soporte de Producto / TI
+        # Soporte específico
         "incidencias",
         "ticket",
         "tickets",
         "ticketing",
-        "Zoho",
+        "zoho",
         "chatbot",
+        "soporte técnico informático",
+        "soporte tecnico informatico",
+        "soporte técnico it",
+        "soporte tecnico it",
+        "soporte it",
+        "it support",
+        "technical support it",
+        # Active Directory
+        "active directory",
+        "controlador de dominio",
+        "domain controller",
+        "azure ad",
+        "entra id",
+        # Cloud storage IT
+        "administración de onedrive",
+        "administracion de onedrive",
+        "onedrive administration",
+        "sharepoint administration",
+        "administración de sharepoint",
+        # Gestión IT
+        "gestión de inventario it",
+        "gestión de inventario ti",
+        "it inventory management",
+        "gestión de activos it",
+        "it asset management",
+        "sistema de tickets",
+        "ticketing system",
+        "gestión de incidencias it",
+        "it incident management",
+        "firewall configuration",
+        "configuración de firewall",
+        # Hardware IT
+        "mantenimiento de equipos informáticos",
+        "mantenimiento de equipos informaticos",
+        "computer hardware maintenance",
+        "instalación de hardware",
+        "hardware installation",
     ]
 )
 
