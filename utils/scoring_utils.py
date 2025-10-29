@@ -121,11 +121,11 @@ def calculate_job_score(row):
     if has_positive_seniority:
         # Si tiene buen contexto IT, bonus alto
         if len(it_signals_found) >= 2 or strong_tech_signals_found or strong_role_found:
-            bonus = 30  # Alto para que llegue a 80+
+            bonus = 30
             score += bonus
             score_details["bonus_seniority_strong"] = bonus
-        # Si tiene al menos 1 señal IT o rol fuerte, bonus moderado
-        elif len(it_signals_found) >= 1 or strong_role_found:
+        # Si tiene al menos 2 señales IT o rol fuerte, bonus moderado
+        elif len(it_signals_found) >= 2 or strong_role_found:
             bonus = 22
             score += bonus
             score_details["bonus_seniority_moderate"] = bonus
