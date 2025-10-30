@@ -86,13 +86,14 @@ def pre_filter_jobs(df, verbose=True):
 
 def calculate_job_score(row):
     """
-    Sistema de scoring 0-100 optimizado.
+    Sistema de scoring 0-100 optimizado para trabajos IT Jr/Trainee.
+
     Escala:
-    - 80-100: Excelente (junior IT clarísimo)
-    - 65-79: Bueno (junior IT válido)
-    - 50-64: Aceptable (revisar)
-    - 30-49: Dudoso
-    - 0-29: Rechazar
+    - 75-100: Excelente - IT Jr claro con múltiples indicadores
+    - 60-74: Bueno - IT Jr con indicadores suficientes
+    - 45-59: Dudoso - Señales mixtas o insuficientes
+    - 0-44: Rechazar - No cumple requisitos mínimos
+
     """
     score = 50
     score_details = {"base": 50}
@@ -101,7 +102,7 @@ def calculate_job_score(row):
     description = str(row.get("description", "")).lower()
     full_text = f"{title} {description}"
 
-    # Detectar señales
+    # ===== DETECCIÓN DE SEÑALES =====
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
     weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_tech_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
@@ -111,49 +112,55 @@ def calculate_job_score(row):
 
     all_signals = it_signals_found | weak_it_signals_found
 
-    # ===== 🚨 BLOQUEO: SIN SEÑALES IT =====
-    if not all_signals:
+    # ===== 🚨 BLOQUEO CRÍTICO: SIN SEÑALES IT =====
+    if not all_signals and not strong_role_found:
         score_details["fatal_no_it_signals"] = True
         score_details["reason"] = "No IT signals found"
         return 0, score_details
 
-    # ===== SENIORITY JR/TRAINEE (PRIORIDAD #1) =====
+    # ===== CALCULAR FUERZA DEL CONTEXTO IT =====
+    total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
+    has_strong_it_evidence = (
+        strong_role_found
+        or len(strong_tech_signals_found) >= 1
+        or total_strong_signals >= 3
+    )
+
+    # Verificar si "IT" está explícito en el título
+    has_it_in_title = bool(re.search(r"\bit\b", title, re.IGNORECASE))
+
+    # ===== SENIORITY JR/TRAINEE (MÁXIMA PRIORIDAD) =====
     if has_positive_seniority:
-        # Si tiene buen contexto IT, bonus alto
-        if len(it_signals_found) >= 2 or strong_tech_signals_found or strong_role_found:
+        if has_strong_it_evidence:
+            # Junior con contexto IT fuerte = excelente
             bonus = 30
             score += bonus
             score_details["bonus_seniority_strong"] = bonus
-        # Si tiene al menos 2 señales IT o rol fuerte, bonus moderado
-        elif len(it_signals_found) >= 2 or strong_role_found:
-            bonus = 22
-            score += bonus
-            score_details["bonus_seniority_moderate"] = bonus
-        # Si solo tiene señales débiles, bonus mínimo pero válido
         else:
-            bonus = 15
+            # Junior sin evidencia IT clara = bajo bonus
+            bonus = 10
             score += bonus
             score_details["bonus_seniority_weak"] = bonus
 
-    # ===== ROLES FUERTES =====
+    # ===== ROLES TÉCNICOS CLAROS =====
     if strong_role_found:
-        bonus = 18
+        bonus = 20
         score += bonus
-        score_details["strong_role_signal"] = bonus
+        score_details["bonus_strong_role"] = bonus
         score_details["strong_roles_found"] = sorted(
             _REGEX_STRONG_ROLE_SIGNALS.findall(title)
         )[:3]
 
     # ===== BONUS: "IT" EXPLÍCITO EN TÍTULO =====
-    has_it_in_title = bool(re.search(r"\bit\b", title, re.IGNORECASE))
     if has_it_in_title:
         bonus = 15
         score += bonus
         score_details["bonus_it_in_title"] = bonus
 
-    # ===== TECNOLOGÍAS ESPECÍFICAS (muy confiables) =====
+    # ===== TECNOLOGÍAS ESPECÍFICAS =====
     if strong_tech_signals_found:
-        bonus = min(len(strong_tech_signals_found) * 6, 22)
+        # Tecnologías concretas son señales muy fuertes
+        bonus = min(len(strong_tech_signals_found) * 5, 20)
         score += bonus
         score_details["bonus_strong_tech"] = bonus
         score_details["strong_tech_count"] = len(strong_tech_signals_found)
@@ -161,7 +168,8 @@ def calculate_job_score(row):
 
     # ===== SEÑALES IT GENERALES =====
     if it_signals_found:
-        bonus = min(len(it_signals_found) * 1.5, 18)
+        # Términos IT generales (roles, conceptos, herramientas)
+        bonus = min(len(it_signals_found) * 1.5, 15)
         score += bonus
         score_details["bonus_it_signals"] = bonus
         score_details["it_signals_count"] = len(it_signals_found)
@@ -169,35 +177,57 @@ def calculate_job_score(row):
 
     # ===== SEÑALES DÉBILES =====
     if weak_it_signals_found:
-        bonus = min(len(weak_it_signals_found) * 0.5, 5)
+        # Peso mínimo porque son muy ambiguas
+        bonus = min(len(weak_it_signals_found) * 0.3, 3)
         score += bonus
         score_details["bonus_weak_signals"] = bonus
-        score_details["weak_signals_found"] = sorted(weak_it_signals_found)
+        score_details["weak_signals_count"] = len(weak_it_signals_found)
 
-    # ===== ⚠️ PENALIZACIÓN: SOLO señales débiles sin contexto =====
+    # ===== BONUS: CONTENIDO RICO EN IT =====
+    if total_strong_signals >= 5:
+        bonus = min((total_strong_signals - 4) * 2, 10)
+        score += bonus
+        score_details["bonus_rich_it_content"] = bonus
+
+    # ===== BONUS: COMBINACIÓN PERFECTA =====
+    if has_positive_seniority and strong_role_found and strong_tech_signals_found:
+        bonus = 10
+        score += bonus
+        score_details["bonus_perfect_match"] = bonus
+
+    # ===== PENALIZACIONES =====
+
+    # 1. Solo señales débiles sin contexto
     if (
         weak_it_signals_found
         and not it_signals_found
         and not strong_tech_signals_found
-        and not has_positive_seniority
         and not strong_role_found
     ):
-        penalty = 18
+        penalty = 20
         score -= penalty
         score_details["penalty_only_weak_signals"] = -penalty
 
-    # ===== PENALIZACIÓN: MUY POCAS SEÑALES =====
-    total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
+    # 2. Título sin indicadores IT (solo si tiene "junior")
+    elif has_positive_seniority and not strong_role_found and not has_it_in_title:
+        # "Junior" en título pero sin rol IT claro
+        title_has_tech = bool(_REGEX_STRONG_TECH_SIGNALS.search(title))
+        if not title_has_tech:
+            penalty = 15
+            score -= penalty
+            score_details["penalty_title_no_it"] = -penalty
+
+    # 3. Pocas señales IT (no aplicar si ya penalizó por solo débiles)
     if (
         total_strong_signals < 2
-        and not strong_tech_signals_found
         and not strong_role_found
+        and "penalty_only_weak_signals" not in score_details
     ):
-        penalty = 10
+        penalty = 12
         score -= penalty
         score_details["penalty_few_signals"] = -penalty
 
-    # ===== ROLES AMBIGUOS =====
+    # 4. Roles ambiguos sin validación
     if (
         has_ambiguous_role
         and not strong_tech_signals_found
@@ -207,43 +237,31 @@ def calculate_job_score(row):
     ):
         penalty = 18
         score -= penalty
-        score_details["penalty_ambiguous"] = -penalty
+        score_details["penalty_ambiguous_role"] = -penalty
         score_details["ambiguous_roles_found"] = sorted(
             _REGEX_AMBIGUOUS_ROLES.findall(title)
         )[:3]
 
-    # ===== EXPERIENCIA SENIOR =====
+    # 5. Experiencia senior requerida
     should_penalize, years_required = has_senior_experience_requirement(
         full_text, has_positive_seniority
     )
     if should_penalize:
-        penalty = 28
+        penalty = 30  # Crítico para el objetivo Jr/Trainee
         score -= penalty
-        score_details["penalty_experience"] = -penalty
+        score_details["penalty_senior_experience"] = -penalty
         score_details["years_required"] = years_required
 
-    # ===== BONUS: Múltiples señales de calidad =====
-    if total_strong_signals >= 5:
-        bonus = min((total_strong_signals - 4) * 2, 12)
-        score += bonus
-        score_details["bonus_rich_description"] = bonus
-
-    # ===== BONUS ADICIONAL: Combinación perfecta =====
-    if has_positive_seniority and strong_role_found and strong_tech_signals_found:
-        bonus = 10
-        score += bonus
-        score_details["bonus_perfect_match"] = bonus
-
-    # Limitar entre 0-100
+    # ===== NORMALIZACIÓN =====
     final_score = max(0, min(100, score))
 
-    # Agregar categoría para fácil filtrado
-    if final_score >= 80:
+    # Categorización
+    if final_score >= 75:
         score_details["quality_tier"] = "excellent"
-    elif final_score >= 65:
+    elif final_score >= 60:
         score_details["quality_tier"] = "good"
-    elif final_score >= 50:
-        score_details["quality_tier"] = "review"
+    elif final_score >= 45:
+        score_details["quality_tier"] = "doubtful"
     else:
         score_details["quality_tier"] = "reject"
 
