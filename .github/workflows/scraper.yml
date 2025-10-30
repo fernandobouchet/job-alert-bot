@@ -17,6 +17,8 @@ jobs:
     env:
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      REVALIDATION_SECRET: ${{ secrets.REVALIDATION_SECRET }}
+      BASE_URL: ${{ secrets.BASE_URL }}
 
     steps:
       - name: Checkout Code
