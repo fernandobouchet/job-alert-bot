@@ -12,7 +12,7 @@ TIMEZONE = "America/Argentina/Buenos_Aires"
 
 SOURCES_BYPASS_SCORING = ["EducaciónIT", "GetOnBoard"]
 
-JOBSPY_OURS_OLD = 14
+JOBSPY_OURS_OLD = 11
 
 JOBSPY_SEARCH_TERMS = (
     '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR associate) '
