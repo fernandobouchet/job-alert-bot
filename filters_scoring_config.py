@@ -570,6 +570,8 @@ STRONG_ROLE_SIGNALS = {
     "diseñador de producto",
     "diseñadora de producto",
     # Support & Infrastructure
+    "Data Support Analyst",
+    "Analista de Soporte de Datos",
     "soporte técnico informático",
     "soporte tecnico informatico",
     "técnico de soporte it",

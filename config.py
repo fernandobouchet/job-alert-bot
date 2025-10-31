@@ -8,7 +8,7 @@ DAYS_OLD_THRESHOLD = 1
 
 TIMEZONE = "America/Argentina/Buenos_Aires"
 
-JOBSPY_OURS_OLD = 11
+JOBSPY_HOURS_OLD = 11
 
 JOBSPY_SEARCH_TERMS = (
     '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate OR associate) '
@@ -48,7 +48,7 @@ FETCHER_CONFIG = {
         "location": "Buenos Aires, AR",
         "country_indeed": "Argentina",
         "results_wanted": 50,
-        "hours_old": JOBSPY_OURS_OLD,
+        "hours_old": JOBSPY_HOURS_OLD,
         "linkedin_fetch_description": True,
         "search_terms": JOBSPY_SEARCH_TERMS,
     },
