@@ -17,7 +17,7 @@ from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
 from utils.firestore_utils import (
     get_new_jobs,
     save_jobs_to_firestore,
-    save_daily_trend_data,
+    save_monthly_trend_data,
     delete_old_documents,
     delete_old_trends,
 )
@@ -133,9 +133,9 @@ async def scrape(sources, channel_id, bot):
                 for tag in tag_group
             ]
             tags_counts = Counter(tags_list)
-            day_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m_%d")
+            month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
             trend_data = {"total_jobs": len(df_accepted), "tags": dict(tags_counts)}
-            save_daily_trend_data(trend_data, day_key)
+            save_monthly_trend_data(trend_data, month_key)
 
         await send_jobs(bot, channel_id, accepted_jobs_list)
 

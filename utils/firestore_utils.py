@@ -6,6 +6,7 @@ from google.cloud.firestore_v1.field_path import FieldPath
 from google.cloud.firestore_v1.base_query import FieldFilter
 import pandas as pd
 import asyncio
+from collections import Counter
 
 from config import TIMEZONE
 from utils.revalidation_utils import revalidate_path
@@ -113,19 +114,45 @@ async def save_jobs_to_firestore(jobs_list):
         print(f"❌ Error al guardar jobs en Firestore: {e}")
 
 
-def save_daily_trend_data(trend_data, day_key):
+def save_monthly_trend_data(trend_data, month_key):
+    """
+    Guarda o actualiza las tendencias de un mes.
+    Si el documento del mes ya existe, actualiza los contadores.
+    Si no existe, lo crea.
+    """
     if not trend_data:
         return
 
     trends_collection = db.collection("trends")
-    doc_ref = trends_collection.document(day_key)
-
-    # Se añade un timestamp para facilitar el borrado futuro
-    trend_data["date_saved"] = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
+    doc_ref = trends_collection.document(month_key)
 
     try:
-        doc_ref.set(trend_data)
-        print(f"📈 Tendencias para {day_key} guardadas en Firestore.")
+        doc = doc_ref.get()
+        if doc.exists:
+            # El documento existe, actualizar
+            current_data = doc.to_dict()
+            current_total = current_data.get("total_jobs", 0)
+            new_total = trend_data.get("total_jobs", 0)
+
+            current_tags = Counter(current_data.get("tags", {}))
+            new_tags = Counter(trend_data.get("tags", {}))
+            current_tags.update(new_tags)
+
+            updated_data = {
+                "total_jobs": current_total + new_total,
+                "tags": dict(current_tags),
+                "date_saved": datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat(),
+            }
+            doc_ref.set(updated_data)
+            print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
+        else:
+            # El documento no existe, crearlo
+            trend_data["date_saved"] = datetime.now(
+                zoneinfo.ZoneInfo(TIMEZONE)
+            ).isoformat()
+            doc_ref.set(trend_data)
+            print(f"📈 Tendencias para {month_key} creadas en Firestore.")
+
     except Exception as e:
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
 
