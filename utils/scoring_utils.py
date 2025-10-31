@@ -209,7 +209,7 @@ def calculate_job_score(row):
         score_details["penalty_only_weak_signals"] = -penalty
 
     # 2. Título sin indicadores IT (solo si tiene "junior")
-    elif has_positive_seniority and not strong_role_found and not has_it_in_title:
+    if has_positive_seniority and not strong_role_found and not has_it_in_title:
         # "Junior" en título pero sin rol IT claro
         title_has_tech = bool(_REGEX_STRONG_TECH_SIGNALS.search(title))
         if not title_has_tech:
@@ -261,7 +261,7 @@ def calculate_job_score(row):
     elif final_score >= 60:
         score_details["quality_tier"] = "good"
     elif final_score >= 45:
-        score_details["quality_tier"] = "doubtful"
+        score_details["quality_tier"] = "review"
     else:
         score_details["quality_tier"] = "reject"
 
