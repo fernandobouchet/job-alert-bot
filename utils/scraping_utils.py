@@ -52,6 +52,11 @@ async def scrape(sources, channel_id, bot):
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
+    # LOGGING DE FECHAS ANTES DE NORMALIZACIÓN
+    print("\n📝 Fechas recibidas antes de la normalización:")
+    print(df[["source", "published_at"]].to_string())
+
+
     # 3. NORMALIZACIÓN DE FECHAS
     df["published_at"] = df["published_at"].apply(safe_parse_date_to_ISO)
     df["published_at"] = pd.to_datetime(df["published_at"], errors="coerce")
