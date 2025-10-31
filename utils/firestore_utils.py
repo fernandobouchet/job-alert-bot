@@ -1,4 +1,3 @@
-import asyncio
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
@@ -6,6 +5,7 @@ import zoneinfo
 from google.cloud.firestore_v1.field_path import FieldPath
 from google.cloud.firestore_v1.base_query import FieldFilter
 import pandas as pd
+import asyncio
 
 from config import TIMEZONE
 from utils.revalidation_utils import revalidate_path
@@ -18,9 +18,7 @@ if not firebase_admin._apps:
         print("✅ Firebase Admin SDK inicializado.")
     except Exception as e:
         print(f"❌ Error al inicializar Firebase Admin SDK: {e}")
-        print(
-            "Asegúrate de que GOOGLE_APPLICATION_CREDENTIALS esté configurado correctamente."
-        )
+
 
 db = firestore.client()
 
@@ -28,7 +26,6 @@ db = firestore.client()
 def get_new_jobs(jobs_list):
     """
     Filtra una lista de trabajos y devuelve solo aquellos que no existen en Firestore.
-    Trabaja en lotes de 30 por la limitación del operador 'in'.
     """
     if not jobs_list:
         return []
@@ -43,32 +40,15 @@ def get_new_jobs(jobs_list):
     job_ids_list = list(job_ids_to_check)
 
     try:
-        # Lotes de 30
+        # Verificar en lotes de 30
         for i in range(0, len(job_ids_list), 30):
             chunk = job_ids_list[i : i + 30]
 
-            today_refs = [
-                db.collection("jobs_today").document(doc_id) for doc_id in chunk
-            ]
-            previous_refs = [
-                db.collection("jobs_previous").document(doc_id) for doc_id in chunk
-            ]
-
-            # Buscar en jobs_today
-            docs_today = (
-                db.collection("jobs_today")
-                .where(filter=FieldFilter(FieldPath.document_id(), "in", today_refs))
-                .stream()
+            docs = db.get_all(
+                [db.collection("jobs").document(doc_id) for doc_id in chunk]
             )
-            existing_ids.update(doc.id for doc in docs_today)
 
-            # Buscar en jobs_previous
-            docs_previous = (
-                db.collection("jobs_previous")
-                .where(filter=FieldFilter(FieldPath.document_id(), "in", previous_refs))
-                .stream()
-            )
-            existing_ids.update(doc.id for doc in docs_previous)
+            existing_ids.update(doc.id for doc in docs if doc.exists)
 
     except Exception as e:
         print(f"❌ Error al verificar trabajos en Firestore: {e}")
@@ -81,19 +61,14 @@ def get_new_jobs(jobs_list):
     return new_jobs
 
 
-def save_jobs_to_firestore(jobs_list):
+async def save_jobs_to_firestore(jobs_list):
     if not jobs_list:
         return
 
-    # Primero, mover jobs antiguos de jobs_today a jobs_previous
-    move_old_jobs_from_today()
-
     print(f"💾 Guardando {len(jobs_list)} jobs en Firestore...")
 
-    today_batch = db.batch()
-    previous_batch = db.batch()
-    today_collection = db.collection("jobs_today")
-    previous_collection = db.collection("jobs_previous")
+    jobs_batch = db.batch()
+    jobs_collection = db.collection("jobs")
     today_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date()
 
     today_jobs_count = 0
@@ -102,115 +77,40 @@ def save_jobs_to_firestore(jobs_list):
     for job in jobs_list:
         job_id = job.get("id")
         if not job_id:
-            print(f"⚠️ Job sin ID encontrado, no se guardará: {job.get('title', 'N/A')}")
+            print(f"⚠️ Job sin ID encontrado: {job.get('title', 'N/A')}")
             continue
 
-        # La fecha ya viene normalizada
-        # La data es pasada en formato panda Timestamp.
         try:
             published_date = pd.to_datetime(job["published_at"]).date()
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, KeyError):
             published_date = today_date
 
-        doc_ref_today = today_collection.document(str(job_id))
-        doc_ref_previous = previous_collection.document(str(job_id))
+        doc_ref_jobs = jobs_collection.document(str(job_id))
+        jobs_batch.set(doc_ref_jobs, job)
 
         if published_date == today_date:
-            today_batch.set(doc_ref_today, job)
             today_jobs_count += 1
         else:
-            previous_batch.set(doc_ref_previous, job)
             previous_jobs_count += 1
 
     try:
-        if today_jobs_count > 0:
-            today_batch.commit()
-            print(f"✅ {today_jobs_count} jobs de hoy guardados en 'jobs_today'.")
+        jobs_batch.commit()
 
-            asyncio.create_task(asyncio.to_thread(revalidate_path, "/"))
+        revalidation_tasks = []
+
+        if today_jobs_count > 0:
+            print(f"✅ {today_jobs_count} jobs de hoy guardados.")
+            revalidation_tasks.append(revalidate_path("/"))
+
         if previous_jobs_count > 0:
-            previous_batch.commit()
-            print(
-                f"✅ {previous_jobs_count} jobs anteriores guardados en 'jobs_previous'."
-            )
-        asyncio.create_task(asyncio.to_thread(revalidate_path, "/archive"))
+            print(f"✅ {previous_jobs_count} jobs anteriores guardados.")
+            revalidation_tasks.append(revalidate_path("/archive"))
+
+        if revalidation_tasks:
+            await asyncio.gather(*revalidation_tasks)
 
     except Exception as e:
         print(f"❌ Error al guardar jobs en Firestore: {e}")
-
-
-def move_old_jobs_from_today():
-    """
-    Revisa los jobs en 'jobs_today' y mueve a 'jobs_previous' aquellos
-    que no son del día actual.
-    """
-    print("🔄 Revisando jobs en 'jobs_today' para mover los antiguos...")
-
-    today_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date()
-    today_collection = db.collection("jobs_today")
-    previous_collection = db.collection("jobs_previous")
-
-    try:
-        docs = today_collection.stream()
-
-        write_batch = db.batch()
-        delete_batch = db.batch()
-        moved_count = 0
-
-        for doc in docs:
-            job_data = doc.to_dict()
-
-            # Verificar la fecha del job
-            try:
-                published_date = pd.to_datetime(job_data.get("published_at")).date()
-            except (ValueError, TypeError, AttributeError):
-                # Si no tiene fecha válida, asumimos que es antiguo
-                published_date = None
-
-            # Si no es de hoy, mover a jobs_previous
-            if published_date != today_date:
-                previous_doc_ref = previous_collection.document(doc.id)
-                write_batch.set(previous_doc_ref, job_data)
-                delete_batch.delete(doc.reference)
-                moved_count += 1
-
-        if moved_count > 0:
-            write_batch.commit()
-            delete_batch.commit()
-            print(
-                f"✅ Se movieron {moved_count} jobs antiguos de 'jobs_today' a 'jobs_previous'."
-            )
-            asyncio.create_task(asyncio.to_thread(revalidate_path, "/archive"))
-        else:
-            print("✓ No hay jobs antiguos para mover en 'jobs_today'.")
-
-    except Exception as e:
-        print(f"❌ Error al mover jobs antiguos: {e}")
-
-
-def save_rejected_jobs_to_firestore(jobs_list):
-    if not jobs_list:
-        return
-
-    print(f"🗑️ Guardando {len(jobs_list)} jobs rechazados en Firestore...")
-    batch = db.batch()
-    rejected_jobs_collection = db.collection("rejected_jobs")
-
-    for job in jobs_list:
-        job_id = job.get("id")
-        if job_id:
-            doc_ref = rejected_jobs_collection.document(str(job_id))
-            batch.set(doc_ref, job)
-        else:
-            print(
-                f"⚠️ Job rechazado sin ID encontrado, no se guardará: {job.get('title', 'N/A')}"
-            )
-
-    try:
-        batch.commit()
-        print(f"✅ {len(jobs_list)} jobs rechazados guardados en Firestore.")
-    except Exception as e:
-        print(f"❌ Error al guardar jobs rechazados en Firestore: {e}")
 
 
 def save_daily_trend_data(trend_data, day_key):
@@ -248,27 +148,36 @@ def delete_old_documents(collection_name, days_to_keep):
         )
         cutoff_iso = cutoff_date.isoformat()
 
-        docs_to_delete = (
-            db.collection(collection_name)
-            .where(filter=FieldFilter("date_scraped", "<", cutoff_iso))
-            .limit(500)
-            .stream()
-        )
+        deleted_total = 0
 
-        batch = db.batch()
-        deleted_count = 0
-        for doc in docs_to_delete:
-            batch.delete(doc.reference)
-            deleted_count += 1
+        # Loop hasta que no haya más documentos que borrar
+        while True:
+            docs_to_delete = list(
+                db.collection(collection_name)
+                .where(filter=FieldFilter("date_scraped", "<", cutoff_iso))
+                .limit(500)
+                .stream()
+            )
 
-        if deleted_count > 0:
+            if not docs_to_delete:
+                break
+
+            batch = db.batch()
+            for doc in docs_to_delete:
+                batch.delete(doc.reference)
+
             batch.commit()
+            deleted_total += len(docs_to_delete)
+
+            print(f"  Eliminados {len(docs_to_delete)} documentos...")
+
+        if deleted_total > 0:
             print(
-                f"✅ Se eliminaron {deleted_count} documentos antiguos de '{collection_name}'."
+                f"✅ Se eliminaron {deleted_total} documentos antiguos de '{collection_name}'."
             )
         else:
             print(
-                f"No se encontraron documentos antiguos para eliminar en '{collection_name}'."
+                f"✅ No se encontraron documentos antiguos para eliminar en '{collection_name}'."
             )
 
     except Exception as e:
@@ -294,26 +203,34 @@ def delete_old_trends(days_to_keep):
         )
         cutoff_iso = cutoff_date.isoformat()
 
-        docs_to_delete = (
-            db.collection(collection_name)
-            .where(filter=FieldFilter("date_saved", "<", cutoff_iso))
-            .limit(500)  # Limite para no exceder limites de API
-            .stream()
-        )
+        deleted_total = 0
 
-        batch = db.batch()
-        deleted_count = 0
-        for doc in docs_to_delete:
-            batch.delete(doc.reference)
-            deleted_count += 1
+        while True:
+            docs_to_delete = list(
+                db.collection(collection_name)
+                .where(filter=FieldFilter("date_saved", "<", cutoff_iso))
+                .limit(500)
+                .stream()
+            )
 
-        if deleted_count > 0:
+            if not docs_to_delete:
+                break
+
+            batch = db.batch()
+            for doc in docs_to_delete:
+                batch.delete(doc.reference)
+
             batch.commit()
+            deleted_total += len(docs_to_delete)
+
+            print(f"  Eliminadas {len(docs_to_delete)} tendencias...")
+
+        if deleted_total > 0:
             print(
-                f"✅ Se eliminaron {deleted_count} tendencias antiguas de '{collection_name}'."
+                f"✅ Se eliminaron {deleted_total} tendencias antiguas de '{collection_name}'."
             )
         else:
-            print(f"No se encontraron tendencias antiguas para eliminar.")
+            print(f"✅ No se encontraron tendencias antiguas para eliminar.")
 
     except Exception as e:
         print(f"❌ Error al limpiar tendencias antiguas de '{collection_name}': {e}")
