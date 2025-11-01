@@ -199,7 +199,7 @@ def calculate_job_score(row):
         score -= penalty
         score_details["penalty_only_weak_signals"] = -penalty
 
-    if has_positive_seniority and not strong_role_found and not has_it_in_title:
+    if has_positive_seniority and not (strong_role_found or has_it_in_title):
         title_has_tech = bool(_REGEX_STRONG_TECH_SIGNALS.search(title))
         if not title_has_tech:
             penalty = 15
@@ -240,7 +240,7 @@ def calculate_job_score(row):
         score_details["years_required"] = years_required
 
     # NORMALIZACIÓN
-    final_score = max(0, min(100, score))
+    final_score = round(max(0, min(100, score)), 1)
 
     # Categorización
     if final_score >= 75:
