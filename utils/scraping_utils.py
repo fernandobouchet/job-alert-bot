@@ -112,6 +112,10 @@ async def scrape(sources, channel_id, bot):
 
     df_all_scored_jobs = pd.concat([df_accepted, df_rejected], ignore_index=True)
 
+    # Eliminar campos normalizados antes de guardar en Firestore
+    columns_to_drop = ["title_normalized", "description_normalized", "full_text_normalized"]
+    df_all_scored_jobs.drop(columns=columns_to_drop, errors="ignore", inplace=True)
+
     # 8. GUARDAR TODOS LOS JOBS NUEVOS (aceptados y rechazados)
     all_new_jobs_list = df_all_scored_jobs.to_dict("records")
 
