@@ -88,8 +88,6 @@ EXCLUDED_SENIORITYS = [
     "arquitecto",
     "expert",
     "experto",
-    "consultor",
-    "consultant",
     # Level indicators
     " ii",
     " iii",
