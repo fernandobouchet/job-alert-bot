@@ -8,6 +8,7 @@ from config import (
     DAYS_OLD_THRESHOLD,
     UPLOAD_TO_FIREBASE,
     ACCEPTED_JOBS_RETENTION_DAYS,
+    REJECTED_JOBS_RETENTION_DAYS,
 )
 from utils.date_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring, normalize_text_series
@@ -100,6 +101,15 @@ async def scrape(sources, channel_id, bot):
     df_accepted, df_rejected = filter_jobs_with_scoring(
         df, min_score=MIN_SCORE, verbose=True
     )
+
+    # Asignar estado antes de guardar
+    if not df_accepted.empty:
+        df_accepted = df_accepted.copy()
+        df_accepted.loc[:, "status"] = "accepted"
+    if not df_rejected.empty:
+        df_rejected = df_rejected.copy()
+        df_rejected.loc[:, "status"] = "rejected"
+
     df_all_scored_jobs = pd.concat([df_accepted, df_rejected], ignore_index=True)
 
     # 8. GUARDAR TODOS LOS JOBS NUEVOS (aceptados y rechazados)
@@ -138,7 +148,14 @@ async def scrape(sources, channel_id, bot):
 
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
-        delete_old_documents("jobs", ACCEPTED_JOBS_RETENTION_DAYS)
+        # Borrar jobs aceptados antiguos
+        delete_old_documents(
+            "jobs", ACCEPTED_JOBS_RETENTION_DAYS, status="accepted"
+        )
+        # Borrar jobs rechazados antiguos (con mayor frecuencia)
+        delete_old_documents(
+            "jobs", REJECTED_JOBS_RETENTION_DAYS, status="rejected"
+        )
         delete_old_trends(ACCEPTED_JOBS_RETENTION_DAYS)
 
 

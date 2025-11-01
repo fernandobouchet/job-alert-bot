@@ -158,7 +158,7 @@ def save_monthly_trend_data(trend_data, month_key):
         print(f"❌ Error al guardar tendencias en Firestore: {e}")
 
 
-def delete_old_documents(collection_name, days_to_keep):
+def delete_old_documents(collection_name, days_to_keep, status=None):
     """
     Elimina documentos de una colección que son más antiguos que un número de días.
     """
@@ -166,8 +166,9 @@ def delete_old_documents(collection_name, days_to_keep):
         print(f"⚠️ La retención de '{collection_name}' está desactivada (días <= 0).")
         return
 
+    status_log = f" con estado '{status}'" if status else ""
     print(
-        f"🧹 Limpiando documentos antiguos de '{collection_name}' (retención: {days_to_keep} días)..."
+        f"🧹 Limpiando documentos antiguos de '{collection_name}'{status_log} (retención: {days_to_keep} días)..."
     )
 
     try:
@@ -180,12 +181,13 @@ def delete_old_documents(collection_name, days_to_keep):
 
         # Loop hasta que no haya más documentos que borrar
         while True:
-            docs_to_delete = list(
-                db.collection(collection_name)
-                .where(filter=FieldFilter("date_scraped", "<", cutoff_iso))
-                .limit(500)
-                .stream()
+            query = db.collection(collection_name).where(
+                filter=FieldFilter("date_scraped", "<", cutoff_iso)
             )
+            if status:
+                query = query.where(filter=FieldFilter("status", "==", status))
+
+            docs_to_delete = list(query.limit(500).stream())
 
             if not docs_to_delete:
                 break
