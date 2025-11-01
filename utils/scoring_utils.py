@@ -171,7 +171,7 @@ def calculate_job_score(row):
 
     # SEÑALES DÉBILES
     if weak_it_signals_found:
-        bonus = min(len(weak_it_signals_found) * 0.3, 3)
+        bonus = min(len(weak_it_signals_found) * 0.5, 3)
         score += bonus
         score_details["bonus_weak_signals"] = bonus
         score_details["weak_signals_count"] = len(weak_it_signals_found)

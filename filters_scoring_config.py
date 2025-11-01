@@ -50,6 +50,9 @@ POSITIVE_SENIORITY_TERMS = {
     "becario",
     "aprendiz",
     "inicial",
+    "asociate",
+    "asociado",
+    "asociada",
 }
 
 EXCLUDED_SENIORITYS = [
@@ -84,7 +87,6 @@ EXCLUDED_SENIORITYS = [
     "principal",
     "staff",
     "architect",
-    "arquiteto",
     "arquitecto",
     "expert",
     "experto",
@@ -382,6 +384,10 @@ TAGS_KEYWORDS = {
         "sre",
         "ux/ui",
         "product design",
+        "cloud engineer",
+        "cybersecurity",
+        "sysadmin",
+        "game developer",
     ],
     "languages": [
         "python",
@@ -394,8 +400,12 @@ TAGS_KEYWORDS = {
         "swift",
         "rust",
         "sql",
+        "php",
+        "c++",
+        "ruby",
+        "dart",
     ],
-    "frameworks": [
+    "technologies": [
         "react",
         "node.js",
         "next.js",
@@ -407,17 +417,16 @@ TAGS_KEYWORDS = {
         "spring",
         "react native",
         "flutter",
-    ],
-    "data_tools": [
         "machine learning",
         "pandas",
         "spark",
         "power bi",
         "tableau",
         "airflow",
-    ],
-    "design_tools": ["figma", "sketch", "adobe xd"],
-    "cloud_devops": [
+        "kafka",
+        "figma",
+        "sketch",
+        "adobe xd",
         "aws",
         "azure",
         "gcp",
@@ -425,15 +434,23 @@ TAGS_KEYWORDS = {
         "kubernetes",
         "terraform",
         "ci/cd",
-    ],
-    "databases": [
         "postgres",
         "mysql",
         "mongodb",
         "redis",
         "elasticsearch",
+        "agile",
+        "scrum",
+        "kanban",
+        "microservices",
+        ".net",
+        "laravel",
+        "jenkins",
+        "sql server",
+        "ios",
+        "android",
+        "unity",
     ],
-    "methodologies": ["agile", "scrum", "kanban", "microservices"],
 }
 
 WEAK_IT_SIGNALS = {
@@ -452,13 +469,9 @@ WEAK_IT_SIGNALS = {
     "testing",
     "pruebas",
     "quality assurance",
-    "chef",
     "agile",
     "scrum",
     "kanban",
-    "mobile",
-    "qa",
-    "product design",
 }
 
 STRONG_TECH_SIGNALS = {
@@ -608,6 +621,10 @@ AMBIGUOUS_ROLES = {
     "owner",
     "consultant",
     "consultor",
+    "consultora",
+    "engineer",
+    "ingeniero",
+    "ingeniera",
 }
 
 REQUIRED_IT_SIGNALS = (
@@ -616,6 +633,7 @@ REQUIRED_IT_SIGNALS = (
     + [
         # Roles generales - Español
         "desarrollador",
+        "desarrolladora",
         "programador",
         "programadora",
         "ingeniero",
@@ -697,6 +715,9 @@ REQUIRED_IT_SIGNALS = (
         "support engineer",
         "it support specialist",
         "technical support specialist",
+        "help desk technician",
+        "service desk analyst",
+        "desktop support",
         # UX/UI
         "user experience",
         "experiencia de usuario",
@@ -731,6 +752,8 @@ REQUIRED_IT_SIGNALS = (
         "network infrastructure",
         "network engineer",
         "network administrator",
+        "network operations",
+        "operaciones de red",
         # Tecnologías adicionales
         "sqlserver",
         "puppet",
@@ -754,6 +777,8 @@ REQUIRED_IT_SIGNALS = (
         "sistema operativo windows",
         "sistema operativo linux",
         "linux server",
+        "windows administration",
+        "administración de windows",
         # Conceptos
         "etl",
         "data warehouse",
@@ -773,6 +798,7 @@ REQUIRED_IT_SIGNALS = (
         "integración continua",
         "continuous integration",
         "continuous deployment",
+        "despliegue continuo",
         # Roles específicos
         "tester",
         "desarrollador frontend",
@@ -797,6 +823,7 @@ REQUIRED_IT_SIGNALS = (
         "platform engineer",
         "business intelligence",
         "analytics engineer",
+        "big data engineer",
         # Lenguajes adicionales
         "c++",
         "ruby",
@@ -809,6 +836,11 @@ REQUIRED_IT_SIGNALS = (
         "powershell",
         "dart",
         "elixir",
+        "clojure",
+        "lua",
+        "matlab",
+        "r language",
+        "r programming",
         # Frameworks adicionales
         "nextjs",
         "spring boot",
@@ -893,7 +925,6 @@ REQUIRED_IT_SIGNALS = (
         # Cloud storage IT
         "administración de onedrive",
         "administracion de onedrive",
-        "onedrive administration",
         "sharepoint administration",
         "administración de sharepoint",
         # Gestión IT
@@ -906,8 +937,24 @@ REQUIRED_IT_SIGNALS = (
         "ticketing system",
         "gestión de incidencias it",
         "it incident management",
+        "resolución de incidentes",
+        "incident resolution",
         "firewall configuration",
         "configuración de firewall",
+        "redes LAN",
+        "lan networks",
+        "redes WAN",
+        "wan networks",
+        "monitorización de redes",
+        "network monitoring",
+        "backup and recovery",
+        "respaldo y recuperación",
+        "disaster recovery",
+        "recuperación ante desastres",
+        "virtualización de servidores",
+        "server virtualization",
+        "hyper-v",
+        "vmware",
         # Hardware IT
         "mantenimiento de equipos informáticos",
         "mantenimiento de equipos informaticos",
