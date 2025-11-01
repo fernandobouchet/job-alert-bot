@@ -1,8 +1,7 @@
 import math
 import zoneinfo
-from datetime import datetime, time
+from datetime import datetime
 import dateparser
-from config import TIMEZONE
 
 
 def safe_parse_date_to_ISO(date):
@@ -12,14 +11,14 @@ def safe_parse_date_to_ISO(date):
     - Siempre devuelve cadena compatible con pd.to_datetime().
     - Quita microsegundos para evitar problemas con pandas.
     """
-    tz = zoneinfo.ZoneInfo(TIMEZONE)
+    tz = zoneinfo.ZoneInfo("UTC")
     now = datetime.now(tz)
 
     if date is None or (isinstance(date, float) and math.isnan(date)):
         return now.replace(microsecond=0).isoformat()
 
     settings = {
-        "TIMEZONE": TIMEZONE,
+        "TIMEZONE": "UTC",
         "RETURN_AS_TIMEZONE_AWARE": True,
         "DATE_ORDER": "YMD",
         "PREFER_DAY_OF_MONTH": "first",

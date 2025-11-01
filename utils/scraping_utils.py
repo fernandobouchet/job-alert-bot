@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from collections import Counter
 from config import (
     DAYS_OLD_THRESHOLD,
-    TIMEZONE,
     UPLOAD_TO_FIREBASE,
     ACCEPTED_JOBS_RETENTION_DAYS,
 )
@@ -64,7 +63,7 @@ async def scrape(sources, channel_id, bot):
     df.dropna(subset=["published_at"], inplace=True)
 
     # 4. FILTRADO POR FECHA (lo antes posible)
-    cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).date() - timedelta(
+    cutoff_date = datetime.now(zoneinfo.ZoneInfo("UTC")).date() - timedelta(
         days=DAYS_OLD_THRESHOLD
     )
     df = df[df["published_at"].dt.date >= cutoff_date]
@@ -95,7 +94,7 @@ async def scrape(sources, channel_id, bot):
     df["modality"] = df["full_text_normalized"].apply(extract_job_modality)
 
     # Marcar fecha y hora del scraping
-    df["date_scraped"] = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
+    df["date_scraped"] = datetime.now(zoneinfo.ZoneInfo("UTC")).isoformat()
 
     # 7. SCORING (todos los jobs pasan por scoring)
     df_accepted, df_rejected = filter_jobs_with_scoring(
@@ -131,7 +130,7 @@ async def scrape(sources, channel_id, bot):
                 for tag in tag_group
             ]
             tags_counts = Counter(tags_list)
-            month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
+            month_key = datetime.now(zoneinfo.ZoneInfo("UTC")).strftime("%Y_%m")
             trend_data = {"total_jobs": len(df_accepted), "tags": dict(tags_counts)}
             save_monthly_trend_data(trend_data, month_key)
 
