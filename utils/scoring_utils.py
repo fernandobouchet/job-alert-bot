@@ -31,19 +31,18 @@ def pre_filter_jobs(df, verbose=True):
     rejection_reasons = {}
 
     for idx, row in df.iterrows():
-        title = str(row.get("title", "")).lower()
+        title = row.get("title_normalized", "")
         rejection_reason = None
 
         # FILTRO 1: Área no-IT
         if _REGEX_AREA_PREFILTER.search(title):
-            # Excepción: no rechazar si contiene un rol de IT fuerte.
+            # Excepción: no rechazar si contiene un rol IT fuerte
             if not _REGEX_STRONG_ROLE_SIGNALS.search(title):
                 matches = _REGEX_AREA_PREFILTER.findall(title)
                 rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
 
         # FILTRO 2: Seniority (solo si pasó filtro de área)
         elif _REGEX_SENIORITY_EXCLUDED.search(title):
-            # Verificar si también tiene términos junior
             if not _REGEX_POSITIVE_SENIORITY.search(title):
                 matches = _REGEX_SENIORITY_EXCLUDED.findall(title)
                 rejection_reason = f"seniority: {', '.join(sorted(set(matches)))}"
@@ -56,7 +55,7 @@ def pre_filter_jobs(df, verbose=True):
     if rejected_indices:
         df_rejected = df.loc[rejected_indices].copy()
         df_rejected["rejection_reason"] = df_rejected.index.map(rejection_reasons)
-        df_filtered = df[~df.index.isin(rejected_indices)].copy()
+        df_filtered = df.drop(index=rejected_indices).copy()
     else:
         df_rejected = pd.DataFrame()
         df_filtered = df.copy()
@@ -87,20 +86,19 @@ def pre_filter_jobs(df, verbose=True):
 def calculate_job_score(row):
     """
     Sistema de scoring 0-100 optimizado para trabajos IT Jr/Trainee.
-
+    Sistema de scoring 0-100 optimizado para trabajos IT Jr/Trainee.
     Escala:
     - 75-100: Excelente - IT Jr claro con múltiples indicadores
     - 60-74: Bueno - IT Jr con indicadores suficientes
     - 45-59: Dudoso - Señales mixtas o insuficientes
     - 0-44: Rechazar - No cumple requisitos mínimos
-
     """
     score = 50
     score_details = {"base": 50}
 
-    title = str(row.get("title", "")).lower()
-    description = str(row.get("description", "")).lower()
-    full_text = f"{title} {description}"
+    # Usar texto normalizado
+    title = row.get("title_normalized", "")
+    full_text = row.get("full_text_normalized", "")
 
     # ===== DETECCIÓN DE SEÑALES =====
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
@@ -112,13 +110,13 @@ def calculate_job_score(row):
 
     all_signals = it_signals_found | weak_it_signals_found
 
-    # ===== 🚨 BLOQUEO CRÍTICO: SIN SEÑALES IT =====
+    # 🚨 BLOQUEO CRÍTICO: SIN SEÑALES IT
     if not all_signals and not strong_role_found:
         score_details["fatal_no_it_signals"] = True
         score_details["reason"] = "No IT signals found"
         return 0, score_details
 
-    # ===== CALCULAR FUERZA DEL CONTEXTO IT =====
+    # CALCULAR FUERZA DEL CONTEXTO IT
     total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
     has_strong_it_evidence = (
         strong_role_found
@@ -127,22 +125,20 @@ def calculate_job_score(row):
     )
 
     # Verificar si "IT" está explícito en el título
-    has_it_in_title = bool(re.search(r"\bit\b", title, re.IGNORECASE))
+    has_it_in_title = bool(re.search(r"\bit\b", title))
 
-    # ===== SENIORITY JR/TRAINEE (MÁXIMA PRIORIDAD) =====
+    # SENIORITY JR/TRAINEE
     if has_positive_seniority:
         if has_strong_it_evidence:
-            # Junior con contexto IT fuerte = excelente
             bonus = 30
             score += bonus
             score_details["bonus_seniority_strong"] = bonus
         else:
-            # Junior sin evidencia IT clara = bajo bonus
             bonus = 10
             score += bonus
             score_details["bonus_seniority_weak"] = bonus
 
-    # ===== ROLES TÉCNICOS CLAROS =====
+    # ROLES TÉCNICOS CLAROS
     if strong_role_found:
         bonus = 20
         score += bonus
@@ -151,53 +147,48 @@ def calculate_job_score(row):
             _REGEX_STRONG_ROLE_SIGNALS.findall(title)
         )[:3]
 
-    # ===== BONUS: "IT" EXPLÍCITO EN TÍTULO =====
+    # BONUS: "IT" explícito
     if has_it_in_title:
         bonus = 15
         score += bonus
         score_details["bonus_it_in_title"] = bonus
 
-    # ===== TECNOLOGÍAS ESPECÍFICAS =====
+    # TECNOLOGÍAS
     if strong_tech_signals_found:
-        # Tecnologías concretas son señales muy fuertes
         bonus = min(len(strong_tech_signals_found) * 5, 20)
         score += bonus
         score_details["bonus_strong_tech"] = bonus
         score_details["strong_tech_count"] = len(strong_tech_signals_found)
         score_details["strong_tech_found"] = sorted(strong_tech_signals_found)[:5]
 
-    # ===== SEÑALES IT GENERALES =====
+    # SEÑALES IT GENERALES
     if it_signals_found:
-        # Términos IT generales (roles, conceptos, herramientas)
         bonus = min(len(it_signals_found) * 1.5, 15)
         score += bonus
         score_details["bonus_it_signals"] = bonus
         score_details["it_signals_count"] = len(it_signals_found)
         score_details["it_signals_found"] = sorted(it_signals_found)[:10]
 
-    # ===== SEÑALES DÉBILES =====
+    # SEÑALES DÉBILES
     if weak_it_signals_found:
-        # Peso mínimo porque son muy ambiguas
         bonus = min(len(weak_it_signals_found) * 0.3, 3)
         score += bonus
         score_details["bonus_weak_signals"] = bonus
         score_details["weak_signals_count"] = len(weak_it_signals_found)
 
-    # ===== BONUS: CONTENIDO RICO EN IT =====
+    # BONUS: contenido rico
     if total_strong_signals >= 5:
         bonus = min((total_strong_signals - 4) * 2, 10)
         score += bonus
         score_details["bonus_rich_it_content"] = bonus
 
-    # ===== BONUS: COMBINACIÓN PERFECTA =====
+    # BONUS: combinación perfecta
     if has_positive_seniority and strong_role_found and strong_tech_signals_found:
         bonus = 10
         score += bonus
         score_details["bonus_perfect_match"] = bonus
 
-    # ===== PENALIZACIONES =====
-
-    # 1. Solo señales débiles sin contexto
+    # PENALIZACIONES
     if (
         weak_it_signals_found
         and not it_signals_found
@@ -208,16 +199,13 @@ def calculate_job_score(row):
         score -= penalty
         score_details["penalty_only_weak_signals"] = -penalty
 
-    # 2. Título sin indicadores IT (solo si tiene "junior")
     if has_positive_seniority and not strong_role_found and not has_it_in_title:
-        # "Junior" en título pero sin rol IT claro
         title_has_tech = bool(_REGEX_STRONG_TECH_SIGNALS.search(title))
         if not title_has_tech:
             penalty = 15
             score -= penalty
             score_details["penalty_title_no_it"] = -penalty
 
-    # 3. Pocas señales IT (no aplicar si ya penalizó por solo débiles)
     if (
         total_strong_signals < 2
         and not strong_role_found
@@ -227,7 +215,6 @@ def calculate_job_score(row):
         score -= penalty
         score_details["penalty_few_signals"] = -penalty
 
-    # 4. Roles ambiguos sin validación
     if (
         has_ambiguous_role
         and not strong_tech_signals_found
@@ -242,17 +229,17 @@ def calculate_job_score(row):
             _REGEX_AMBIGUOUS_ROLES.findall(title)
         )[:3]
 
-    # 5. Experiencia senior requerida
+    # Experiencia senior
     should_penalize, years_required = has_senior_experience_requirement(
         full_text, has_positive_seniority
     )
     if should_penalize:
-        penalty = 30  # Crítico para el objetivo Jr/Trainee
+        penalty = 30
         score -= penalty
         score_details["penalty_senior_experience"] = -penalty
         score_details["years_required"] = years_required
 
-    # ===== NORMALIZACIÓN =====
+    # NORMALIZACIÓN
     final_score = max(0, min(100, score))
 
     # Categorización
@@ -406,3 +393,13 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
                     print(f"   - {tier.capitalize()}: {count} ({pct:.1f}%)")
 
     return df_final, all_rejected
+
+
+def normalize_text_series(series: pd.Series):
+    """
+    Normaliza una columna de texto de un DataFrame:
+    - Convierte a minúsculas
+    - Elimina espacios extra
+    - NO elimina acentos (necesarios para búsquedas en español)
+    """
+    return series.fillna("").astype(str).str.lower().str.strip()

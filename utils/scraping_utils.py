@@ -11,7 +11,7 @@ from config import (
     ACCEPTED_JOBS_RETENTION_DAYS,
 )
 from utils.date_utils import safe_parse_date_to_ISO
-from utils.scoring_utils import filter_jobs_with_scoring
+from utils.scoring_utils import filter_jobs_with_scoring, normalize_text_series
 from bot.utils import send_jobs
 from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
 from utils.firestore_utils import (
@@ -43,12 +43,18 @@ async def scrape(sources, channel_id, bot):
 
     df = pd.DataFrame(all_jobs)
 
+    # 3. NORMALIZACIÓN DE TEXTO
+    df["title_normalized"] = normalize_text_series(df["title"])
+    df["description_normalized"] = normalize_text_series(df["description"])
+    df["full_text_normalized"] = (
+        df["title_normalized"] + " " + df["description_normalized"]
+    )
+
     # 2. DEDUPLICATION LOCAL
     df["dedupe_key"] = (
-        df["title"].str.lower().str.strip()
-        + "|"
-        + df["company"].str.lower().str.strip()
+        df["title_normalized"] + "|" + df["company"].str.lower().str.strip()
     )
+
     df.drop_duplicates(subset=["dedupe_key"], inplace=True)
     df.drop(columns=["dedupe_key"], inplace=True)
 
@@ -85,16 +91,8 @@ async def scrape(sources, channel_id, bot):
         return
 
     # 6. ENRICHMENT (solo para jobs nuevos)
-    # Convertir a minúsculas una sola vez para optimizar
-    df["text_for_extraction"] = (
-        df["title"].fillna("").astype(str)
-        + " "
-        + df["description"].fillna("").astype(str)
-    ).str.lower()
-
-    df["tags"] = df["text_for_extraction"].apply(extract_tags)
-    df["modality"] = df["text_for_extraction"].apply(extract_job_modality)
-    df.drop(columns=["text_for_extraction"], inplace=True)
+    df["tags"] = df["full_text_normalized"].apply(extract_tags)
+    df["modality"] = df["full_text_normalized"].apply(extract_job_modality)
 
     # Marcar fecha y hora del scraping
     df["date_scraped"] = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
