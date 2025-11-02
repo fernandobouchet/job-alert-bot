@@ -167,14 +167,16 @@ async def scrape(sources, channel_id, bot):
 def extract_tags(text_for_extraction):
     """Extrae tags de un texto ya normalizado en minúsculas"""
     found_tags = {}
-    for category, keywords in TAGS_KEYWORDS.items():
-        found_keywords = []
-        for kw in keywords:
-            pattern = r"(?<!\w)" + re.escape(kw) + r"(?!\w)"
-            if re.search(pattern, text_for_extraction, re.IGNORECASE):
-                found_keywords.append(kw)
-        if found_keywords:
-            found_tags[category] = found_keywords
+    for category, tags in TAGS_KEYWORDS.items():
+        found_display_tags = []
+        for tag_info in tags:
+            for term in tag_info["search_terms"]:
+                pattern = r"(?<!\w)" + re.escape(term) + r"(?!\w)"
+                if re.search(pattern, text_for_extraction, re.IGNORECASE):
+                    found_display_tags.append(tag_info["display_tag"])
+                    break  # Evita duplicados si múltiples search_terms coinciden
+        if found_display_tags:
+            found_tags[category] = sorted(list(set(found_display_tags)))
     return found_tags
 
 

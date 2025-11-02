@@ -177,7 +177,12 @@ AMBIGUOUS_ROLES = {
 
 REQUIRED_IT_SIGNALS = (
     # Extraer todos los keywords de categorías
-    [keyword for category in TAGS_KEYWORDS.values() for keyword in category]
+    [
+        term
+        for category in TAGS_KEYWORDS.values()
+        for tag_info in category
+        for term in tag_info["search_terms"]
+    ]
     + [
         # Roles generales - Español
         "desarrollador",
