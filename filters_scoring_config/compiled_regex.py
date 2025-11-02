@@ -1,14 +1,18 @@
 import re
-from filters_scoring_config import (
-    AMBIGUOUS_ROLES,
-    POSITIVE_SENIORITY_TERMS,
+
+from filters_scoring_config.areas import EXCLUDED_AREA_TERMS_TITLE
+from filters_scoring_config.seniority import (
     EXCLUDED_SENIORITYS,
-    EXCLUDED_AREA_TERMS_TITLE,
+    POSITIVE_SENIORITY_TERMS,
+)
+from filters_scoring_config.signals import (
+    AMBIGUOUS_ROLES,
     REQUIRED_IT_SIGNALS,
-    WEAK_IT_SIGNALS,
     STRONG_ROLE_SIGNALS,
     STRONG_TECH_SIGNALS,
+    WEAK_IT_SIGNALS,
 )
+
 
 print("🔄 Compiling regex patterns from config...")
 

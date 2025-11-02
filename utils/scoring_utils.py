@@ -1,7 +1,6 @@
 import pandas as pd
 import re
-from filters_scoring_config import MIN_YEARS_SENIORITY, SENIOR_EXPERIENCE_PATTERNS
-from utils.constants import (
+from filters_scoring_config.compiled_regex import (
     _REGEX_AMBIGUOUS_ROLES,
     _REGEX_AREA_PREFILTER,
     _REGEX_IT_SIGNALS,
@@ -11,6 +10,8 @@ from utils.constants import (
     _REGEX_STRONG_TECH_SIGNALS,
     _REGEX_WEAK_IT_SIGNALS,
 )
+from filters_scoring_config.patterns import SENIOR_EXPERIENCE_PATTERNS
+from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
 
 def pre_filter_jobs(df, verbose=True):
@@ -269,7 +270,7 @@ def has_senior_experience_requirement(text, has_junior_terms):
             try:
                 years = int(match)
                 max_years_found = max(max_years_found, years)
-                if years >= MIN_YEARS_SENIORITY:
+                if years > MIN_YEARS_SENIORITY:
                     found_senior_req = True
                     break
             except (ValueError, TypeError):

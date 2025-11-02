@@ -10,10 +10,11 @@ from config import (
     ACCEPTED_JOBS_RETENTION_DAYS,
     REJECTED_JOBS_RETENTION_DAYS,
 )
+from filters_scoring_config.scoring import MIN_FILTER_SCORE
+from filters_scoring_config.tags import TAGS_KEYWORDS
 from utils.date_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring, normalize_text_series
 from bot.utils import send_jobs
-from filters_scoring_config import MIN_SCORE, TAGS_KEYWORDS
 from utils.firestore_utils import (
     get_new_jobs,
     save_jobs_to_firestore,
@@ -99,7 +100,7 @@ async def scrape(sources, channel_id, bot):
 
     # 7. SCORING (todos los jobs pasan por scoring)
     df_accepted, df_rejected = filter_jobs_with_scoring(
-        df, min_score=MIN_SCORE, verbose=True
+        df, min_score=MIN_FILTER_SCORE, verbose=True
     )
 
     # Asignar estado antes de guardar
@@ -113,7 +114,11 @@ async def scrape(sources, channel_id, bot):
     df_all_scored_jobs = pd.concat([df_accepted, df_rejected], ignore_index=True)
 
     # Eliminar campos normalizados antes de guardar en Firestore
-    columns_to_drop = ["title_normalized", "description_normalized", "full_text_normalized"]
+    columns_to_drop = [
+        "title_normalized",
+        "description_normalized",
+        "full_text_normalized",
+    ]
     df_all_scored_jobs.drop(columns=columns_to_drop, errors="ignore", inplace=True)
 
     # 8. GUARDAR TODOS LOS JOBS NUEVOS (aceptados y rechazados)
@@ -153,13 +158,9 @@ async def scrape(sources, channel_id, bot):
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
         # Borrar jobs aceptados antiguos
-        delete_old_documents(
-            "jobs", ACCEPTED_JOBS_RETENTION_DAYS, status="accepted"
-        )
+        delete_old_documents("jobs", ACCEPTED_JOBS_RETENTION_DAYS, status="accepted")
         # Borrar jobs rechazados antiguos (con mayor frecuencia)
-        delete_old_documents(
-            "jobs", REJECTED_JOBS_RETENTION_DAYS, status="rejected"
-        )
+        delete_old_documents("jobs", REJECTED_JOBS_RETENTION_DAYS, status="rejected")
         delete_old_trends(ACCEPTED_JOBS_RETENTION_DAYS)
 
 
