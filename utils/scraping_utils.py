@@ -21,7 +21,6 @@ from utils.firestore_utils import (
     save_jobs_to_firestore,
     save_monthly_trend_data,
     delete_old_documents,
-    delete_old_trends,
 )
 
 
@@ -158,11 +157,8 @@ async def scrape(sources, channel_id, bot):
 
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
-        # Borrar jobs aceptados antiguos
         delete_old_documents("jobs", ACCEPTED_JOBS_RETENTION_DAYS, status="accepted")
-        # Borrar jobs rechazados antiguos (con mayor frecuencia)
         delete_old_documents("jobs", REJECTED_JOBS_RETENTION_DAYS, status="rejected")
-        delete_old_trends(ACCEPTED_JOBS_RETENTION_DAYS)
 
 
 def extract_tags(text_for_extraction):

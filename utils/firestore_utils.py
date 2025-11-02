@@ -2,7 +2,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
 import zoneinfo
-from google.cloud.firestore_v1.field_path import FieldPath
 from google.cloud.firestore_v1.base_query import FieldFilter
 import pandas as pd
 import asyncio
@@ -214,55 +213,3 @@ def delete_old_documents(collection_name, days_to_keep, status=None):
 
     except Exception as e:
         print(f"❌ Error al limpiar documentos antiguos de '{collection_name}': {e}")
-
-
-def delete_old_trends(days_to_keep):
-    """
-    Elimina documentos de la colección 'trends' que son más antiguos que un número de días.
-    """
-    collection_name = "trends"
-    if not days_to_keep or days_to_keep <= 0:
-        print(f"⚠️ La retención de '{collection_name}' está desactivada (días <= 0).")
-        return
-
-    print(
-        f"🧹 Limpiando tendencias antiguas de '{collection_name}' (retención: {days_to_keep} días)..."
-    )
-
-    try:
-        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
-            days=days_to_keep
-        )
-        cutoff_iso = cutoff_date.isoformat()
-
-        deleted_total = 0
-
-        while True:
-            docs_to_delete = list(
-                db.collection(collection_name)
-                .where(filter=FieldFilter("date_saved", "<", cutoff_iso))
-                .limit(500)
-                .stream()
-            )
-
-            if not docs_to_delete:
-                break
-
-            batch = db.batch()
-            for doc in docs_to_delete:
-                batch.delete(doc.reference)
-
-            batch.commit()
-            deleted_total += len(docs_to_delete)
-
-            print(f"  Eliminadas {len(docs_to_delete)} tendencias...")
-
-        if deleted_total > 0:
-            print(
-                f"✅ Se eliminaron {deleted_total} tendencias antiguas de '{collection_name}'."
-            )
-        else:
-            print(f"✅ No se encontraron tendencias antiguas para eliminar.")
-
-    except Exception as e:
-        print(f"❌ Error al limpiar tendencias antiguas de '{collection_name}': {e}")
