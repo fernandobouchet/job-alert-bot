@@ -8,6 +8,7 @@ import pandas as pd
 import asyncio
 from collections import Counter
 
+from config import TIMEZONE
 from utils.revalidation_utils import revalidate_path
 
 # Inicialización de Firebase Admin
@@ -69,7 +70,8 @@ async def save_jobs_to_firestore(jobs_list):
 
     jobs_batch = db.batch()
     jobs_collection = db.collection("jobs")
-    today_date = datetime.now(zoneinfo.ZoneInfo("UTC")).date()
+    tz = zoneinfo.ZoneInfo(TIMEZONE)
+    today_date = datetime.now(tz).date()
 
     today_jobs_count = 0
     previous_jobs_count = 0
@@ -142,14 +144,14 @@ def save_monthly_trend_data(trend_data, month_key):
             updated_data = {
                 "total_jobs": current_total + new_total,
                 "tags": dict(current_tags),
-                "date_saved": datetime.now(zoneinfo.ZoneInfo("UTC")).isoformat(),
+                "date_saved": datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat(),
             }
             doc_ref.set(updated_data)
             print(f"📈 Tendencias para {month_key} actualizadas en Firestore.")
         else:
             # El documento no existe, crearlo
             trend_data["date_saved"] = datetime.now(
-                zoneinfo.ZoneInfo("UTC")
+                zoneinfo.ZoneInfo(TIMEZONE)
             ).isoformat()
             doc_ref.set(trend_data)
             print(f"📈 Tendencias para {month_key} creadas en Firestore.")
@@ -172,7 +174,7 @@ def delete_old_documents(collection_name, days_to_keep, status=None):
     )
 
     try:
-        cutoff_date = datetime.now(zoneinfo.ZoneInfo("UTC")) - timedelta(
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
             days=days_to_keep
         )
         cutoff_iso = cutoff_date.isoformat()
@@ -228,7 +230,7 @@ def delete_old_trends(days_to_keep):
     )
 
     try:
-        cutoff_date = datetime.now(zoneinfo.ZoneInfo("UTC")) - timedelta(
+        cutoff_date = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)) - timedelta(
             days=days_to_keep
         )
         cutoff_iso = cutoff_date.isoformat()

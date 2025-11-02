@@ -1,3 +1,5 @@
+TIMEZONE = "America/Argentina/Buenos_Aires"
+
 UPLOAD_TO_FIREBASE = True
 
 ACCEPTED_JOBS_RETENTION_DAYS = 30
