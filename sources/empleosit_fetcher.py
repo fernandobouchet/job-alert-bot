@@ -29,12 +29,13 @@ def fetch_empleosit():
             url = title_tag.get("href") if title_tag else "N/A"
 
             job_id = None
+
             if url and url != "N/A":
                 match = re.search(r"/display-job/(\d+)/", url)
 
-            if match:
-                job_number = match.group(1)
-                job_id = f"empleosit-{job_number}"
+                if match:
+                    job_number = match.group(1)
+                    job_id = f"empleosit-{job_number}"
 
             if not job_id:
                 job_id = f"empleosit-fallback-{hash(title)}"
@@ -56,6 +57,53 @@ def fetch_empleosit():
             else:
                 description = descripcion_full
 
+            if url and url != "N/A":
+                try:
+                    detail_req = requests.get(url, timeout=config.get("timeout", 15))
+                    detail_req.raise_for_status()
+
+                    detail_soup = BeautifulSoup(detail_req.text, "html.parser")
+                    main_container = detail_soup.select_one(
+                        "#col-wide > div.displayFieldBlock > div.displayField"
+                    )
+
+                    if main_container:
+                        content_tags = main_container.find_all(["p", "h3", "ul"])
+
+                        full_text_parts = []
+                        for tag in content_tags:
+                            tag_text = tag.get_text(strip=True)
+                            if tag_text:
+                                if tag.name == "ul":
+                                    li_texts = [
+                                        li.get_text(strip=True)
+                                        for li in tag.select("li")
+                                        if li.get_text(strip=True)
+                                    ]
+                                    if li_texts:
+                                        full_text_parts.append(
+                                            "\n" + "\n".join(li_texts)
+                                        )
+                                else:
+                                    full_text_parts.append(tag_text)
+
+                        if full_text_parts:
+                            description = "\n\n".join(full_text_parts)
+                        else:
+                            print(
+                                f"No se encontró contenido estructurado para: {title}"
+                            )
+                            description = descripcion_full
+                    else:
+                        print(
+                            f"No se encontró el contenedor principal (div.displayField) para: {title}"
+                        )
+                        description = descripcion_full
+                except requests.RequestException as e:
+                    print(f"⚠️ Error al obtener la página de detalle para {url}: {e}")
+                    description = descripcion_full
+
+            print(description)
             salary = "No especificado"
 
             date_el = card.select_one(".captions-field.posted-ico")
