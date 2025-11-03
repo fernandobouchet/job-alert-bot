@@ -47,4 +47,8 @@ FETCHER_CONFIG = {
         "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
         "timeout": 15,
     },
+    "EmpleosITFetcher": {
+        "base_url": "https://www.empleosit.com.ar/search-results-jobs/?searchId=1762136439.6851&action=search&page=1&listings_per_page=20&view=list&sorting_field=activation_date&sorting_order=DESC",
+        "timeout": 15,
+    },
 }

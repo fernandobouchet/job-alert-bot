@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 
+from sources.empleosit_fetcher import fetch_empleosit
+
 load_dotenv()
 
 import os
@@ -14,7 +16,7 @@ from utils.scraping_utils import scrape
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
 
-SOURCES = [fetch_educacionit, fetch_getonboard, fetch_jobspy]
+SOURCES = [fetch_educacionit, fetch_empleosit, fetch_getonboard, fetch_jobspy]
 
 
 def main():
