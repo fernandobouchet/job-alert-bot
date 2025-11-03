@@ -398,9 +398,13 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
 
 def normalize_text_series(series: pd.Series):
     """
-    Normaliza una columna de texto de un DataFrame:
-    - Convierte a minúsculas
-    - Elimina espacios extra
-    - NO elimina acentos (necesarios para búsquedas en español)
+    Normaliza una columna de texto, eliminando caracteres basura (como ????)
+    mientras conserva la puntuación y los símbolos IT relevantes.
     """
-    return series.fillna("").astype(str).str.lower().str.strip()
+    cleaned_series = series.fillna("").astype(str).str.lower()
+
+    cleaned_series = cleaned_series.str.replace(r"\?+", " ", regex=True)
+
+    cleaned_series = cleaned_series.str.replace(r"\s+", " ", regex=True).str.strip()
+
+    return cleaned_series
