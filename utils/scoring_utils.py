@@ -148,7 +148,7 @@ def calculate_job_score(row):
 
     # BONUS: "IT" explícito
     if has_it_in_title:
-        bonus = 15
+        bonus = 10
         score += bonus
         score_details["bonus_it_in_title"] = bonus
 
@@ -221,7 +221,7 @@ def calculate_job_score(row):
         and not has_positive_seniority
         and not strong_role_found
     ):
-        penalty = 18
+        penalty = 30
         score -= penalty
         score_details["penalty_ambiguous_role"] = -penalty
         score_details["ambiguous_roles_found"] = sorted(
@@ -233,7 +233,7 @@ def calculate_job_score(row):
         full_text, has_positive_seniority
     )
     if should_penalize:
-        penalty = 30
+        penalty = 50
         score -= penalty
         score_details["penalty_senior_experience"] = -penalty
         score_details["years_required"] = years_required

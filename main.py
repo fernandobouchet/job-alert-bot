@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 
-from sources.empleosit_fetcher import fetch_empleosit
 
 load_dotenv()
 
@@ -10,6 +9,7 @@ from telegram import Bot as TelegramBot
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
+from sources.empleosit_fetcher import fetch_empleosit
 from utils.scraping_utils import scrape
 
 
