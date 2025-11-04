@@ -9,6 +9,7 @@ POSITIVE_SENIORITY_TERMS = {
     "internship",
     "intern",
     "graduate",
+    "student",
     "grad",
     "no experience",
     "first job",
@@ -24,13 +25,11 @@ POSITIVE_SENIORITY_TERMS = {
     "becario",
     "aprendiz",
     "inicial",
-    "associate",
-    "asociado",
-    "asociada",
+    "estudiante",
 }
 
 EXCLUDED_SENIORITYS = [
-    # Senior levels
+    # Niveles Senior
     "senior",
     "sr",
     "sr.",
@@ -38,15 +37,10 @@ EXCLUDED_SENIORITYS = [
     "semi senior",
     "semi-senior",
     "semisenior",
-    # Leadership
+    # Niveles de Liderazgo
     "lead",
     "líder",
     "lider",
-    "tech lead",
-    "team lead",
-    "squad lead",
-    "chapter lead",
-    # Management
     "manager",
     "director",
     "head",
@@ -57,14 +51,12 @@ EXCLUDED_SENIORITYS = [
     "coordinador",
     "coordinator",
     "supervisor",
-    # Advanced roles
+    # Niveles Avanzados
     "principal",
     "staff",
-    "architect",
-    "arquitecto",
     "expert",
     "experto",
-    # Level indicators
+    # Indicadores de Nivel/Años
     " ii",
     " iii",
     " iv",
@@ -77,7 +69,6 @@ EXCLUDED_SENIORITYS = [
     "nivel 4",
     "pl",
     "pleno",
-    # Years indicators
     "3+",
     "4+",
     "5+",

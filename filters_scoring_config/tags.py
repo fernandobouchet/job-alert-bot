@@ -59,6 +59,7 @@ TAGS_KEYWORDS = {
             "search_terms": ["product manager", "gerente de producto"],
             "display_tag": "product manager",
         },
+        {"search_terms": ["scrum master"], "display_tag": "scrum master"},
     ],
     "languages": [
         {"search_terms": ["python"], "display_tag": "python"},
