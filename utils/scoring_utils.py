@@ -34,11 +34,11 @@ def pre_filter_jobs(df, verbose=True):
     for idx, row in df.iterrows():
         title = row.get("title_normalized", "")
         rejection_reason = None
-
+        has_it_in_title = bool(re.search(r"\b(it|ti)\b", title))
         # FILTRO 1: Área no-IT
         if _REGEX_AREA_PREFILTER.search(title):
-            # Excepción: no rechazar si contiene un rol IT fuerte
-            if not _REGEX_STRONG_ROLE_SIGNALS.search(title):
+            # Excepción: no rechazar si contiene un rol IT fuerte o la palabra "IT/TI"
+            if not _REGEX_STRONG_ROLE_SIGNALS.search(title) and not has_it_in_title:
                 matches = _REGEX_AREA_PREFILTER.findall(title)
                 rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
 
@@ -108,6 +108,7 @@ def calculate_job_score(row):
     strong_role_found = bool(_REGEX_STRONG_ROLE_SIGNALS.search(title))
     has_ambiguous_role = bool(_REGEX_AMBIGUOUS_ROLES.search(title))
     has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
+    has_it_in_title = bool(re.search(r"\b(it|ti)\b", title))
 
     all_signals = it_signals_found | weak_it_signals_found
 
@@ -121,12 +122,9 @@ def calculate_job_score(row):
     total_strong_signals = len(it_signals_found) + len(strong_tech_signals_found)
     has_strong_it_evidence = (
         strong_role_found
-        or len(strong_tech_signals_found) >= 1
+        or len(strong_tech_signals_found) >= 2
         or total_strong_signals >= 3
     )
-
-    # Verificar si "IT" está explícito en el título
-    has_it_in_title = bool(re.search(r"\bit\b", title))
 
     # SENIORITY JR/TRAINEE
     if has_positive_seniority:
