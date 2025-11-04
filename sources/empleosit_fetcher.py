@@ -68,37 +68,17 @@ def fetch_empleosit():
                     )
 
                     if main_container:
-                        content_tags = main_container.find_all(["p", "h3", "ul"])
+                        full_text_raw = main_container.get_text(
+                            separator=" ", strip=True
+                        )
 
-                        full_text_parts = []
-                        for tag in content_tags:
-                            tag_text = tag.get_text(strip=True)
-                            if tag_text:
-                                if tag.name == "ul":
-                                    li_texts = [
-                                        li.get_text(strip=True)
-                                        for li in tag.select("li")
-                                        if li.get_text(strip=True)
-                                    ]
-                                    if li_texts:
-                                        full_text_parts.append(
-                                            "\n" + "\n".join(li_texts)
-                                        )
-                                else:
-                                    full_text_parts.append(tag_text)
-
-                        if full_text_parts:
-                            description = "\n\n".join(full_text_parts)
-                        else:
-                            print(
-                                f"No se encontró contenido estructurado para: {title}"
-                            )
-                            description = descripcion_full
+                        description = full_text_raw
                     else:
                         print(
                             f"No se encontró el contenedor principal (div.displayField) para: {title}"
                         )
                         description = descripcion_full
+
                 except requests.RequestException as e:
                     print(f"⚠️ Error al obtener la página de detalle para {url}: {e}")
                     description = descripcion_full
