@@ -7,7 +7,7 @@ import pandas as pd
 import asyncio
 from collections import Counter
 
-from config import TIMEZONE
+from config import REVALIDATE_CACHE, TIMEZONE
 from utils.revalidation_utils import revalidate_path
 
 # Inicialización de Firebase Admin
@@ -74,6 +74,9 @@ async def save_jobs_to_firestore(jobs_list):
 
     today_jobs_count = 0
     previous_jobs_count = 0
+    revalidation_tasks = []
+    accepted_today_job = False
+    accepted_old_job = False
 
     for job in jobs_list:
         job_id = job.get("id")
@@ -96,18 +99,23 @@ async def save_jobs_to_firestore(jobs_list):
         else:
             previous_jobs_count += 1
 
+        if job.get("status") == "accepted":
+            if published_date == today_date:
+                accepted_today_job = True
+            else:
+                accepted_old_job = True
+
     try:
         jobs_batch.commit()
 
-        revalidation_tasks = []
+        print(f"✅ {today_jobs_count} jobs de hoy guardados.")
+        print(f"✅ {previous_jobs_count} jobs anteriores guardados.")
 
-        if today_jobs_count > 0:
-            print(f"✅ {today_jobs_count} jobs de hoy guardados.")
-            revalidation_tasks.append(revalidate_path("/"))
-
-        if previous_jobs_count > 0:
-            print(f"✅ {previous_jobs_count} jobs anteriores guardados.")
-            revalidation_tasks.append(revalidate_path("/archive"))
+        if REVALIDATE_CACHE:
+            if accepted_today_job:
+                revalidation_tasks.append(revalidate_path("/"))
+            if accepted_old_job:
+                revalidation_tasks.append(revalidate_path("/archive"))
 
         if revalidation_tasks:
             await asyncio.gather(*revalidation_tasks)
