@@ -5,7 +5,12 @@ from telegram import constants
 
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
-        tags_display = ", ".join(job.get("tags", []))
+        tags_dict = job.get("tags", {})
+        tags_list = []
+        if isinstance(tags_dict, dict):
+            tags_list = [tag for tag_group in tags_dict.values() for tag in tag_group]
+
+        tags_display = ", ".join(sorted(list(set(tags_list))))
 
         text = (
             f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b> ({clean_text(job.get('modality', 'N/A'))})\n"
