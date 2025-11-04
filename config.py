@@ -11,9 +11,19 @@ DAYS_OLD_THRESHOLD = 1
 JOBSPY_HOURS_OLD = 11
 
 JOBSPY_SEARCH_TERMS = (
-    '(junior OR jr OR trainee OR "entry level" OR pasante OR intern) '
+    '(junior OR jr OR trainee OR "entry level" OR pasante OR intern OR graduate) '
     "AND "
-    "(IT OR technology OR software OR sistemas OR informática)"
+    "("
+    "IT OR sistemas OR software OR technology OR tecnología OR informática OR "
+    "developer OR desarrollador OR engineer OR ingeniero OR programmer OR programador OR "
+    "frontend OR backend OR fullstack OR devops OR sysadmin OR "
+    "qa OR tester OR security OR cybersecurity OR ciberseguridad OR "
+    "cloud OR network OR redes OR "
+    '"data analyst" OR "data engineer" OR "data science" OR '
+    '"machine learning" OR '
+    '"technical support" OR "soporte técnico" OR '
+    '"ux/ui" OR "ux designer" OR "ui designer"'
+    ")"
 )
 
 FETCHER_CONFIG = {
