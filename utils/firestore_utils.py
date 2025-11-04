@@ -136,13 +136,21 @@ def save_monthly_trend_data(trend_data, month_key):
             current_total = current_data.get("total_jobs", 0)
             new_total = trend_data.get("total_jobs", 0)
 
-            current_tags = Counter(current_data.get("tags", {}))
-            new_tags = Counter(trend_data.get("tags", {}))
-            current_tags.update(new_tags)
+            current_tags = current_data.get("tags", {})
+            new_tags = trend_data.get("tags", {})
+
+            # Deep merge the tags
+            for category, tags in new_tags.items():
+                if category in current_tags:
+                    cat_counter = Counter(current_tags[category])
+                    cat_counter.update(tags)
+                    current_tags[category] = dict(cat_counter)
+                else:
+                    current_tags[category] = tags
 
             updated_data = {
                 "total_jobs": current_total + new_total,
-                "tags": dict(current_tags),
+                "tags": current_tags,
                 "date_saved": datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat(),
             }
             doc_ref.set(updated_data)

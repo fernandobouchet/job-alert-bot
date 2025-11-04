@@ -141,16 +141,22 @@ async def scrape(sources, channel_id, bot):
 
         if UPLOAD_TO_FIREBASE:
             # Calcular tendencias solo con jobs aceptados
-            tags_list = [
-                tag
-                for tags_dict in df_accepted["tags"]
-                if isinstance(tags_dict, dict)
-                for tag_group in tags_dict.values()
-                for tag in tag_group
-            ]
-            tags_counts = Counter(tags_list)
+            tags_by_category = {}
+            for tags_dict in df_accepted["tags"]:
+                if isinstance(tags_dict, dict):
+                    for category, tags in tags_dict.items():
+                        if category not in tags_by_category:
+                            tags_by_category[category] = Counter()
+                        tags_by_category[category].update(tags)
+
+            # Convert counters to dicts for JSON serialization
+            tags_counts = {
+                category: dict(counter)
+                for category, counter in tags_by_category.items()
+            }
+
             month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
-            trend_data = {"total_jobs": len(df_accepted), "tags": dict(tags_counts)}
+            trend_data = {"total_jobs": len(df_accepted), "tags": tags_counts}
             save_monthly_trend_data(trend_data, month_key)
 
         await send_jobs(bot, channel_id, accepted_jobs_list)
