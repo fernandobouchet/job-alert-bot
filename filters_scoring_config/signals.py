@@ -167,6 +167,9 @@ STRONG_TECH_SIGNALS = {
     "power bi",
     "kafka",
     "airflow",
+    # Business Intelligence & Data Tools
+    "spss modeler",
+    "microstrategy",
     # Security
     "cybersecurity",
     "ciberseguridad",
@@ -175,7 +178,11 @@ STRONG_TECH_SIGNALS = {
     "seguridad informatica",
     "information security",
     "firewall",
+    "firewalls",
     "cortafuegos",
+    "soc",
+    "siem",
+    "soar",
     "vpn",
     "ids",
     "ips",
@@ -425,6 +432,7 @@ REQUIRED_IT_SIGNALS = [
     # Conceptos y Herramientas no cubiertas en STRONG_TECH o WEAK_IT
     "cisco",
     "redes LAN",
+    "tcp",
     "lan networks",
     "redes WAN",
     "wan networks",
