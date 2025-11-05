@@ -264,24 +264,23 @@ def has_senior_experience_requirement(text, has_junior_terms):
 
     for pattern in SENIOR_EXPERIENCE_PATTERNS:
         matches = re.findall(pattern, text, re.IGNORECASE)
+
         for match in matches:
             try:
-                years = int(match)
-                max_years_found = max(max_years_found, years)
-                if years > MIN_YEARS_SENIORITY:
-                    found_senior_req = True
-                    break
-            except (ValueError, TypeError):
+                if isinstance(match, (tuple, list)):
+                    years_str = next(y for y in match if y)
+                    years = int(years_str)
+                else:
+                    years = int(match)
+            except (ValueError, TypeError, StopIteration):
                 continue
-        if found_senior_req:
-            break
 
-    # Si encontró requerimiento senior pero también tiene términos junior
-    # → anuncio multi-nivel, no penalizar
-    if found_senior_req and not has_junior_terms:
-        return True, max_years_found
+            max_years_found = max(max_years_found, years)
+            if years >= MIN_YEARS_SENIORITY:
+                found_senior_req = True
 
-    return False, max_years_found if found_senior_req else 0
+    should_penalize = found_senior_req and not has_junior_terms
+    return should_penalize, max_years_found
 
 
 def filter_jobs_with_scoring(df, min_score=60, verbose=True):
