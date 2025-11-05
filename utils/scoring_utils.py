@@ -110,7 +110,7 @@ def calculate_job_score(row):
     has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
     has_it_in_title = bool(re.search(r"\b(it|ti)\b", title))
 
-    all_signals = it_signals_found | weak_it_signals_found
+    all_signals = strong_tech_signals_found | it_signals_found | weak_it_signals_found
 
     # 🚨 BLOQUEO CRÍTICO: SIN SEÑALES IT
     if not all_signals and not strong_role_found:
