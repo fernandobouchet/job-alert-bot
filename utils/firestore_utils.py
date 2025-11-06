@@ -3,7 +3,6 @@ from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
 import zoneinfo
 from google.cloud.firestore_v1.base_query import FieldFilter
-import pandas as pd
 import asyncio
 from collections import Counter
 
@@ -69,14 +68,9 @@ async def save_jobs_to_firestore(jobs_list):
 
     jobs_batch = db.batch()
     jobs_collection = db.collection("jobs")
-    tz = zoneinfo.ZoneInfo(TIMEZONE)
-    today_date = datetime.now(tz).date()
 
-    today_jobs_count = 0
-    previous_jobs_count = 0
+    accepted_jobs_count = 0
     revalidation_tasks = []
-    accepted_today_job = False
-    accepted_old_job = False
 
     for job in jobs_list:
         job_id = job.get("id")
@@ -84,38 +78,21 @@ async def save_jobs_to_firestore(jobs_list):
             print(f"⚠️ Job sin ID encontrado: {job.get('title', 'N/A')}")
             continue
 
-        try:
-            published_date = pd.to_datetime(job["published_at"]).date()
-        except (ValueError, TypeError, KeyError):
-            published_date = today_date
-
-        job["published_date"] = published_date.isoformat()
-
         doc_ref_jobs = jobs_collection.document(str(job_id))
         jobs_batch.set(doc_ref_jobs, job)
 
-        if published_date == today_date:
-            today_jobs_count += 1
-        else:
-            previous_jobs_count += 1
-
         if job.get("status") == "accepted":
-            if published_date == today_date:
-                accepted_today_job = True
-            else:
-                accepted_old_job = True
+            accepted_jobs_count += 1
 
     try:
         jobs_batch.commit()
 
-        print(f"✅ {today_jobs_count} jobs de hoy guardados.")
-        print(f"✅ {previous_jobs_count} jobs anteriores guardados.")
-
+        print(
+            f"✅ {len(jobs_list)} jobs enviados a Firestore. ({accepted_jobs_count} aceptados)."
+        )
         if REVALIDATE_CACHE:
-            if accepted_today_job:
+            if accepted_jobs_count >= 1:
                 revalidation_tasks.append(revalidate_path("/"))
-            if accepted_old_job:
-                revalidation_tasks.append(revalidate_path("/archive"))
 
         if revalidation_tasks:
             await asyncio.gather(*revalidation_tasks)
