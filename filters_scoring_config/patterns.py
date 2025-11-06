@@ -6,4 +6,5 @@ SENIOR_EXPERIENCE_PATTERNS = [
     r"(?:experiencia|experience)\s*(?:de|of)\s*(?:(\d+)\+?|\+(\d+))\s*(?:a[ñn]os|years?)",
     r"for\s*(?:(\d+)\+?|\+(\d+))\s*years?",
     r"(?:(\d+)\\\+?|\\\+(\d+))\s*(?:a[ñn]os|years?)",
+    r"\((?:(\d+)\\\+?|\\\+(\d+))\s*(?:a[ñn]os|years?)\)",
 ]
