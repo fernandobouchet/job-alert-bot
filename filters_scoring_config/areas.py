@@ -60,6 +60,8 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "broker",
     "actuario",
     "actuary",
+    "fintech strategy specialist",
+    "especialista en estrategia fintech"
     # Regulatorio / Legal
     "asuntos regulatorios",
     "regulatory affairs",

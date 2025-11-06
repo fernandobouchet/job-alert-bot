@@ -115,6 +115,7 @@ STRONG_TECH_SIGNALS = {
     "mariadb",
     "sqlite",
     "firestore",
+    "postgres",
     # Architecture & Concepts
     "full stack",
     "full-stack",
@@ -129,12 +130,23 @@ STRONG_TECH_SIGNALS = {
     "contenedores",
     "rest",
     "restful",
+    "rest api",
     "graphql",
     "api",
     "tdd",
     "bdd",
     "cloud computing",
     "computación en la nube",
+    # Roles
+    "frontend",
+    "backend",
+    "fullstack",
+    "mobile",
+    "devops",
+    "qa",
+    "cloud",
+    "ios",
+    "android",
     # Data Science & ML
     "data science",
     "business intelligence",
@@ -159,13 +171,14 @@ STRONG_TECH_SIGNALS = {
     "framer",
     "design system",
     "sistema de diseño",
+    "ux/ui",
+    "diseño de producto",
+    "adobe xd",
     # BPM & Other Tools
     "bpm",
     "bpmn",
     "bizagi",
     "aris",
-    "tableau",
-    "power bi",
     "kafka",
     "airflow",
     # Business Intelligence & Data Tools
@@ -284,6 +297,8 @@ STRONG_ROLE_SIGNALS = {
     "test automation",
     "automation engineer",
     "tester",
+    "qa gaming analyst",
+    "analista qa"
     # Security
     "cybersecurity analyst",
     "penetration tester",
@@ -440,6 +455,18 @@ REQUIRED_IT_SIGNALS = [
     "lan networks",
     "redes WAN",
     "wan networks",
+    "protocolos de red",
+    "network protocols",
+    "redes de acceso",
+    "access networks",
+    "tecnologia ip",
+    "ip technology",
+    "enrutamiento",
+    "routing",
+    "conmutacion",
+    "switching",
+    "optimizacion de redes",
+    "network optimization",
     "sistemas operativos",
     "operating systems",
     "sistema operativo windows",
@@ -460,6 +487,16 @@ REQUIRED_IT_SIGNALS = [
     "zoho",
     "chatbot",
     "mesa de ayuda",
+    # QA
+    "pruebas de regresión",
+    "regression testing",
+    "pruebas funcionales",
+    "functional testing",
+    "pruebas de rendimiento",
+    "performance testing",
+    # Data
+    "tableau",
+    "power bi",
 ]
 
 
