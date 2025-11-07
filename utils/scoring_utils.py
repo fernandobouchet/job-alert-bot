@@ -257,12 +257,34 @@ def calculate_job_score(row):
 def has_senior_experience_requirement(text, has_junior_terms):
     """
     Detecta si pide experiencia senior (>=3 años).
+    Prioritiza el límite inferior de los rangos (ej: "1 a 3 años" -> 1 año).
     NO penaliza si también menciona términos junior (anuncio multi-nivel).
     """
+    # Patrón de rango, asumimos que es el primero de la lista
+    range_pattern = SENIOR_EXPERIENCE_PATTERNS[0]
+    range_matches = re.findall(range_pattern, text, re.IGNORECASE)
+
+    if range_matches:
+        try:
+            # Tomamos el primer rango encontrado y usamos su límite inferior
+            match = range_matches[0]
+            if isinstance(match, (tuple, list)):
+                years_str = next(y for y in match if y)
+                years = int(years_str)
+            else:
+                years = int(match)
+            
+            should_penalize = (years >= MIN_YEARS_SENIORITY) and not has_junior_terms
+            return should_penalize, years
+        except (ValueError, TypeError, StopIteration):
+            pass  # Si falla, continuamos con la lógica original
+
+    # Lógica original si no se encuentra un rango
     found_senior_req = False
     max_years_found = 0
 
-    for pattern in SENIOR_EXPERIENCE_PATTERNS:
+    # Empezamos desde el segundo patrón, ya que el de rango ya fue procesado
+    for pattern in SENIOR_EXPERIENCE_PATTERNS[1:]:
         matches = re.findall(pattern, text, re.IGNORECASE)
 
         for match in matches:
