@@ -1,6 +1,6 @@
 import math
 import zoneinfo
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateparser
 from config import TIMEZONE
 
@@ -50,3 +50,16 @@ def safe_parse_date_to_ISO(date):
     except Exception:
         fallback = now.replace(hour=0, minute=0, second=0, microsecond=0)
         return fallback.isoformat()
+
+
+def get_timestamp_24_hours_ago():
+    """
+    Calcula el Timestamp Unix exacto de hace 24 horas.
+    """
+    tz = zoneinfo.ZoneInfo(TIMEZONE)
+
+    now_timezone = datetime.now(tz)
+
+    time_24_hours_ago = now_timezone - timedelta(hours=24)
+
+    return time_24_hours_ago.timestamp()

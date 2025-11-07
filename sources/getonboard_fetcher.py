@@ -1,9 +1,12 @@
 import requests
 from config import FETCHER_CONFIG
+from utils.date_utils import get_timestamp_24_hours_ago
 
 
 def fetch_getonboard():
     config = FETCHER_CONFIG.get("GetOnBoardFetcher", {})
+
+    from_time = get_timestamp_24_hours_ago()
 
     all_jobs = []
     for category in config.get("categories", []):
@@ -14,6 +17,7 @@ def fetch_getonboard():
                     "per_page": config.get("per_page", 10),
                     "page": config.get("page", 1),
                     "expand": '["company"]',
+                    "from": from_time,
                 },
                 timeout=config.get("timeout", 15),
             )
@@ -30,17 +34,14 @@ def fetch_getonboard():
                 job_id = f"getonboard-{job.get('id', '').strip()}"
 
                 published_at_ts = jobData.get("published_at")
-                published_at = published_at_ts
 
                 # Extraer seniority y filtrar solo Trainee y Junior
                 seniority_id = jobData.get("seniority", {}).get("data", {}).get("id")
-                if seniority_id not in config.get("seniority_ids", []):
+
+                if seniority_id not in config.get("seniority_ids", ["1", "2"]):
                     continue
 
-                if jobData.get("remote") is False:
-                    continue
-
-                if jobData.get("remote_modality") not in ["fully_remote"]:
+                if jobData.get("countries") not in ["Argentina", "Remoto"]:
                     continue
 
                 salary_min = jobData.get("min_salary")
@@ -67,7 +68,7 @@ def fetch_getonboard():
                         "source": "GetOnBoard",
                         "salary": salary,
                         "url": job.get("links", {}).get("public_url", ""),
-                        "published_at": published_at,
+                        "published_at": published_at_ts,
                     }
                 )
             except Exception as e:

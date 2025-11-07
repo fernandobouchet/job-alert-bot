@@ -31,7 +31,7 @@ JOBSPY_SEARCH_TERMS = (
 FETCHER_CONFIG = {
     "GetOnBoardFetcher": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
-        "per_page": 5,
+        "per_page": 20,
         "page": 1,
         "timeout": 15,
         "seniority_ids": [1, 2],
