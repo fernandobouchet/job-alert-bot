@@ -254,54 +254,63 @@ def calculate_job_score(row):
     return final_score, score_details
 
 
-def has_senior_experience_requirement(text, has_junior_terms):
-    """
-    Detecta si pide experiencia senior (>=3 años).
-    Prioritiza el límite inferior de los rangos (ej: "1 a 3 años" -> 1 año).
-    NO penaliza si también menciona términos junior (anuncio multi-nivel).
-    """
-    # Patrón de rango, asumimos que es el primero de la lista
-    range_pattern = SENIOR_EXPERIENCE_PATTERNS[0]
-    range_matches = re.findall(range_pattern, text, re.IGNORECASE)
+import re
 
-    if range_matches:
-        try:
-            # Tomamos el primer rango encontrado y usamos su límite inferior
-            match = range_matches[0]
-            if isinstance(match, (tuple, list)):
-                years_str = next(y for y in match if y)
-                years = int(years_str)
-            else:
-                years = int(match)
-            
-            should_penalize = (years >= MIN_YEARS_SENIORITY) and not has_junior_terms
-            return should_penalize, years
-        except (ValueError, TypeError, StopIteration):
-            pass  # Si falla, continuamos con la lógica original
 
-    # Lógica original si no se encuentra un rango
+def has_senior_experience_requirement(text, positive_seniority):
+    """
+    Detecta si el puesto pide experiencia senior (>=3 años) y penaliza
+    si no hay términos Junior/Trainee (positive_seniority) para compensar.
+    """
+
     found_senior_req = False
     max_years_found = 0
 
-    # Empezamos desde el segundo patrón, ya que el de rango ya fue procesado
-    for pattern in SENIOR_EXPERIENCE_PATTERNS[1:]:
-        matches = re.findall(pattern, text, re.IGNORECASE)
+    # 1. PROCESAMIENTO DE RANGOS (SENIOR_EXPERIENCE_PATTERNS[0])
+    range_pattern = SENIOR_EXPERIENCE_PATTERNS[0]
+    range_matches = re.findall(range_pattern, text, re.IGNORECASE)
 
-        for match in matches:
+    for match in range_matches:
+        if len(match) == 2:
             try:
-                if isinstance(match, (tuple, list)):
-                    years_str = next(y for y in match if y)
-                    years = int(years_str)
-                else:
-                    years = int(match)
-            except (ValueError, TypeError, StopIteration):
+                max_required = int(match[1])
+                max_years_found = max(max_years_found, max_required)
+
+                if max_required > MIN_YEARS_SENIORITY:
+                    found_senior_req = True
+                    break
+
+            except ValueError:
                 continue
+        if found_senior_req:
+            break
 
-            max_years_found = max(max_years_found, years)
-            if years >= MIN_YEARS_SENIORITY:
-                found_senior_req = True
+    # 2. PROCESAMIENTO DE MÍNIMOS EXPLÍCITOS (SENIOR_EXPERIENCE_PATTERNS[1:])
+    if not found_senior_req:
+        for pattern in SENIOR_EXPERIENCE_PATTERNS[1:]:
+            matches = re.findall(pattern, text, re.IGNORECASE)
 
-    should_penalize = found_senior_req and not has_junior_terms
+            for match in matches:
+                try:
+                    years_str = (
+                        next(y for y in match if y)
+                        if isinstance(match, (tuple, list))
+                        else str(match)
+                    )
+                    years = int(years_str)
+                except (ValueError, TypeError, StopIteration):
+                    continue
+
+                max_years_found = max(max_years_found, years)
+
+                if years >= MIN_YEARS_SENIORITY:
+                    found_senior_req = True
+                    break
+            if found_senior_req:
+                break
+
+    should_penalize = found_senior_req and not positive_seniority
+
     return should_penalize, max_years_found
 
 
