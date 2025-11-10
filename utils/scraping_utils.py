@@ -190,7 +190,7 @@ def extract_job_modality(text_for_extraction):
         r"\b(100%\s*(on-site|onsite|presencial)|exclusivamente\s*presencial)\b",
         text_for_extraction,
     ):
-        return "On-site"
+        return "Presencial"
 
     # Términos remotos y presenciales
     remote_terms = (
@@ -207,14 +207,14 @@ def extract_job_modality(text_for_extraction):
     if re.search(r"\b(híbrido|hybrid|mixto)\b", text_for_extraction) or (
         is_remote_mentioned and is_onsite_mentioned
     ):
-        return "Hybrid"
+        return "Híbrido"
 
     # Solo presencial
     if is_onsite_mentioned:
-        return "On-site"
+        return "Presencial"
 
     # Solo remoto
     if is_remote_mentioned:
-        return "Remote"
+        return "Remoto"
 
-    return "Not Specified"
+    return "No especificada"
