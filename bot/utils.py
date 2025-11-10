@@ -24,7 +24,7 @@ async def send_jobs(bot, channel_id, jobs):
             [
                 [
                     InlineKeyboardButton(
-                        text=f"🔗 Ver detalles en {clean_text(job.get('source', 'N/A'))}",
+                        text=f"Ver detalles en {clean_text(job.get('source', 'N/A'))}",
                         url=clean_text(job.get("url", "#")),
                     )
                 ]
