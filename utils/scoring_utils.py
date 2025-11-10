@@ -108,6 +108,7 @@ def calculate_job_score(row):
     strong_role_found = bool(_REGEX_STRONG_ROLE_SIGNALS.search(title))
     has_ambiguous_role = bool(_REGEX_AMBIGUOUS_ROLES.search(title))
     has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
+    has_negative_seniority = bool(_REGEX_SENIORITY_EXCLUDED.search(full_text))
     has_it_in_title = bool(re.search(r"\b(it|ti)\b", title))
 
     all_signals = strong_tech_signals_found | it_signals_found | weak_it_signals_found
@@ -229,14 +230,20 @@ def calculate_job_score(row):
         )[:3]
 
     # Experiencia senior
-    should_penalize, years_required = has_senior_experience_requirement(
-        full_text, has_positive_seniority
-    )
-    if should_penalize:
+    should_penalize_years, years_required = has_senior_experience_requirement(full_text)
+
+    # Penalizar si se encuentran AÑOS de experiencia O una PALABRA CLAVE senior,
+    # siempre que no haya una palabra clave positiva (junior, etc.) que lo compense.
+    if (should_penalize_years or has_negative_seniority) and not has_positive_seniority:
         penalty = 50
         score -= penalty
         score_details["penalty_senior_experience"] = -penalty
-        score_details["years_required"] = years_required
+
+        if should_penalize_years:
+            score_details["years_required"] = years_required
+        if has_negative_seniority:
+            found_keywords = _REGEX_SENIORITY_EXCLUDED.findall(full_text)
+            score_details["seniority_keywords_found"] = sorted(set(found_keywords))[:3]
 
     # NORMALIZACIÓN
     final_score = round(max(0, min(100, score)), 1)
@@ -257,10 +264,9 @@ def calculate_job_score(row):
 import re
 
 
-def has_senior_experience_requirement(text, positive_seniority):
+def has_senior_experience_requirement(text):
     """
-    Detecta si el puesto pide experiencia senior (>=3 años) y penaliza
-    si no hay términos Junior/Trainee (positive_seniority) para compensar.
+    Detecta si el puesto pide experiencia senior (>= MIN_YEARS_SENIORITY)
     """
 
     found_senior_req = False
@@ -276,7 +282,7 @@ def has_senior_experience_requirement(text, positive_seniority):
                 max_required = int(match[1])
                 max_years_found = max(max_years_found, max_required)
 
-                if max_required > MIN_YEARS_SENIORITY:
+                if max_required >= MIN_YEARS_SENIORITY:
                     found_senior_req = True
                     break
 
@@ -309,9 +315,7 @@ def has_senior_experience_requirement(text, positive_seniority):
             if found_senior_req:
                 break
 
-    should_penalize = found_senior_req and not positive_seniority
-
-    return should_penalize, max_years_found
+    return found_senior_req, max_years_found
 
 
 def filter_jobs_with_scoring(df, min_score=60, verbose=True):
