@@ -36,13 +36,6 @@ def fetch_educacionit():
             desc_el = card.select_one("p.fs12")
             description = desc_el.text.strip() if desc_el else ""
 
-            salary_div = card.select_one("div[style*='color:#ff7700']")
-            if salary_div:
-                full_salary_text = salary_div.text.strip()
-                salary = full_salary_text.replace("Remuneración:", "").strip()
-            else:
-                salary = "No especificado"
-
             date_el = card.select_one("p.fechaEmpleo")
             published_at_str = date_el.text.strip() if date_el else None
 
@@ -64,7 +57,6 @@ def fetch_educacionit():
                     "company": company,
                     "description": description,
                     "source": "EducaciónIT",
-                    "salary": salary,
                     "url": url,
                     "published_at": published_at,
                 }

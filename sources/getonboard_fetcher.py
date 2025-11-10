@@ -44,18 +44,6 @@ def fetch_getonboard():
                 if jobData.get("countries") not in ["Argentina", "Remoto"]:
                     continue
 
-                salary_min = jobData.get("min_salary")
-                salary_max = jobData.get("max_salary")
-
-                if salary_min and salary_max:
-                    salary = f"${salary_min} - ${salary_max}"
-                elif salary_min:
-                    salary = f"Mínimo ${salary_min}"
-                elif salary_max:
-                    salary = f"Máximo ${salary_max}"
-                else:
-                    salary = "No especificado"
-
                 all_jobs.append(
                     {
                         "id": job_id,
@@ -66,7 +54,6 @@ def fetch_getonboard():
                         .get("name", ""),
                         "description": jobData.get("description", ""),
                         "source": "GetOnBoard",
-                        "salary": salary,
                         "url": job.get("links", {}).get("public_url", ""),
                         "published_at": published_at_ts,
                     }

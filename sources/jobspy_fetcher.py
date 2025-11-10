@@ -36,7 +36,6 @@ def fetch_jobspy():
                     "company": str(job.get("company") or "").strip(),
                     "description": description,
                     "source": str(job.get("site") or "").capitalize(),
-                    "salary": job.get("salary", "No especificado"),
                     "url": job.get("job_url", ""),
                     "published_at": published_at,
                 }

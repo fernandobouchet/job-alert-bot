@@ -83,8 +83,6 @@ def fetch_empleosit():
                     print(f"⚠️ Error al obtener la página de detalle para {url}: {e}")
                     description = descripcion_full
 
-            salary = "No especificado"
-
             date_el = card.select_one(".captions-field.posted-ico")
 
             published_at_str = date_el.get_text(strip=True) if date_el else None
@@ -107,7 +105,6 @@ def fetch_empleosit():
                     "company": company,
                     "description": description,
                     "source": "EmpleosIT",
-                    "salary": salary,
                     "url": url,
                     "published_at": published_at,
                 }
