@@ -1,10 +1,8 @@
 import requests
-from config import FETCHER_CONFIG
 from utils.date_utils import get_timestamp_24_hours_ago
 
 
-def fetch_getonboard():
-    config = FETCHER_CONFIG.get("GetOnBoardFetcher", {})
+def fetch_getonboard(config):
 
     from_time = get_timestamp_24_hours_ago()
 

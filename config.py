@@ -4,8 +4,6 @@ from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
 from sources.empleosit_fetcher import fetch_empleosit
 
-TIMEZONE = "America/Argentina/Buenos_Aires"
-
 UPLOAD_TO_FIREBASE = True
 
 REVALIDATE_CACHE = True
@@ -34,8 +32,15 @@ JOBSPY_SEARCH_TERMS = (
     ")"
 )
 
+AVAILABLE_SOURCES = {
+    "getonboard": fetch_getonboard,
+    "educacionit": fetch_educacionit,
+    "jobspy": fetch_jobspy,
+    "empleosit": fetch_empleosit,
+}
+
 FETCHER_CONFIG = {
-    "GetOnBoardFetcher": {
+    "getonboard": {
         "base_url": "https://www.getonbrd.com/api/v0/categories/{category}/jobs",
         "per_page": 20,
         "page": 1,
@@ -51,7 +56,7 @@ FETCHER_CONFIG = {
             "technical-support",
         ],
     },
-    "JobSpyFetcher": {
+    "jobspy": {
         "name": "Argentina (LinkedIn & Indeed)",
         "site_name": ["linkedin", "indeed"],
         "location": "Buenos Aires, AR",
@@ -61,36 +66,37 @@ FETCHER_CONFIG = {
         "linkedin_fetch_description": True,
         "search_terms": JOBSPY_SEARCH_TERMS,
     },
-    "EducacionITFetcher": {
+    "educacionit": {
         "base_url": "https://empleos.educacionit.com/trabajos?nivel=junior",
         "timeout": 15,
     },
-    "EmpleosITFetcher": {
+    "empleosit": {
         "base_url": "https://www.empleosit.com.ar/search-results-jobs/?searchId=1762136439.6851&action=search&page=1&listings_per_page=20&view=list&sorting_field=activation_date&sorting_order=DESC",
         "timeout": 15,
     },
 }
 
-AVAILABLE_SOURCES = {
-    "getonboard": fetch_getonboard,
-    "educacionit": fetch_educacionit,
-    "jobspy": fetch_jobspy,
-    "empleosit": fetch_empleosit,
-}
-
 
 def get_sources():
-    source_names = os.getenv("JOB_SOURCES", "").split(",")
-    if not source_names or source_names == [""]:
-        print("No JOB_SOURCES environment variable found, using all available sources.")
-        return list(AVAILABLE_SOURCES.values())
+    source_names_str = os.getenv("JOB_SOURCES")
 
-    sources = []
-    print(f"JOB_SOURCES found, using: {source_names}")
+    if not source_names_str:
+        print("No JOB_SOURCES environment variable found, using all available sources.")
+        source_names = list(AVAILABLE_SOURCES.keys())
+    else:
+        source_names = [name.strip() for name in source_names_str.split(",")]
+        print(f"JOB_SOURCES found, using: {source_names}")
+
+    sources_to_run = []
     for name in source_names:
-        fetcher = AVAILABLE_SOURCES.get(name.strip())
-        if fetcher:
-            sources.append(fetcher)
+        fetcher_func = AVAILABLE_SOURCES.get(name)
+        fetcher_config = FETCHER_CONFIG.get(name)
+
+        if fetcher_func and fetcher_config:
+            sources_to_run.append((fetcher_func, fetcher_config))
         else:
-            print(f"Warning: Source '{name}' not found. It will be ignored.")
-    return sources
+            print(
+                f"Warning: Source '{name}' not found or missing config. It will be ignored."
+            )
+
+    return sources_to_run

@@ -3,11 +3,9 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from config import FETCHER_CONFIG
 
 
-def fetch_empleosit():
-    config = FETCHER_CONFIG.get("EmpleosITFetcher", {})
+def fetch_empleosit(config):
 
     all_jobs = []
     try:

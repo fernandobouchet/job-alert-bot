@@ -6,11 +6,11 @@ from datetime import datetime, timedelta
 from collections import Counter
 from config import (
     DAYS_OLD_THRESHOLD,
-    TIMEZONE,
     UPLOAD_TO_FIREBASE,
     ACCEPTED_JOBS_RETENTION_DAYS,
     REJECTED_JOBS_RETENTION_DAYS,
 )
+from constants import TIMEZONE
 from filters_scoring_config.scoring import MIN_FILTER_SCORE
 from filters_scoring_config.tags import TAGS_KEYWORDS
 from utils.date_utils import safe_parse_date_to_ISO
@@ -28,7 +28,7 @@ async def scrape(sources, channel_id, bot):
     print("🚀 Iniciando búsqueda de trabajos...")
 
     # 1. FETCH: Llamamos a cada fuente en un thread separado
-    tasks = [asyncio.to_thread(source_func) for source_func in sources]
+    tasks = [asyncio.to_thread(source_func, config) for source_func, config in sources]
     results = await asyncio.gather(*tasks)
     all_jobs = [job for result in results for job in result]
 

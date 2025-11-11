@@ -2,11 +2,9 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from config import FETCHER_CONFIG
 
 
-def fetch_educacionit():
-    config = FETCHER_CONFIG.get("EducacionITFetcher", {})
+def fetch_educacionit(config):
 
     all_jobs = []
     try:

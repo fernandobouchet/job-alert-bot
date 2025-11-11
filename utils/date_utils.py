@@ -2,7 +2,7 @@ import math
 import zoneinfo
 from datetime import datetime, timedelta
 import dateparser
-from config import TIMEZONE
+from constants import TIMEZONE
 
 
 def safe_parse_date_to_ISO(date):

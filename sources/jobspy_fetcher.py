@@ -1,9 +1,7 @@
 from jobspy import scrape_jobs
-from config import FETCHER_CONFIG
 
 
-def fetch_jobspy():
-    config = FETCHER_CONFIG.get("JobSpyFetcher", {})
+def fetch_jobspy(config):
 
     all_jobs = []
 

@@ -6,7 +6,8 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 import asyncio
 from collections import Counter
 
-from config import REVALIDATE_CACHE, TIMEZONE
+from config import REVALIDATE_CACHE
+from constants import TIMEZONE
 from utils.revalidation_utils import revalidate_path
 
 # Inicialización de Firebase Admin
