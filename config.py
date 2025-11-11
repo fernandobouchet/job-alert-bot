@@ -1,3 +1,9 @@
+import os
+from sources.getonboard_fetcher import fetch_getonboard
+from sources.educacionit_fetcher import fetch_educacionit
+from sources.jobspy_fetcher import fetch_jobspy
+from sources.empleosit_fetcher import fetch_empleosit
+
 TIMEZONE = "America/Argentina/Buenos_Aires"
 
 UPLOAD_TO_FIREBASE = True
@@ -64,3 +70,27 @@ FETCHER_CONFIG = {
         "timeout": 15,
     },
 }
+
+AVAILABLE_SOURCES = {
+    "getonboard": fetch_getonboard,
+    "educacionit": fetch_educacionit,
+    "jobspy": fetch_jobspy,
+    "empleosit": fetch_empleosit,
+}
+
+
+def get_sources():
+    source_names = os.getenv("JOB_SOURCES", "").split(",")
+    if not source_names or source_names == [""]:
+        print("No JOB_SOURCES environment variable found, using all available sources.")
+        return list(AVAILABLE_SOURCES.values())
+
+    sources = []
+    print(f"JOB_SOURCES found, using: {source_names}")
+    for name in source_names:
+        fetcher = AVAILABLE_SOURCES.get(name.strip())
+        if fetcher:
+            sources.append(fetcher)
+        else:
+            print(f"Warning: Source '{name}' not found. It will be ignored.")
+    return sources
