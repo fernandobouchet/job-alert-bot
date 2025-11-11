@@ -10,7 +10,7 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_STRONG_TECH_SIGNALS,
     _REGEX_WEAK_IT_SIGNALS,
 )
-from filters_scoring_config.patterns import SENIOR_EXPERIENCE_PATTERNS
+from filters_scoring_config.patterns import EXPERIENCE_PATTERNS
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
 
@@ -261,69 +261,45 @@ def calculate_job_score(row):
     return final_score, score_details
 
 
-import re
-
-
 def has_senior_experience_requirement(text):
     """
-    Detecta si el puesto pide experiencia senior (>= MIN_YEARS_SENIORITY)
+    Detecta si requiere experiencia senior (>= MIN_YEARS_SENIORITY).
+
+    Returns:
+        tuple: (is_senior: bool, years: int or None)
+        - is_senior: True si requiere >= MIN_YEARS_SENIORITY años
+        - years: número de años encontrado, o None si no se especifica
     """
+    years_found = []
 
-    found_senior_req = False
-    max_years_found = 0
-    range_found = False  # Flag to indicate a range was processed
+    for pattern in EXPERIENCE_PATTERNS:
+        matches = re.findall(pattern, text, re.IGNORECASE)
 
-    # 1. PROCESAMIENTO DE RANGOS (SENIOR_EXPERIENCE_PATTERNS[0])
-    range_pattern = SENIOR_EXPERIENCE_PATTERNS[0]
-    range_matches = re.findall(range_pattern, text, re.IGNORECASE)
+        for match in matches:
+            try:
+                if isinstance(match, tuple):
+                    nums = [int(n) for n in match if n]
+                    if len(nums) == 2:
+                        min_years, max_years = nums
+                        if 1 <= min_years < max_years <= 50:
+                            years_found.append(min_years)
+                    elif len(nums) == 1:
+                        if 1 <= nums[0] <= 50:
+                            years_found.append(nums[0])
+                else:
+                    years = int(match)
+                    if 1 <= years <= 50:
+                        years_found.append(years)
+            except (ValueError, TypeError):
+                continue
 
-    if range_matches:
-        range_found = True
-        for match in range_matches:
-            if len(match) == 2:
-                try:
-                    # Use the lower bound of the range (the first number)
-                    min_required = int(match[0])
-                    max_in_range = int(match[1])  # Still need this for max_years_found
+    if not years_found:
+        return False, None
 
-                    # We still want to record the highest number mentioned for context
-                    max_years_found = max(max_years_found, max_in_range)
+    max_years = max(years_found)
+    is_senior = max_years >= MIN_YEARS_SENIORITY
 
-                    # The check for senior requirement should be on the MINIMUM of the range
-                    if min_required >= MIN_YEARS_SENIORITY:
-                        found_senior_req = True
-                        break
-
-                except ValueError:
-                    continue
-            if found_senior_req:
-                break
-
-    # 2. PROCESAMIENTO DE MÍNIMOS EXPLÍCITOS (only if no range was found)
-    if not range_found:
-        for pattern in SENIOR_EXPERIENCE_PATTERNS[1:]:
-            matches = re.findall(pattern, text, re.IGNORECASE)
-
-            for match in matches:
-                try:
-                    years_str = (
-                        next(y for y in match if y)
-                        if isinstance(match, (tuple, list))
-                        else str(match)
-                    )
-                    years = int(years_str)
-                except (ValueError, TypeError, StopIteration):
-                    continue
-
-                max_years_found = max(max_years_found, years)
-
-                if years >= MIN_YEARS_SENIORITY:
-                    found_senior_req = True
-                    break
-            if found_senior_req:
-                break
-
-    return found_senior_req, max_years_found
+    return is_senior, max_years
 
 
 def filter_jobs_with_scoring(df, min_score=60, verbose=True):

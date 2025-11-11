@@ -14,7 +14,7 @@ from .signals import (
     REQUIRED_IT_SIGNALS,
 )
 from .tags import TAGS_KEYWORDS
-from .patterns import SENIOR_EXPERIENCE_PATTERNS
+from .patterns import EXPERIENCE_PATTERNS
 
 __all__ = [
     "MIN_YEARS_SENIORITY",
@@ -27,5 +27,5 @@ __all__ = [
     "AMBIGUOUS_ROLES",
     "REQUIRED_IT_SIGNALS",
     "TAGS_KEYWORDS",
-    "SENIOR_EXPERIENCE_PATTERNS",
+    "EXPERIENCE_PATTERNS",
 ]
