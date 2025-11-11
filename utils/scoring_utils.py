@@ -271,28 +271,36 @@ def has_senior_experience_requirement(text):
 
     found_senior_req = False
     max_years_found = 0
+    range_found = False  # Flag to indicate a range was processed
 
     # 1. PROCESAMIENTO DE RANGOS (SENIOR_EXPERIENCE_PATTERNS[0])
     range_pattern = SENIOR_EXPERIENCE_PATTERNS[0]
     range_matches = re.findall(range_pattern, text, re.IGNORECASE)
 
-    for match in range_matches:
-        if len(match) == 2:
-            try:
-                max_required = int(match[1])
-                max_years_found = max(max_years_found, max_required)
+    if range_matches:
+        range_found = True
+        for match in range_matches:
+            if len(match) == 2:
+                try:
+                    # Use the lower bound of the range (the first number)
+                    min_required = int(match[0])
+                    max_in_range = int(match[1])  # Still need this for max_years_found
 
-                if max_required >= MIN_YEARS_SENIORITY:
-                    found_senior_req = True
-                    break
+                    # We still want to record the highest number mentioned for context
+                    max_years_found = max(max_years_found, max_in_range)
 
-            except ValueError:
-                continue
-        if found_senior_req:
-            break
+                    # The check for senior requirement should be on the MINIMUM of the range
+                    if min_required >= MIN_YEARS_SENIORITY:
+                        found_senior_req = True
+                        break
 
-    # 2. PROCESAMIENTO DE MÍNIMOS EXPLÍCITOS (SENIOR_EXPERIENCE_PATTERNS[1:])
-    if not found_senior_req:
+                except ValueError:
+                    continue
+            if found_senior_req:
+                break
+
+    # 2. PROCESAMIENTO DE MÍNIMOS EXPLÍCITOS (only if no range was found)
+    if not range_found:
         for pattern in SENIOR_EXPERIENCE_PATTERNS[1:]:
             matches = re.findall(pattern, text, re.IGNORECASE)
 
