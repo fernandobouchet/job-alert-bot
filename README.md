@@ -1,82 +1,106 @@
 # Job Alert Bot 🤖
 
-Este es un bot automatizado que busca empleos en el sector de TI, los procesa a través de un sistema avanzado de filtrado y puntuación, y notifica los resultados más relevantes en un canal de Telegram.
+This is an automated bot that scrapes IT job postings from multiple sources, processes them through an advanced filtering and scoring system, and notifies the most relevant results to a Telegram channel.
 
-El objetivo principal es filtrar el "ruido" de los portales de empleo y presentar únicamente las ofertas que se ajustan a un perfil de búsqueda específico, el cual es fácilmente configurable (por defecto, está ajustado para roles de nivel inicial).
+The main goal is to filter out the "noise" from job portals and present only the offers that fit a specific search profile, which is easily configurable (by default, it's set for entry-level roles). This project also serves as a data backend for a separate web application.
 
-## ✨ Características Principales
+## ✨ Key Features
 
--   **Scraping Multi-fuente**: Obtiene empleos de **Get on Board**, **Educación IT** y **JobSpy** (que a su vez busca en LinkedIn, Indeed, etc.).
--   **Base de Datos en Firestore**: Utiliza Firebase Firestore para almacenar los empleos y evitar el envío de duplicados.
--   **Filtrado Avanzado**:
-    -   Descarta automáticamente empleos de áreas no relacionadas con TI (RRHH, Marketing, Finanzas, etc.).
-    -   Excluye roles que no se ajustan al perfil de seniority deseado (ej: Senior, Lead, Manager).
--   **Sistema de Scoring (Puntuación)**:
-    -   Cada empleo pasa por un algoritmo que le asigna una puntuación de 0 a 100 basada en su relevancia.
-    -   El sistema analiza el título y la descripción en busca de palabras clave de tecnologías, roles y seniority.
-    -   Aplica bonificaciones y penalizaciones según reglas configurables.
--   **Generación de Tags**: Extrae y asigna las palabras clave más importantes a cada empleo (ej: `react`, `python`, `aws`, `backend`) para una fácil identificación.
--   **Notificaciones en Telegram**: Envía los empleos que superan una puntuación mínima a un canal de Telegram.
--   **Ejecución Automatizada**: Diseñado para ser ejecutado automáticamente a través de **GitHub Actions** en un horario programado.
+-   **Multi-Source Scraping**: Fetches jobs from **Get on Board**, **Educación IT**, **Empleos IT**, and **JobSpy** (which in turn scrapes LinkedIn, Indeed, and others).
+-   **Firestore Database**: Uses Google Firestore to store processed jobs, preventing duplicate notifications and tracking data over time.
+-   **Advanced Filtering**:
+    -   Automatically discards jobs from non-IT related fields (e.g., HR, Marketing, Finance).
+    -   Excludes roles that do not match the desired seniority level (e.g., Senior, Lead, Manager).
+-   **Scoring System**:
+    -   Each job is run through an algorithm that assigns a relevance score from 0 to 100.
+    -   The system analyzes the job title and description for keywords related to technologies, roles, and seniority.
+    -   Applies bonuses and penalties based on configurable rules.
+-   **Tag Generation**: Extracts and assigns the most important keywords to each job (e.g., `react`, `python`, `aws`, `backend`) for easy identification.
+-   **Telegram Notifications**: Sends jobs that exceed a minimum score threshold to a designated Telegram channel.
+-   **Web Frontend Integration**: Triggers a cache revalidation on a separate web application to keep its data up-to-date.
+-   **Automated Execution**: Designed to be run automatically via **GitHub Actions** on a schedule.
 
-## ⚙️ Cómo Funciona (Flujo de Trabajo)
+## ⚙️ How It Works (Workflow)
 
-1.  **Scrape**: El bot se ejecuta y extrae las últimas ofertas de todas las fuentes.
-2.  **Deduplicación**: Comprueba en Firestore si los empleos ya han sido procesados anteriormente.
-3.  **Pre-filtrado**: Aplica una primera capa de filtros para descartar empleos por área y seniority no deseados.
-4.  **Scoring y Filtrado Final**: Asigna una puntuación a los empleos restantes. Solo los que superan el `MIN_SCORE` son aceptados.
-5.  **Notificación**: Los empleos aceptados se envían al canal de Telegram.
-6.  **Almacenamiento**: Todos los empleos procesados (aceptados y rechazados) se guardan en Firestore para referencia futura y para el proceso de deduplicación.
+1.  **Scrape**: The bot runs and fetches the latest job postings from all enabled sources.
+2.  **Deduplication**: It checks Firestore to see if the jobs have already been processed.
+3.  **Pre-filtering**: Applies a first layer of filters to discard jobs based on area and undesired seniority.
+4.  **Scoring & Final Filtering**: Assigns a score to the remaining jobs. Only those that surpass the `MIN_SCORE` are accepted.
+5.  **Notification**: Accepted jobs are sent to the Telegram channel.
+6.  **Storage**: All processed jobs (both accepted and rejected) are saved to Firestore for future reference and deduplication.
+7.  **Cache Revalidation**: A request is sent to the web frontend to revalidate its cache, ensuring the new job data is reflected.
 
-## 🔧 Configuración
+## 🚀 Getting Started
 
-El proyecto se configura principalmente a través de dos archivos y variables de entorno.
+### Prerequisites
 
-1.  **`config.py`**:
-    -   `UPLOAD_TO_FIREBASE`: Activa o desactiva la conexión con Firestore.
-    -   `DAYS_OLD_THRESHOLD`: Límite de días de antigüedad para procesar un empleo.
-    -   `JOBSPY_SEARCH_TERMS`: Palabras clave para la búsqueda en JobSpy.
-    -   Y otras configuraciones específicas de cada fetcher.
+-   Python 3.11 or higher
+-   A Google Cloud project with Firestore enabled
+-   A Telegram Bot Token and Channel ID
 
-2.  **`filters_scoring_config.py`**:
-    -   Aquí reside el "cerebro" del bot. Es donde se define el perfil de búsqueda.
-    -   `MIN_SCORE`: La puntuación mínima que un empleo debe tener para ser aceptado.
-    -   Listas de palabras clave para el scoring: `TAGS_KEYWORDS`, `STRONG_ROLE_SIGNALS`, `EXCLUDED_AREA_TERMS_TITLE`, etc.
+### Installation
 
-3.  **Variables de Entorno (Secrets)**:
-    -   `BOT_TOKEN`: El token del bot de Telegram.
-    -   `TELEGRAM_CHANNEL_ID`: El ID del canal de Telegram para las notificaciones.
-    -   `FIREBASE_CREDENTIALS_BASE64`: Las credenciales de servicio de Google Cloud/Firebase, codificadas en Base64.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/job-alert-bot.git
+    cd job-alert-bot
+    ```
 
-## 🚀 Uso
-
-El bot está diseñado para funcionar de forma automatizada. El archivo `.github/workflows/scraper.yml` contiene una configuración de GitHub Actions para ejecutar el script varias veces al día.
-
-Para ejecutarlo manualmente:
-
-1.  **Clona el repositorio.**
-2.  **Instala las dependencias:**
+2.  **Install the dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-3.  **Configura tus credenciales:**
-    -   Asegúrate de que el archivo de credenciales de Google Cloud (`.json`) esté disponible.
-    -   Exporta las variables de entorno necesarias.
+
+## 🔧 Configuration
+
+The project is configured through environment variables. You can create a `.env` file in the project root to manage them locally.
+
+### Core Configuration
+
+-   `BOT_TOKEN` (Required): Your Telegram bot token.
+-   `TELEGRAM_CHANNEL_ID` (Required): The ID of the Telegram channel where notifications will be sent.
+
+### Job Sources
+
+-   `JOB_SOURCES`: A comma-separated list of sources to use. If not set, all available sources will be used.
+    -   **Available Sources**: `getonboard`, `educacionit`, `jobspy`, `empleosit`
+    -   **Example**: `JOB_SOURCES=getonboard,jobspy`
+
+### Firebase/Google Cloud
+
+-   `GOOGLE_APPLICATION_CREDENTIALS`: The absolute path to your Google Cloud service account JSON key file. This is required for local development. When deployed (e.g., on GitHub Actions), you might use a different authentication method (like Workload Identity Federation or a base64-encoded secret).
+
+### Web Frontend Integration
+
+-   `BASE_URL`: The base URL of the web application to trigger cache revalidation.
+-   `REVALIDATION_SECRET`: The secret token required by the frontend's revalidation endpoint.
+
+## ▶️ Usage
+
+To run the bot manually:
+
+1.  **Set up your environment variables:**
+    -   Create a `.env` file with the necessary variables (see Configuration section).
+    -   Or export them in your shell:
     ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS="/ruta/a/tus/credenciales.json"
-    export BOT_TOKEN="TU_TOKEN"
-    export TELEGRAM_CHANNEL_ID="ID_DEL_CANAL"
+    export BOT_TOKEN="YOUR_TELEGRAM_BOT_TOKEN"
+    export TELEGRAM_CHANNEL_ID="YOUR_TELEGRAM_CHANNEL_ID"
+    export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/credentials.json"
+    export JOB_SOURCES="getonboard,jobspy"
     ```
-4.  **Ejecuta el script:**
+
+2.  **Run the main script:**
     ```bash
     python main.py
     ```
 
-## 🛠️ Pila Tecnológica
+The bot is also designed to be run automatically. The `.github/workflows/scraper.yml` file contains a GitHub Actions workflow to run the script on a schedule.
 
--   **Lenguaje**: Python 3.11
+## 🛠️ Tech Stack
+
+-   **Language**: Python 3.11
 -   **Scraping**: `requests`, `beautifulsoup4`, `python-jobspy`
--   **Base de Datos**: Google Firestore
--   **Notificaciones**: `python-telegram-bot`
--   **Orquestación**: GitHub Actions
--   **Otros**: `pandas`, `dateparser`
+-   **Database**: Google Firestore
+-   **Notifications**: `python-telegram-bot`
+-   **Orchestration**: GitHub Actions
+-   **Data Handling**: `pandas`, `dateparser`
