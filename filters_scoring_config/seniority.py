@@ -51,11 +51,6 @@ EXCLUDED_SENIORITYS = [
     "coordinador",
     "coordinator",
     "supervisor",
-    # Niveles Avanzados
-    "principal",
-    "staff",
-    "expert",
-    "experto",
     # Indicadores de Nivel/Años
     " ii",
     " iii",
@@ -67,12 +62,4 @@ EXCLUDED_SENIORITYS = [
     "nivel 2",
     "nivel 3",
     "nivel 4",
-    "pl",
-    "pleno",
-    "3+",
-    "4+",
-    "5+",
-    "+3",
-    "+4",
-    "+5",
 ]
