@@ -6,9 +6,8 @@ from datetime import datetime, timedelta
 from collections import Counter
 from config import (
     DAYS_OLD_THRESHOLD,
+    JOBS_RETENTION_DAYS,
     UPLOAD_TO_FIREBASE,
-    ACCEPTED_JOBS_RETENTION_DAYS,
-    REJECTED_JOBS_RETENTION_DAYS,
 )
 from constants import TIMEZONE
 from filters_scoring_config.scoring import MIN_FILTER_SCORE
@@ -164,8 +163,7 @@ async def scrape(sources, channel_id, bot):
 
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
-        delete_old_documents("jobs", ACCEPTED_JOBS_RETENTION_DAYS, status="accepted")
-        delete_old_documents("jobs", REJECTED_JOBS_RETENTION_DAYS, status="rejected")
+        delete_old_documents("jobs", JOBS_RETENTION_DAYS)
 
 
 def extract_tags(text_for_extraction):
