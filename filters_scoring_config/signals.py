@@ -473,6 +473,8 @@ REQUIRED_IT_SIGNALS = [
     "sistema operativo linux",
     "windows administration",
     "administración de windows",
+    "databases",
+    "bases de datos",
     "data warehouse",
     "almacén de datos",
     "data pipeline",
