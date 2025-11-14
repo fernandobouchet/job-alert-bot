@@ -105,7 +105,7 @@ def calculate_job_score(row):
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
     weak_it_signals_found = set(_REGEX_WEAK_IT_SIGNALS.findall(full_text))
     strong_tech_signals_found = set(_REGEX_STRONG_TECH_SIGNALS.findall(full_text))
-    strong_role_found = bool(_REGEX_STRONG_ROLE_SIGNALS.search(title))
+    strong_role_found = bool(_REGEX_STRONG_ROLE_SIGNALS.search(full_text))
     has_ambiguous_role = bool(_REGEX_AMBIGUOUS_ROLES.search(title))
     has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
     has_negative_seniority = bool(_REGEX_EXCLUDED_SENIORITY.search(full_text))
@@ -144,7 +144,7 @@ def calculate_job_score(row):
         score += bonus
         score_details["bonus_strong_role"] = bonus
         score_details["strong_roles_found"] = sorted(
-            _REGEX_STRONG_ROLE_SIGNALS.findall(title)
+            _REGEX_STRONG_ROLE_SIGNALS.findall(full_text)
         )[:3]
 
     # BONUS: "IT" explícito
