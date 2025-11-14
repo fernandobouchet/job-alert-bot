@@ -2,7 +2,7 @@ import re
 
 from filters_scoring_config.areas import EXCLUDED_AREA_TERMS_TITLE
 from filters_scoring_config.seniority import (
-    EXCLUDED_SENIORITYS,
+    EXCLUDED_SENIORITY_TERMS,
     POSITIVE_SENIORITY_TERMS,
 )
 from filters_scoring_config.signals import (
@@ -21,8 +21,8 @@ _REGEX_AREA_PREFILTER = re.compile(
     re.IGNORECASE | re.UNICODE,
 )
 
-_REGEX_SENIORITY_EXCLUDED = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in EXCLUDED_SENIORITYS),
+_REGEX_EXCLUDED_SENIORITY = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in EXCLUDED_SENIORITY_TERMS),
     re.IGNORECASE | re.UNICODE,
 )
 

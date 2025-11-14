@@ -5,7 +5,7 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_AREA_PREFILTER,
     _REGEX_IT_SIGNALS,
     _REGEX_POSITIVE_SENIORITY,
-    _REGEX_SENIORITY_EXCLUDED,
+    _REGEX_EXCLUDED_SENIORITY,
     _REGEX_STRONG_ROLE_SIGNALS,
     _REGEX_STRONG_TECH_SIGNALS,
     _REGEX_WEAK_IT_SIGNALS,
@@ -43,9 +43,9 @@ def pre_filter_jobs(df, verbose=True):
                 rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
 
         # FILTRO 2: Seniority (solo si pasó filtro de área)
-        elif _REGEX_SENIORITY_EXCLUDED.search(title):
+        elif _REGEX_EXCLUDED_SENIORITY.search(title):
             if not _REGEX_POSITIVE_SENIORITY.search(title):
-                matches = _REGEX_SENIORITY_EXCLUDED.findall(title)
+                matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
                 rejection_reason = f"seniority: {', '.join(sorted(set(matches)))}"
 
         if rejection_reason:
@@ -108,7 +108,7 @@ def calculate_job_score(row):
     strong_role_found = bool(_REGEX_STRONG_ROLE_SIGNALS.search(title))
     has_ambiguous_role = bool(_REGEX_AMBIGUOUS_ROLES.search(title))
     has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
-    has_negative_seniority = bool(_REGEX_SENIORITY_EXCLUDED.search(full_text))
+    has_negative_seniority = bool(_REGEX_EXCLUDED_SENIORITY.search(full_text))
     has_it_in_title = bool(re.search(r"\b(it|ti)\b", title))
 
     all_signals = strong_tech_signals_found | it_signals_found | weak_it_signals_found
@@ -242,7 +242,7 @@ def calculate_job_score(row):
         if should_penalize_years:
             score_details["years_required"] = years_required
         if has_negative_seniority:
-            found_keywords = _REGEX_SENIORITY_EXCLUDED.findall(full_text)
+            found_keywords = _REGEX_EXCLUDED_SENIORITY.findall(full_text)
             score_details["seniority_keywords_found"] = sorted(set(found_keywords))[:3]
 
     # NORMALIZACIÓN
