@@ -144,7 +144,7 @@ def calculate_job_score(row):
         score += bonus
         score_details["bonus_strong_role"] = bonus
         score_details["strong_roles_found"] = sorted(
-            _REGEX_STRONG_ROLE_SIGNALS.findall(full_text)
+            list(set(_REGEX_STRONG_ROLE_SIGNALS.findall(full_text)))
         )[:3]
 
     # BONUS: "IT" explícito
