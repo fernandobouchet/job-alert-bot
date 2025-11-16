@@ -12,6 +12,11 @@ POSITIVE_SENIORITY_TERMS = {
     "student",
     "grad",
     "beginner",
+    "no experience",
+    "level 1",
+    "level 2",
+    "i",
+    "ii",
     # Español
     "pasantia",
     "pasante",
@@ -23,6 +28,10 @@ POSITIVE_SENIORITY_TERMS = {
     "estudiante",
     "practicas",
     "practicante",
+    "sin experiencia",
+    "primer empleo",
+    "nivel 1",
+    "nivel 2",
 }
 
 
@@ -30,12 +39,12 @@ EXCLUDED_SENIORITY_TERMS = [
     # Senior explícito
     "senior",
     "sr.",
-    " sr ",
-    "ssr.",
-    " ssr ",
+    "sr",
     "semi senior",
     "semi-senior",
     "semisenior",
+    "ssr.",
+    "ssr",
     # Roles compuestos que son claramente senior
     "tech lead",
     "team lead",
@@ -44,6 +53,8 @@ EXCLUDED_SENIORITY_TERMS = [
     "lead engineer",
     "lider tecnico",
     "lider de equipo",
+    "líder técnico",
+    "líder de equipo",
     "staff engineer",
     "staff developer",
     # Management
@@ -65,9 +76,9 @@ EXCLUDED_SENIORITY_TERMS = [
     "experto",
     "especialista senior",
     # Niveles altos
-    " iii",
-    " iv",
-    " v",
+    "iii",
+    "iv",
+    "v",
     "level 3",
     "level 4",
     "nivel 3",
