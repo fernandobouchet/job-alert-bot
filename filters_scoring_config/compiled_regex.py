@@ -1,16 +1,17 @@
 import re
 
 from filters_scoring_config.areas import EXCLUDED_AREA_TERMS_TITLE
+from filters_scoring_config.compiled_profiles import (
+    _ALL_ROLES_KEYWORDS,
+    _ALL_TECHS_KEYWORDS,
+)
 from filters_scoring_config.seniority import (
     EXCLUDED_SENIORITY_TERMS,
     POSITIVE_SENIORITY_TERMS,
 )
 from filters_scoring_config.signals import (
     AMBIGUOUS_ROLES,
-    REQUIRED_IT_SIGNALS,
-    STRONG_ROLE_SIGNALS,
-    STRONG_TECH_SIGNALS,
-    WEAK_IT_SIGNALS,
+    IT_CONTEXT_SIGNALS,
 )
 
 
@@ -37,22 +38,17 @@ _REGEX_AMBIGUOUS_ROLES = re.compile(
 )
 
 _REGEX_IT_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in REQUIRED_IT_SIGNALS),
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in IT_CONTEXT_SIGNALS),
     re.IGNORECASE | re.UNICODE,
 )
 
-_REGEX_WEAK_IT_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in WEAK_IT_SIGNALS),
+_REGEX_ALL_ROLES = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in _ALL_ROLES_KEYWORDS),
     re.IGNORECASE | re.UNICODE,
 )
 
-_REGEX_STRONG_ROLE_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in STRONG_ROLE_SIGNALS),
-    re.IGNORECASE | re.UNICODE,
-)
-
-_REGEX_STRONG_TECH_SIGNALS = re.compile(
-    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in STRONG_TECH_SIGNALS),
+_REGEX_ALL_TECHS = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in _ALL_TECHS_KEYWORDS),
     re.IGNORECASE | re.UNICODE,
 )
 
