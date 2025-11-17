@@ -11,9 +11,8 @@ from config import (
 )
 from constants import TIMEZONE
 from filters_scoring_config.scoring import MIN_FILTER_SCORE
-from filters_scoring_config.tags import TAGS_KEYWORDS
 from utils.date_utils import safe_parse_date_to_ISO
-from utils.scoring_utils import filter_jobs_with_scoring, normalize_text_series
+from utils.scoring_utils import filter_jobs_with_scoring
 from bot.utils import send_jobs
 from utils.firestore_utils import (
     get_new_jobs,
@@ -91,7 +90,6 @@ async def scrape(sources, channel_id, bot):
         return
 
     # 6. ENRICHMENT (solo para jobs nuevos)
-    df["tags"] = df["full_text_normalized"].apply(extract_tags)
     df["modality"] = df["full_text_normalized"].apply(extract_job_modality)
 
     # Marcar fecha y hora del scraping
@@ -141,22 +139,19 @@ async def scrape(sources, channel_id, bot):
 
         if UPLOAD_TO_FIREBASE:
             # Calcular tendencias solo con jobs aceptados
-            tags_by_category = {}
-            for tags_dict in df_accepted["tags"]:
-                if isinstance(tags_dict, dict):
-                    for category, tags in tags_dict.items():
-                        if category not in tags_by_category:
-                            tags_by_category[category] = Counter()
-                        tags_by_category[category].update(tags)
+            profile_counter = Counter()
+            tag_counter = Counter()
 
-            # Convert counters to dicts for JSON serialization
-            tags_counts = {
-                category: dict(counter)
-                for category, counter in tags_by_category.items()
-            }
+            for _, row in df_accepted.iterrows():
+                profile_counter.update(row["profiles"])
+                tag_counter.update(row["tags"])
 
             month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
-            trend_data = {"total_jobs": len(df_accepted), "tags": tags_counts}
+            trend_data = {
+                "total_jobs": len(df_accepted),
+                "profiles": dict(profile_counter),
+                "tags": dict(tag_counter),
+            }
             save_monthly_trend_data(trend_data, month_key)
 
         await send_jobs(bot, channel_id, accepted_jobs_list)
@@ -164,22 +159,6 @@ async def scrape(sources, channel_id, bot):
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
         delete_old_documents("jobs", JOBS_RETENTION_DAYS)
-
-
-def extract_tags(text_for_extraction):
-    """Extrae tags de un texto ya normalizado en minúsculas"""
-    found_tags = {}
-    for category, tags in TAGS_KEYWORDS.items():
-        found_display_tags = []
-        for tag_info in tags:
-            for term in tag_info["search_terms"]:
-                pattern = r"(?<!\w)" + re.escape(term) + r"(?!\w)"
-                if re.search(pattern, text_for_extraction, re.IGNORECASE):
-                    found_display_tags.append(tag_info["display_tag"])
-                    break  # Evita duplicados si múltiples search_terms coinciden
-        if found_display_tags:
-            found_tags[category] = sorted(list(set(found_display_tags)))
-    return found_tags
 
 
 def extract_job_modality(text_for_extraction):
@@ -217,3 +196,21 @@ def extract_job_modality(text_for_extraction):
         return "Remoto"
 
     return "No especificada"
+
+
+def normalize_text_series(series: pd.Series):
+    """
+    Normaliza una columna de texto, eliminando caracteres basura (como ????)
+    mientras conserva la puntuación y los símbolos IT relevantes.
+    """
+
+    if series.empty:
+        return series
+
+    cleaned_series = series.fillna("").astype(str).str.lower()
+
+    cleaned_series = cleaned_series.str.replace(r"[^\w\s\+#\./]", " ", regex=True)
+
+    cleaned_series = cleaned_series.str.replace(r"\s+", " ", regex=True).str.strip()
+
+    return cleaned_series
