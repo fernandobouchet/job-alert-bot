@@ -46,6 +46,7 @@ FETCHER_CONFIG = {
         "seniority_ids": [1, 2],
         "categories": [
             "programacion",
+            "diseno-ux",
             "desarrollo-mobile",
             "data-science-analytics",
             "sysadmin-devops-qa",
