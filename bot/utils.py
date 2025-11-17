@@ -5,18 +5,22 @@ from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
-        tags_dict = job.get("tags", {})
-        tags_list = []
-        if isinstance(tags_dict, dict):
-            tags_list = [tag for tag_group in tags_dict.values() for tag in tag_group]
+        # Obtener perfiles y tags
+        profiles_list = job.get("profiles", [])
+        tags_list = job.get("tags", [])
 
-        tags_display = ", ".join(sorted(list(set(tags_list))))
+        # Formatear para mostrar
+        profiles_display = (
+            ", ".join(profiles_list) if profiles_list else "No especificado"
+        )
+        tags_display = ", ".join(tags_list) if tags_list else "No especificado"
 
         text = (
             f"🌐 Fuente: <b>{clean_text(job.get('source', 'N/A'))}</b>\n"
             f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b>\n"
             f"🧭 Modalidad: {clean_text(job.get('modality', 'N/A'))}\n"
             f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
+            f"✨ Perfiles: <code>{profiles_display}</code>\n"
             f"🏷️ Tags: <code>{tags_display}</code>\n"
         )
 
