@@ -143,8 +143,8 @@ async def scrape(sources, channel_id, bot):
             tag_counter = Counter()
 
             for _, row in df_accepted.iterrows():
-                profile_counter.update(row["profiles"])
-                tag_counter.update(row["tags"])
+                profile_counter.update(row["score_details"]["profiles"])
+                tag_counter.update(row["score_details"]["tags"])
 
             month_key = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).strftime("%Y_%m")
             trend_data = {

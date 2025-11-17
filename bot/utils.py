@@ -6,8 +6,9 @@ from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
         # Obtener perfiles y tags
-        profiles_list = job.get("profiles", [])
-        tags_list = job.get("tags", [])
+        score_details = job.get("score_details", {})
+        profiles_list = score_details.get("profiles", [])
+        tags_list = score_details.get("tags", [])
 
         # Formatear para mostrar
         profiles_display = (

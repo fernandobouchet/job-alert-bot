@@ -116,9 +116,13 @@ def calculate_job_score(row):
 
     # --- 1. Detección de Señales y Perfiles ---
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
-    has_ambiguous_role = bool(_REGEX_AMBIGUOUS_ROLES.search(title))
-    has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
-    has_negative_seniority = bool(_REGEX_EXCLUDED_SENIORITY.search(full_text))
+    ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
+    has_ambiguous_role = bool(ambiguous_roles_found)
+    positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
+    negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(full_text)
+
+    has_positive_seniority = bool(positive_seniority_matches)
+    has_negative_seniority = bool(negative_seniority_matches)
 
     # --- 2. Categorización por Perfil ---
     found_profiles = []
@@ -136,9 +140,10 @@ def calculate_job_score(row):
         tech_matches = _REGEX_ALL_TECHS.findall(full_text)
         raw_tech_matches.update(tech_matches)
 
-    final_tags = sorted(
-        list({TECH_REVERSE_MAP.get(tag.lower(), tag) for tag in raw_tech_matches})
-    )
+    normalized_tags = {
+        TECH_REVERSE_MAP.get(tag.lower(), tag) for tag in raw_tech_matches
+    }
+    final_tags = sorted(list(normalized_tags))
 
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
 
@@ -156,6 +161,7 @@ def calculate_job_score(row):
     if found_profiles:
         score += WEIGHTS["strong_role"]
         score_details["bonus_strong_role"] = WEIGHTS["strong_role"]
+        score_details["strong_role_found"] = sorted(set(found_profiles))[:3]
 
     # BONUS: Tecnologías encontradas
     if raw_tech_matches:
@@ -167,6 +173,7 @@ def calculate_job_score(row):
             bonus = min(len(raw_tech_matches) * WEIGHTS["global_tech"], 20)
             score += bonus
             score_details["bonus_global_tech"] = bonus
+        score_details["tech_found"] = sorted(raw_tech_matches)[:5]
         score_details["tech_count"] = len(raw_tech_matches)
 
     # BONUS: Señales IT
@@ -174,7 +181,7 @@ def calculate_job_score(row):
         bonus = min(len(it_signals_found) * WEIGHTS["it_signal"], 5)
         score += bonus
         score_details["bonus_it_signals"] = bonus
-        score_details["it_signals_count"] = len(it_signals_found)
+        score_details["it_signals_found"] = sorted(it_signals_found)[:10]
 
     # BONUS: Combinación perfecta
     if found_profiles and has_positive_seniority and raw_tech_matches:
@@ -203,6 +210,17 @@ def calculate_job_score(row):
     # Añadir detalles finales
     score_details["profiles"] = found_profiles
     score_details["tags"] = final_tags
+    if ambiguous_roles_found:
+        score_details["ambiguous_roles_found"] = sorted(set(ambiguous_roles_found))
+
+    if positive_seniority_matches:
+        score_details["positive_seniority_keywords_found"] = sorted(
+            list(set(positive_seniority_matches))
+        )
+    if negative_seniority_matches:
+        score_details["negative_seniority_keywords_found"] = sorted(
+            list(set(negative_seniority_matches))
+        )
 
     if final_score >= 75:
         score_details["quality_tier"] = "excellent"
@@ -281,11 +299,6 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
     df_scored["score"] = [item[0] for item in scores_and_details]
     df_scored["score_details"] = [item[1] for item in scores_and_details]
 
-    # Expandir detalles a columnas para mejor análisis
-    df_scored["profiles"] = df_scored["score_details"].apply(
-        lambda x: x.get("profiles", [])
-    )
-    df_scored["tags"] = df_scored["score_details"].apply(lambda x: x.get("tags", []))
     df_scored["quality_tier"] = df_scored["score_details"].apply(
         lambda x: x.get("quality_tier", "unknown")
     )
