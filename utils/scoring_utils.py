@@ -21,11 +21,11 @@ from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 WEIGHTS = {
     # Bonuses
     "it_signal": 1,
-    "profile_tech": 10,
-    "global_tech": 5,
-    "strong_role": 20,
-    "positive_seniority": 20,
-    "perfect_match": 10,
+    "profile_tech": 5,
+    "global_tech": 2,
+    "strong_role": 15,
+    "positive_seniority": 15,
+    "perfect_match": 5,
     # Penalties (valores positivos, se restan en el código)
     "senior_experience": 50,
     "ambiguous_no_context": 30,
