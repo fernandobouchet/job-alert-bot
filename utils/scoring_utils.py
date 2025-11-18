@@ -146,10 +146,9 @@ def calculate_job_score(row):
     final_tags = sorted(list(normalized_tags))
 
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
-
-    # 🚨 BLOQUEO CRÍTICO: Si es ambiguo y no tiene señales de TI, descartar.
-    if has_ambiguous_role and len(it_signals_found) < 1:
-        score_details["fatal_ambiguous_no_it"] = True
+    # 🚨 BLOQUEO CRÍTICO: SIN PERFIL NI SEÑALES IT
+    if not found_profiles and not (it_signals_found or raw_tech_matches):
+        score_details["fatal_no_it_roles_and_signals"] = True
         return 0, score_details
 
     # BONUS: Seniority Jr/Trainee
@@ -189,6 +188,7 @@ def calculate_job_score(row):
         score_details["bonus_perfect_match"] = WEIGHTS["perfect_match"]
 
     # PENALIZACIONES
+
     # Penalización por experiencia senior explícita
     should_penalize_years, years_required = has_senior_experience_requirement(full_text)
     if (should_penalize_years or has_negative_seniority) and not has_positive_seniority:
@@ -210,6 +210,7 @@ def calculate_job_score(row):
     # Añadir detalles finales
     score_details["profiles"] = found_profiles
     score_details["tags"] = final_tags
+
     if ambiguous_roles_found:
         score_details["ambiguous_roles_found"] = sorted(set(ambiguous_roles_found))
 
