@@ -5,15 +5,13 @@ from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
-        # Obtener perfiles y tags
+        # Obtener roles y tags
         score_details = job.get("score_details", {})
-        profiles_list = score_details.get("profiles", [])
+        roles_list = score_details.get("roles", [])
         tags_list = score_details.get("tags", [])
 
         # Formatear para mostrar
-        profiles_display = (
-            ", ".join(profiles_list) if profiles_list else "No especificado"
-        )
+        roles_display = ", ".join(roles_list) if roles_list else "No especificado"
         tags_display = ", ".join(tags_list) if tags_list else "No especificado"
 
         text = (
@@ -21,7 +19,7 @@ async def send_jobs(bot, channel_id, jobs):
             f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b>\n"
             f"🧭 Modalidad: {clean_text(job.get('modality', 'N/A'))}\n"
             f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
-            f"✨ Perfiles: <code>{profiles_display}</code>\n"
+            f"✨ Roles: <code>{roles_display}</code>\n"
             f"🏷️ Tags: <code>{tags_display}</code>\n"
         )
 

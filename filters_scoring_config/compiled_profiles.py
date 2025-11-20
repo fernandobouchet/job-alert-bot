@@ -7,14 +7,28 @@ COMPILED_PROFILES = {}
 _ALL_ROLES_KEYWORDS = set()
 _ALL_TECHS_KEYWORDS = set()
 TECH_REVERSE_MAP = {}
+ROLE_REVERSE_MAP = {}
 
 for profile_name, profile_data in PROFILES.items():
-    # --- Compile roles regex for the current profile ---
+    # --- Compile roles regex from hybrid list for the current profile ---
+    profile_roles_search_terms = []
+    for item in profile_data["roles"]:
+        if isinstance(item, str):
+            profile_roles_search_terms.append(item)
+            _ALL_ROLES_KEYWORDS.add(item)
+            ROLE_REVERSE_MAP[item.lower()] = item
+        elif isinstance(item, dict):
+            display_tag = item["display"]
+            search_terms = item["search"]
+            profile_roles_search_terms.extend(search_terms)
+            _ALL_ROLES_KEYWORDS.update(search_terms)
+            for term in search_terms:
+                ROLE_REVERSE_MAP[term.lower()] = display_tag
+
     roles_pattern = "|".join(
-        r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_data["roles"]
+        r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_roles_search_terms
     )
     compiled_roles = re.compile(roles_pattern, re.IGNORECASE | re.UNICODE)
-    _ALL_ROLES_KEYWORDS.update(profile_data["roles"])
 
     # --- Compile tech regex from hybrid list for the current profile ---
     profile_tech_search_terms = []
