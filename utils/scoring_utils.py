@@ -3,6 +3,7 @@ import re
 from filters_scoring_config.compiled_profiles import (
     COMPILED_PROFILES,
     TECH_REVERSE_MAP,
+    ROLE_REVERSE_MAP,
 )
 from filters_scoring_config.compiled_regex import (
     _REGEX_ALL_ROLES,
@@ -124,11 +125,19 @@ def calculate_job_score(row):
     has_positive_seniority = bool(positive_seniority_matches)
     has_negative_seniority = bool(negative_seniority_matches)
 
-    # --- 2. Categorización por Perfil ---
+    # --- 2. Categorización por Perfil y Roles ---
     found_profiles = []
+    raw_role_matches = set()
     for profile_name, compiled_data in COMPILED_PROFILES.items():
-        if compiled_data["roles"].search(full_text):
+        role_matches = compiled_data["roles"].findall(full_text)
+        if role_matches:
             found_profiles.append(profile_name)
+            raw_role_matches.update(role_matches)
+
+    normalized_roles = {
+        ROLE_REVERSE_MAP.get(role.lower(), role) for role in raw_role_matches
+    }
+    final_roles = sorted(list(normalized_roles))
 
     # --- 3. Obtención de Tecnologías ---
     raw_tech_matches = set()
@@ -157,13 +166,13 @@ def calculate_job_score(row):
         score_details["bonus_positive_seniority"] = WEIGHTS["positive_seniority"]
 
     # BONUS: Rol técnico claro (perfil encontrado)
-    if found_profiles:
+    if final_roles:
         score += WEIGHTS["strong_role"]
         score_details["bonus_strong_role"] = WEIGHTS["strong_role"]
-        score_details["strong_role_found"] = sorted(set(found_profiles))[:3]
+        score_details["strong_role_found"] = final_roles[:3]
 
     # BONUS: Tecnologías encontradas
-    if raw_tech_matches:
+    if raw_tech_matches > 2:
         if found_profiles:
             bonus = min(len(raw_tech_matches) * WEIGHTS["profile_tech"], 40)
             score += bonus
@@ -176,7 +185,7 @@ def calculate_job_score(row):
         score_details["tech_count"] = len(raw_tech_matches)
 
     # BONUS: Señales IT
-    if it_signals_found:
+    if it_signals_found > 2:
         bonus = min(len(it_signals_found) * WEIGHTS["it_signal"], 5)
         score += bonus
         score_details["bonus_it_signals"] = bonus
@@ -209,6 +218,7 @@ def calculate_job_score(row):
 
     # Añadir detalles finales
     score_details["profiles"] = found_profiles
+    score_details["roles"] = final_roles
     score_details["tags"] = final_tags
 
     if ambiguous_roles_found:
