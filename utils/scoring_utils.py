@@ -172,7 +172,7 @@ def calculate_job_score(row):
         score_details["strong_role_found"] = final_roles[:3]
 
     # BONUS: Tecnologías encontradas
-    if raw_tech_matches > 2:
+    if len(raw_tech_matches) > 1:
         if found_profiles:
             bonus = min(len(raw_tech_matches) * WEIGHTS["profile_tech"], 40)
             score += bonus
@@ -185,7 +185,7 @@ def calculate_job_score(row):
         score_details["tech_count"] = len(raw_tech_matches)
 
     # BONUS: Señales IT
-    if it_signals_found > 2:
+    if len(it_signals_found) > 1:
         bonus = min(len(it_signals_found) * WEIGHTS["it_signal"], 5)
         score += bonus
         score_details["bonus_it_signals"] = bonus
