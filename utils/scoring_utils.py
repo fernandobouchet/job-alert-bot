@@ -105,12 +105,29 @@ def pre_filter_jobs(df, verbose=True):
     return df_filtered, df_rejected
 
 
+def get_empty_score_details():
+    """
+    Devuelve el esqueleto estándar para los detalles de puntuación.
+    """
+    return {
+        "score": 0,
+        "quality_tier": "reject",
+        "base": 50,
+        "bonuses": [],
+        "penalties": [],
+        "profiles": [],
+        "roles": [],
+        "tags": []
+    }
+
+
 def calculate_job_score(row):
     """
     Sistema de scoring 0-100 que integra la lógica de perfiles.
     """
-    score = 50
-    score_details = {"base": 50}
+    # Inicializar con el esqueleto estándar
+    details = get_empty_score_details()
+    score = details["base"]
 
     title = row.get("title_normalized", "")
     full_text = row.get("full_text_normalized", "")
@@ -155,46 +172,80 @@ def calculate_job_score(row):
     final_tags = sorted(list(normalized_tags))
 
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
+    
     # 🚨 BLOQUEO CRÍTICO: SIN PERFIL NI SEÑALES IT
     if not found_profiles and not (it_signals_found or raw_tech_matches):
-        score_details["fatal_no_it_roles_and_signals"] = True
-        return 0, score_details
+        details["penalties"].append({
+            "key": "fatal_no_it",
+            "label": "No IT Signals",
+            "value": -50,
+            "meta": []
+        })
+        details["score"] = 0
+        details["quality_tier"] = "reject"
+        return 0, details
 
     # BONUS: Seniority Jr/Trainee
     if has_positive_seniority:
         score += WEIGHTS["positive_seniority"]
-        score_details["bonus_positive_seniority"] = WEIGHTS["positive_seniority"]
+        details["bonuses"].append({
+            "key": "positive_seniority",
+            "label": "Junior/Trainee Seniority",
+            "value": WEIGHTS["positive_seniority"],
+            "meta": sorted(list(set(positive_seniority_matches)))
+        })
 
     # BONUS: Rol técnico claro (perfil encontrado)
     if final_roles:
         score += WEIGHTS["strong_role"]
-        score_details["bonus_strong_role"] = WEIGHTS["strong_role"]
-        score_details["strong_role_found"] = final_roles[:3]
+        details["bonuses"].append({
+            "key": "strong_role",
+            "label": "Strong IT Role",
+            "value": WEIGHTS["strong_role"],
+            "meta": final_roles[:3]
+        })
 
     # BONUS: Tecnologías encontradas
     if len(raw_tech_matches) > 1:
         if found_profiles:
             bonus = min(len(raw_tech_matches) * WEIGHTS["profile_tech"], 40)
             score += bonus
-            score_details["bonus_profile_tech"] = bonus
+            details["bonuses"].append({
+                "key": "profile_tech",
+                "label": "Tech Stack Match",
+                "value": bonus,
+                "meta": sorted(raw_tech_matches)[:5]
+            })
         else:
             bonus = min(len(raw_tech_matches) * WEIGHTS["global_tech"], 20)
             score += bonus
-            score_details["bonus_global_tech"] = bonus
-        score_details["tech_found"] = sorted(raw_tech_matches)[:5]
-        score_details["tech_count"] = len(raw_tech_matches)
+            details["bonuses"].append({
+                "key": "global_tech",
+                "label": "Tech Keywords",
+                "value": bonus,
+                "meta": sorted(raw_tech_matches)[:5]
+            })
 
     # BONUS: Señales IT
     if len(it_signals_found) > 1:
         bonus = min(len(it_signals_found) * WEIGHTS["it_signal"], 5)
         score += bonus
-        score_details["bonus_it_signals"] = bonus
-        score_details["it_signals_found"] = sorted(it_signals_found)[:10]
+        details["bonuses"].append({
+            "key": "it_signals",
+            "label": "IT Context Signals",
+            "value": bonus,
+            "meta": sorted(it_signals_found)[:10]
+        })
 
     # BONUS: Combinación perfecta
     if found_profiles and has_positive_seniority and raw_tech_matches:
         score += WEIGHTS["perfect_match"]
-        score_details["bonus_perfect_match"] = WEIGHTS["perfect_match"]
+        details["bonuses"].append({
+            "key": "perfect_match",
+            "label": "Perfect Match",
+            "value": WEIGHTS["perfect_match"],
+            "meta": []
+        })
 
     # PENALIZACIONES
 
@@ -203,46 +254,48 @@ def calculate_job_score(row):
     if (should_penalize_years or has_negative_seniority) and not has_positive_seniority:
         penalty = WEIGHTS["senior_experience"]
         score -= penalty
-        score_details["penalty_senior_experience"] = -penalty
-        if years_required:
-            score_details["years_required"] = years_required
+        
+        meta_data = [years_required] if years_required else []
+        if has_negative_seniority:
+             meta_data.extend(sorted(list(set(negative_seniority_matches))))
+        
+        details["penalties"].append({
+            "key": "senior_experience",
+            "label": "Senior Experience Required",
+            "value": -penalty,
+            "meta": meta_data
+        })
 
     # Penalización por rol ambiguo sin suficiente contexto
     if has_ambiguous_role and not (found_profiles or len(raw_tech_matches) > 1):
         penalty = WEIGHTS["ambiguous_no_context"]
         score -= penalty
-        score_details["penalty_ambiguous_no_context"] = -penalty
+        details["penalties"].append({
+            "key": "ambiguous_no_context",
+            "label": "Ambiguous Role",
+            "value": -penalty,
+            "meta": sorted(set(ambiguous_roles_found))
+        })
 
     # --- 5. Finalización ---
     final_score = round(max(0, min(100, score)), 1)
 
-    # Añadir detalles finales
-    score_details["profiles"] = found_profiles
-    score_details["roles"] = final_roles
-    score_details["tags"] = final_tags
-
-    if ambiguous_roles_found:
-        score_details["ambiguous_roles_found"] = sorted(set(ambiguous_roles_found))
-
-    if positive_seniority_matches:
-        score_details["positive_seniority_keywords_found"] = sorted(
-            list(set(positive_seniority_matches))
-        )
-    if negative_seniority_matches:
-        score_details["negative_seniority_keywords_found"] = sorted(
-            list(set(negative_seniority_matches))
-        )
+    # Rellenar campos restantes del esqueleto
+    details["score"] = final_score
+    details["profiles"] = found_profiles
+    details["roles"] = final_roles
+    details["tags"] = final_tags
 
     if final_score >= 75:
-        score_details["quality_tier"] = "excellent"
+        details["quality_tier"] = "excellent"
     elif final_score >= 60:
-        score_details["quality_tier"] = "good"
+        details["quality_tier"] = "good"
     elif final_score >= 45:
-        score_details["quality_tier"] = "review"
+        details["quality_tier"] = "review"
     else:
-        score_details["quality_tier"] = "reject"
+        details["quality_tier"] = "reject"
 
-    return final_score, score_details
+    return final_score, details
 
 
 def has_senior_experience_requirement(text):
@@ -289,6 +342,22 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
 
     # Pre-filtro (área + seniority)
     df_pre_filtered, df_rejected_pre_filter = pre_filter_jobs(df, verbose=verbose)
+
+    # Asegurar que los rechazados por pre-filtro tengan el esqueleto de score_details
+    if not df_rejected_pre_filter.empty:
+        def get_rejection_details(reason):
+            details = get_empty_score_details()
+            details["penalties"].append({
+                "key": "pre_filter_rejection",
+                "label": f"Rejected by {reason.split(':')[0]}",
+                "value": -50,
+                "meta": [reason]
+            })
+            return details
+        
+        df_rejected_pre_filter["score"] = 0
+        df_rejected_pre_filter["quality_tier"] = "reject"
+        df_rejected_pre_filter["score_details"] = df_rejected_pre_filter["rejection_reason"].apply(get_rejection_details)
 
     if df_pre_filtered.empty:
         if verbose:
