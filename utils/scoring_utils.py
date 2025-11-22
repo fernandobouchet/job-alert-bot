@@ -13,23 +13,24 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_IT_SIGNALS,
     _REGEX_POSITIVE_SENIORITY,
     _REGEX_EXCLUDED_SENIORITY,
+    _REGEX_WEAK_SIGNALS,
 )
 from filters_scoring_config.patterns import EXPERIENCE_PATTERNS
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
-# Pesos para la puntuación. Ajustar estos valores modificará la importancia
-# de cada tipo de señal en la puntuación final.
+# --- CONFIGURACIÓN DE PESOS ---
 WEIGHTS = {
-    # Bonuses
-    "it_signal": 1,
+    "base": 40,
+    "positive_seniority": 20,
+    "strong_role": 20,
     "profile_tech": 5,
-    "global_tech": 2,
-    "strong_role": 15,
-    "positive_seniority": 15,
-    "perfect_match": 5,
-    # Penalties (valores positivos, se restan en el código)
+    "global_tech": 3,
+    "it_signal": 1,
+    "perfect_match": 10,
+    # Penalizaciones
     "senior_experience": 50,
     "ambiguous_no_context": 30,
+    "weak_signal_only_penalty": 20,
 }
 
 
@@ -112,7 +113,7 @@ def get_empty_score_details():
     return {
         "score": 0,
         "quality_tier": "reject",
-        "base": 50,
+        "base": WEIGHTS["base"],
         "bonuses": [],
         "penalties": [],
         "profiles": [],
@@ -166,6 +167,10 @@ def calculate_job_score(row):
         tech_matches = _REGEX_ALL_TECHS.findall(full_text)
         raw_tech_matches.update(tech_matches)
 
+    weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+
+    strong_tech_matches = raw_tech_matches - weak_tech_matches
+
     normalized_tags = {
         TECH_REVERSE_MAP.get(tag.lower(), tag) for tag in raw_tech_matches
     }
@@ -174,16 +179,26 @@ def calculate_job_score(row):
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
     
     # 🚨 BLOQUEO CRÍTICO: SIN PERFIL NI SEÑALES IT
-    if not found_profiles and not (it_signals_found or raw_tech_matches):
-        details["penalties"].append({
-            "key": "fatal_no_it",
-            "label": "No IT Signals",
-            "value": -50,
-            "meta": []
-        })
-        details["score"] = 0
-        details["quality_tier"] = "reject"
-        return 0, details
+    if not found_profiles and not it_signals_found and not strong_tech_matches:
+        if weak_tech_matches:
+            penalty = WEIGHTS["weak_signal_only_penalty"]
+            score -= penalty
+            details["penalties"].append({
+                "key": "weak_signal_only",
+                "label": "Only Weak Signals",
+                "value": -penalty,
+                "meta": sorted(list(weak_tech_matches))[:5]
+            })
+        else:
+            details["penalties"].append({
+                "key": "fatal_no_it",
+                "label": "No IT Signals",
+                "value": -50,
+                "meta": []
+            })
+            details["score"] = 0
+            details["quality_tier"] = "reject"
+            return 0, details
 
     # BONUS: Seniority Jr/Trainee
     if has_positive_seniority:
@@ -206,24 +221,26 @@ def calculate_job_score(row):
         })
 
     # BONUS: Tecnologías encontradas
-    if len(raw_tech_matches) > 1:
+    techs_for_bonus = raw_tech_matches if found_profiles else strong_tech_matches
+    
+    if len(techs_for_bonus) > 0:
         if found_profiles:
-            bonus = min(len(raw_tech_matches) * WEIGHTS["profile_tech"], 40)
+            bonus = min(len(techs_for_bonus) * WEIGHTS["profile_tech"], 25)
             score += bonus
             details["bonuses"].append({
                 "key": "profile_tech",
                 "label": "Tech Stack Match",
                 "value": bonus,
-                "meta": sorted(raw_tech_matches)[:5]
+                "meta": sorted(techs_for_bonus)[:5]
             })
         else:
-            bonus = min(len(raw_tech_matches) * WEIGHTS["global_tech"], 20)
+            bonus = min(len(techs_for_bonus) * WEIGHTS["global_tech"], 15)
             score += bonus
             details["bonuses"].append({
                 "key": "global_tech",
                 "label": "Tech Keywords",
                 "value": bonus,
-                "meta": sorted(raw_tech_matches)[:5]
+                "meta": sorted(techs_for_bonus)[:5]
             })
 
     # BONUS: Señales IT
@@ -238,7 +255,7 @@ def calculate_job_score(row):
         })
 
     # BONUS: Combinación perfecta
-    if found_profiles and has_positive_seniority and raw_tech_matches:
+    if found_profiles and has_positive_seniority and strong_tech_matches:
         score += WEIGHTS["perfect_match"]
         details["bonuses"].append({
             "key": "perfect_match",
@@ -267,7 +284,7 @@ def calculate_job_score(row):
         })
 
     # Penalización por rol ambiguo sin suficiente contexto
-    if has_ambiguous_role and not (found_profiles or len(raw_tech_matches) > 1):
+    if has_ambiguous_role and not (found_profiles or len(strong_tech_matches) > 0):
         penalty = WEIGHTS["ambiguous_no_context"]
         score -= penalty
         details["penalties"].append({

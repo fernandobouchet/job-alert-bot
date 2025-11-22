@@ -12,6 +12,7 @@ from filters_scoring_config.seniority import (
 from filters_scoring_config.signals import (
     AMBIGUOUS_ROLES,
     IT_CONTEXT_SIGNALS,
+    WEAK_IT_SIGNALS,
 )
 
 
@@ -39,6 +40,11 @@ _REGEX_AMBIGUOUS_ROLES = re.compile(
 
 _REGEX_IT_SIGNALS = re.compile(
     "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in IT_CONTEXT_SIGNALS),
+    re.IGNORECASE | re.UNICODE,
+)
+
+_REGEX_WEAK_SIGNALS = re.compile(
+    "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in WEAK_IT_SIGNALS),
     re.IGNORECASE | re.UNICODE,
 )
 

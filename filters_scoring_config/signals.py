@@ -88,3 +88,41 @@ AMBIGUOUS_ROLES = {
     "administrator",
     "administrador",
 }
+
+# Señales débiles que por sí solas NO confirman un rol IT (requieren contexto fuerte)
+WEAK_IT_SIGNALS = {
+    # Office / Admin
+    "excel",
+    "word",
+    "powerpoint",
+    "outlook",
+    "office 365",
+    "o365",
+    "microsoft office",
+    # Business / ERP
+    "sap",
+    "salesforce",
+    "crm",
+    "erp",
+    "zoho",
+    # BI / Data (Contexto débil si no hay rol IT)
+    "power bi",
+    "tableau",
+    "looker",
+    "qlik",
+    "vba",
+    "macros",
+    # OS Genéricos
+    "windows",
+    "windows 10",
+    "windows 11",
+    # Diseño (Contexto dependiente)
+    "photoshop",
+    "illustrator",
+    "indesign",
+    "corel draw",
+    # CMS (Contexto dependiente)
+    "wordpress",
+    "joomla",
+    "drupal",
+}
