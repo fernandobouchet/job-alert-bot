@@ -138,7 +138,8 @@ def calculate_job_score(row):
     ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
     has_ambiguous_role = bool(ambiguous_roles_found)
     positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
-    negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(full_text)
+    # Negative Seniority: Search ONLY in Title to avoid false positives in body
+    negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
 
     has_positive_seniority = bool(positive_seniority_matches)
     has_negative_seniority = bool(negative_seniority_matches)
@@ -176,10 +177,13 @@ def calculate_job_score(row):
     }
     final_tags = sorted(list(normalized_tags))
 
+    # Determine if it's a valid IT job (Profile OR (Strong Tech + IT Signals))
+    is_it_job = bool(found_profiles) or (bool(strong_tech_matches) and bool(it_signals_found))
+
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
     
     # 🚨 BLOQUEO CRÍTICO: SIN PERFIL NI SEÑALES IT
-    if not found_profiles and not it_signals_found and not strong_tech_matches:
+    if not is_it_job:
         if weak_tech_matches:
             penalty = WEIGHTS["weak_signal_only_penalty"]
             score -= penalty
@@ -201,7 +205,7 @@ def calculate_job_score(row):
             return 0, details
 
     # BONUS: Seniority Jr/Trainee
-    if has_positive_seniority:
+    if has_positive_seniority and is_it_job:
         score += WEIGHTS["positive_seniority"]
         details["bonuses"].append({
             "key": "positive_seniority",
