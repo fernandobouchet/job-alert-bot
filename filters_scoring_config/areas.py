@@ -163,9 +163,6 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "call center",
     "contact center",
     # Creativo & Contenido (NO incluir UX/UI aquí)
-    "diseñador gráfico",
-    "diseñadora gráfica",
-    "graphic designer",
     "diseñador industrial",
     "industrial designer",
     "diseñador de modas",
@@ -237,13 +234,6 @@ EXCLUDED_AREA_TERMS_TITLE = [
     "consultor de negocios",
     "consultor de gestión",
     "consultor estratégico",
-    # Gestión de Proyectos y Programas
-    "program manager",
-    "programme manager",
-    "portfolio manager",
-    "gerente de programas",
-    "gerente de portafolio",
-    "pmo",
     # Otros
     "seguridad fisica",
     "land surveyor",

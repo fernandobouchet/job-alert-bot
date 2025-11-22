@@ -94,6 +94,28 @@ PROFILES = {
                     "programmer",
                 ],
             },
+            {
+                "display": "Salesforce Developer",
+                "search": [
+                    "salesforce developer",
+                    "desarrollador salesforce",
+                    "salesforce engineer",
+                    "salesforce consultant",
+                    "consultor salesforce",
+                ],
+            },
+            {
+                "display": "SAP Developer/Consultant",
+                "search": [
+                    "sap developer",
+                    "desarrollador sap",
+                    "sap consultant",
+                    "consultor sap",
+                    "abap developer",
+                    "desarrollador abap",
+                    "sap basis",
+                ],
+            },
         ],
         "tech": [
             # Lenguajes & Core
@@ -151,6 +173,9 @@ PROFILES = {
             "bash",
             {"display": "Cloud", "search": ["aws", "azure", "gcp", "google cloud"]},
             {"display": "Testing", "search": ["tdd", "unit testing", "jest", "mocha"]},
+            # ERP / CRM
+            {"display": "Salesforce", "search": ["salesforce", "apex", "visualforce", "soql"]},
+            {"display": "SAP", "search": ["sap", "abap", "hana", "fiori"]},
         ],
     },
     "data_analytics": {

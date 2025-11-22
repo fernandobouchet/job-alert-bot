@@ -99,12 +99,6 @@ WEAK_IT_SIGNALS = {
     "office 365",
     "o365",
     "microsoft office",
-    # Business / ERP
-    "sap",
-    "salesforce",
-    "crm",
-    "erp",
-    "zoho",
     # BI / Data (Contexto débil si no hay rol IT)
     "power bi",
     "tableau",

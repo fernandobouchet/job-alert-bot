@@ -90,12 +90,9 @@ EXCLUDED_SENIORITY_TERMS = {
     "architect",
     "arquitecto",
     "arquitecta",
+    "arquitecta",
     "expert",
     "experto",
-    "specialist",
-    "especialista",
-    "consultant",
-    "consultor",
     # --- Niveles Altos ---
     "iii",
     "iv",
