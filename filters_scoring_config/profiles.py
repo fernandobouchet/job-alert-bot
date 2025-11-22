@@ -116,9 +116,20 @@ PROFILES = {
                     "sap basis",
                 ],
             },
+            {
+                "display": "Blockchain Developer",
+                "search": [
+                    "blockchain developer",
+                    "desarrollador blockchain",
+                    "web3 developer",
+                    "smart contract developer",
+                    "solidity developer",
+                    "crypto developer",
+                ],
+            },
         ],
         "tech": [
-            # Lenguajes & Core
+            # Lenguajes Core
             {"display": "JavaScript", "search": ["javascript", "js", "es6"]},
             {"display": "TypeScript", "search": ["typescript", "ts"]},
             {"display": "Python", "search": ["python", "py"]},
@@ -128,54 +139,68 @@ PROFILES = {
             "ruby",
             "golang",
             "rust",
-            # Frontend
-            "html",
-            "css",
-            "sass",
-            "less",
+            # Frameworks Frontend
             {"display": "React", "search": ["react", "reactjs", "react.js"]},
             {"display": "Angular", "search": ["angular", "angularjs"]},
             {"display": "Vue", "search": ["vue", "vuejs", "vue.js"]},
             {"display": "Next.js", "search": ["next.js", "nextjs"]},
-            "svelte",
-            "tailwind",
-            "bootstrap",
-            "jquery",
-            # Backend & Frameworks
+            # Frameworks Backend
             {"display": "Node.js", "search": ["node.js", "nodejs", "node"]},
-            "express.js",
-            "nestjs",
             {"display": "Spring Boot", "search": ["spring", "spring boot"]},
             "django",
+            "laravel",
+            "nestjs",
             "flask",
             "fastapi",
-            "laravel",
-            "symfony",
-            "asp.net",
-            "blazor",
-            # Data & APIs
-            {"display": "SQL", "search": ["sql", "mysql", "mariadb"]},
+            "express.js",
+            # Frameworks Frontend (modern)
+            "svelte",
+            # Mobile
+            {"display": "Flutter", "search": ["flutter"]},
+            {"display": "React Native", "search": ["react native"]},
+            # Databases
             {"display": "PostgreSQL", "search": ["postgresql", "postgres"]},
-            {"display": "NoSQL", "search": ["nosql", "mongodb", "mongo"]},
+            {"display": "MongoDB", "search": ["mongodb", "mongo"]},
             "redis",
-            "firebase",
-            "firestore",
-            "sqlite",
+            # APIs
             {"display": "REST API", "search": ["rest api", "restful", "api rest"]},
             "graphql",
-            # Tools
-            "git",
-            "github",
-            "gitlab",
-            "docker",
-            "kubernetes",
-            "linux",
-            "bash",
-            {"display": "Cloud", "search": ["aws", "azure", "gcp", "google cloud"]},
-            {"display": "Testing", "search": ["tdd", "unit testing", "jest", "mocha"]},
             # ERP / CRM
             {"display": "Salesforce", "search": ["salesforce", "apex", "visualforce", "soql"]},
             {"display": "SAP", "search": ["sap", "abap", "hana", "fiori"]},
+            # Blockchain
+            {"display": "Solidity", "search": ["solidity"]},
+            {"display": "Web3", "search": ["web3", "web3.js", "ethers.js"]},
+        ],
+        "signals": [
+            # Básicos Frontend
+            "html",
+            "css",
+            "sass",
+            "less",
+            "tailwind",
+            "bootstrap",
+            "jquery",
+            # Frameworks legacy/menos comunes
+            "symfony",
+            "asp.net",
+            "blazor",
+            # Mobile (menos comunes)
+            "xamarin",
+            "ionic",
+            # Databases genéricas/menos específicas
+            {"display": "SQL", "search": ["sql", "mysql", "mariadb"]},
+            {"display": "NoSQL", "search": ["nosql"]},
+            "firebase",
+            "firestore",
+            "sqlite",
+            # Version Control
+            "git",
+            "github",
+            "gitlab",
+            # OS & Shell
+            "linux",
+            "bash",
         ],
     },
     "data_analytics": {
@@ -218,18 +243,17 @@ PROFILES = {
             },
             {"display": "Power BI", "search": ["power bi", "powerbi", "dax"]},
             "tableau",
-            "looker",
-            "qlik",
             "r",
-            "scala",
             "spark",
-            "hadoop",
-            "airflow",
-            "etl",
             "bigquery",
             "snowflake",
-            "redshift",
             "databricks",
+            "looker",
+            "airflow",
+        ],
+        "signals": [
+            "qlik",
+            "scala",
         ],
     },
     "design_ux": {
@@ -263,6 +287,10 @@ PROFILES = {
             "adobe xd",
             "photoshop",
             "illustrator",
+            "after effects",
+            "framer",
+        ],
+        "signals": [
             "indesign",
             "invision",
             "zeplin",
@@ -308,21 +336,24 @@ PROFILES = {
             {"display": "Selenium", "search": ["selenium", "webdriver"]},
             "cypress",
             "playwright",
-            "puppeteer",
+            "postman",
+            "jmeter",
             "appium",
+        ],
+        "signals": [
+            "puppeteer",
             {
                 "display": "Manual Testing",
                 "search": ["pruebas manuales", "test cases", "casos de prueba"],
             },
-            "postman",
-            "jmeter",
             "soapui",
-            "jira",
-            "trello",
             "bugzilla",
             "sql",
             "gherkin",
             "cucumber",
+            # Project Management
+            "jira",
+            "trello",
         ],
     },
     "devops_sysadmin": {
@@ -350,20 +381,45 @@ PROFILES = {
                     "ingeniero de infraestructura",
                 ],
             },
+            {
+                "display": "Cloud Architect",
+                "search": [
+                    "cloud architect",
+                    "arquitecto cloud",
+                    "solutions architect",
+                    "arquitecto de soluciones",
+                    "aws architect",
+                    "azure architect",
+                ],
+            },
+            {
+                "display": "Database Administrator",
+                "search": [
+                    "dba",
+                    "database administrator",
+                    "administrador de base de datos",
+                    "database engineer",
+                    "ingeniero de base de datos",
+                ],
+            },
         ],
         "tech": [
             {"display": "AWS", "search": ["aws", "amazon web services"]},
             {"display": "Azure", "search": ["azure"]},
             {"display": "GCP", "search": ["gcp", "google cloud"]},
-            {
-                "display": "Linux",
-                "search": ["linux", "ubuntu", "centos", "red hat", "debian"],
-            },
-            "docker",
             "kubernetes",
             "terraform",
             "ansible",
             "jenkins",
+            "docker",
+            "prometheus",
+            "grafana",
+        ],
+        "signals": [
+            {
+                "display": "Linux",
+                "search": ["linux", "ubuntu", "centos", "red hat", "debian"],
+            },
             "bash",
             "shell scripting",
             "powershell",
@@ -415,26 +471,42 @@ PROFILES = {
                     "vulnerability analyst",
                 ],
             },
+            {
+                "display": "Security Engineer",
+                "search": [
+                    "security engineer",
+                    "ingeniero de seguridad",
+                    "application security",
+                    "appsec",
+                    "appsec engineer",
+                    "devsecops",
+                    "devsecops engineer",
+                ],
+            },
         ],
         "tech": [
             "siem",
-            "soc",
-            "firewall",
-            "ids",
-            "ips",
             "wireshark",
             "nmap",
             "metasploit",
             "burp suite",
             "nessus",
             "owasp",
+            "splunk",
+        ],
+        "signals": [
+            "soc",
+            "firewall",
+            "ids",
+            "ips",
             "iso 27001",
             "pci dss",
+            "python",
+            {"display": "Identity", "search": ["iam", "active directory", "azure ad"]},
+            # OS & Shell
             "linux",
             "kali linux",
-            "python",
             "bash",
-            {"display": "Identity", "search": ["iam", "active directory", "azure ad"]},
         ],
     },
     "machine_learning_ai": {
@@ -449,17 +521,26 @@ PROFILES = {
                     "ml engineer",
                     "deep learning",
                 ],
-            }
+            },
+            {
+                "display": "Computer Vision Engineer",
+                "search": [
+                    "computer vision",
+                    "computer vision engineer",
+                    "cv engineer",
+                    "image processing",
+                    "procesamiento de imagenes",
+                    "vision artificial",
+                ],
+            },
         ],
         "tech": [
-            "python",
             "tensorflow",
             "pytorch",
             "keras",
             "scikit-learn",
             "pandas",
             "numpy",
-            "opencv",
             {
                 "display": "NLP",
                 "search": ["nlp", "natural language processing", "nltk", "spacy"],
@@ -468,6 +549,10 @@ PROFILES = {
                 "display": "LLM",
                 "search": ["llm", "langchain", "hugging face", "openai api"],
             },
+            {"display": "OpenCV", "search": ["opencv"]},
+        ],
+        "signals": [
+            "python",
         ],
     },
     "tech_support": {
@@ -490,6 +575,18 @@ PROFILES = {
         "tech": [
             {"display": "Windows", "search": ["windows", "windows 10", "windows 11"]},
             {
+                "display": "Office 365",
+                "search": ["office 365", "o365", "outlook", "excel", "word"],
+            },
+            {
+                "display": "Active Directory",
+                "search": ["active directory", "ad", "azure ad", "usuarios"],
+            },
+            "servicenow",
+            "vmware",
+        ],
+        "signals": [
+            {
                 "display": "Hardware",
                 "search": [
                     "hardware",
@@ -498,14 +595,6 @@ PROFILES = {
                     "perifericos",
                     "impresoras",
                 ],
-            },
-            {
-                "display": "Office 365",
-                "search": ["office 365", "o365", "outlook", "excel", "word"],
-            },
-            {
-                "display": "Active Directory",
-                "search": ["active directory", "ad", "azure ad", "usuarios"],
             },
             {
                 "display": "Ticketing",

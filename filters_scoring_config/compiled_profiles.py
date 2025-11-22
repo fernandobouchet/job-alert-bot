@@ -6,6 +6,7 @@ print("🔄 Compiling profile regex patterns...")
 COMPILED_PROFILES = {}
 _ALL_ROLES_KEYWORDS = set()
 _ALL_TECHS_KEYWORDS = set()
+_ALL_SIGNALS_KEYWORDS = set()
 TECH_REVERSE_MAP = {}
 ROLE_REVERSE_MAP = {}
 
@@ -50,9 +51,33 @@ for profile_name, profile_data in PROFILES.items():
     )
     compiled_tech = re.compile(tech_pattern, re.IGNORECASE | re.UNICODE)
 
+    # --- Compile signals regex from hybrid list for the current profile ---
+    profile_signals_search_terms = []
+    for item in profile_data.get("signals", []):  
+        if isinstance(item, str):
+            profile_signals_search_terms.append(item)
+            _ALL_SIGNALS_KEYWORDS.add(item)
+            TECH_REVERSE_MAP[item.lower()] = item 
+        elif isinstance(item, dict):
+            display_tag = item["display"]
+            search_terms = item["search"]
+            profile_signals_search_terms.extend(search_terms)
+            _ALL_SIGNALS_KEYWORDS.update(search_terms)
+            for term in search_terms:
+                TECH_REVERSE_MAP[term.lower()] = display_tag 
+    if profile_signals_search_terms:
+        signals_pattern = "|".join(
+            r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_signals_search_terms
+        )
+        compiled_signals = re.compile(signals_pattern, re.IGNORECASE | re.UNICODE)
+    else:
+        # Create empty regex that never matches
+        compiled_signals = re.compile(r"(?!.*)", re.IGNORECASE | re.UNICODE)
+
     COMPILED_PROFILES[profile_name] = {
         "roles": compiled_roles,
         "tech": compiled_tech,
+        "signals": compiled_signals,
     }
 
 

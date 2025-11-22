@@ -158,19 +158,27 @@ def calculate_job_score(row):
     }
     final_roles = sorted(list(normalized_roles))
 
-    # --- 3. Obtención de Tecnologías ---
+
+    # --- 3. Obtención de Tecnologías y Señales ---
     raw_tech_matches = set()
+    raw_signal_matches = set()
+    
     if found_profiles:
         for profile_name in found_profiles:
             tech_matches = COMPILED_PROFILES[profile_name]["tech"].findall(full_text)
             raw_tech_matches.update(tech_matches)
+            signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
+            raw_signal_matches.update(signal_matches)
     else:
         tech_matches = _REGEX_ALL_TECHS.findall(full_text)
         raw_tech_matches.update(tech_matches)
 
+    # Combine tech and signals for scoring purposes
+    raw_all_matches = raw_tech_matches | raw_signal_matches
+
     weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
 
-    strong_tech_matches = raw_tech_matches - weak_tech_matches
+    strong_tech_matches = raw_all_matches - weak_tech_matches
 
     normalized_tags = {
         TECH_REVERSE_MAP.get(tag.lower(), tag) for tag in raw_tech_matches
@@ -224,8 +232,8 @@ def calculate_job_score(row):
             "meta": final_roles[:3]
         })
 
-    # BONUS: Tecnologías encontradas
-    techs_for_bonus = raw_tech_matches if found_profiles else strong_tech_matches
+    # BONUS: Tecnologías encontradas (tech + signals for scoring)
+    techs_for_bonus = raw_all_matches if found_profiles else strong_tech_matches
     
     if len(techs_for_bonus) > 0:
         if found_profiles:
@@ -259,7 +267,7 @@ def calculate_job_score(row):
         })
 
     # BONUS: Combinación perfecta
-    if found_profiles and has_positive_seniority and strong_tech_matches:
+    if found_profiles and has_positive_seniority and raw_all_matches:
         score += WEIGHTS["perfect_match"]
         details["bonuses"].append({
             "key": "perfect_match",
