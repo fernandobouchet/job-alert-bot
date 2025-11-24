@@ -150,8 +150,11 @@ def calculate_job_score(row):
     for profile_name, compiled_data in COMPILED_PROFILES.items():
         role_matches = compiled_data["roles"].findall(full_text)
         if role_matches:
-            found_profiles.append(profile_name)
-            raw_role_matches.update(role_matches)
+            # Profile Validation: Only keep profile if it has its specific tech
+            profile_tech_matches = compiled_data["tech"].findall(full_text)
+            if profile_tech_matches:
+                found_profiles.append(profile_name)
+                raw_role_matches.update(role_matches)
 
     normalized_roles = {
         ROLE_REVERSE_MAP.get(role.lower(), role) for role in raw_role_matches
@@ -185,8 +188,8 @@ def calculate_job_score(row):
     }
     final_tags = sorted(list(normalized_tags))
 
-    # Determine if it's a valid IT job (Profile OR (Strong Tech + IT Signals))
-    is_it_job = bool(found_profiles) or (bool(strong_tech_matches) and bool(it_signals_found))
+    # Determine if it's a valid IT job
+    is_it_job = bool(found_profiles) or (len(strong_tech_matches) >= 2 and bool(it_signals_found))
 
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
     
