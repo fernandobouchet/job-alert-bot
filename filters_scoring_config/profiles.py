@@ -92,6 +92,8 @@ PROFILES = {
                     "programadora",
                     "developer",
                     "programmer",
+                    "desarrollador",
+                    "desarrolladora",
                 ],
             },
             {
