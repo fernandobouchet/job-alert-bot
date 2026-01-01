@@ -144,6 +144,10 @@ def calculate_job_score(row):
     has_positive_seniority = bool(positive_seniority_matches)
     has_negative_seniority = bool(negative_seniority_matches)
 
+    # Check positive seniority in TITLE specifically
+    positive_seniority_title_matches = _REGEX_POSITIVE_SENIORITY.findall(title)
+    has_positive_seniority_in_title = bool(positive_seniority_title_matches)
+
     # --- 2. Categorización por Perfil y Roles ---
     found_profiles = []
     raw_role_matches = set()
@@ -283,7 +287,22 @@ def calculate_job_score(row):
 
     # Penalización por experiencia senior explícita
     should_penalize_years, years_required = has_senior_experience_requirement(full_text)
-    if (should_penalize_years or has_negative_seniority) and not has_positive_seniority:
+
+    # Decide if we should apply seniority penalty
+    # 1. If years are explicitly high, we penalize UNLESS the title says Junior (strong override).
+    #    We ignore "junior" in the body because it often refers to "mentoring juniors".
+    # 2. If title has negative seniority (Senior/Manager), we penalize UNLESS the title ALSO says Junior (contradiction/hybrid).
+
+    apply_seniority_penalty = False
+
+    if should_penalize_years:
+        if not has_positive_seniority_in_title:
+             apply_seniority_penalty = True
+    elif has_negative_seniority:
+         if not has_positive_seniority_in_title:
+             apply_seniority_penalty = True
+
+    if apply_seniority_penalty:
         penalty = WEIGHTS["senior_experience"]
         score -= penalty
         
