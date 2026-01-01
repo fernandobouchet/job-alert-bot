@@ -1,5 +1,6 @@
 import asyncio
 import re
+import html
 from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 
 
@@ -10,15 +11,22 @@ async def send_jobs(bot, channel_id, jobs):
         roles_list = score_details.get("roles", [])
         tags_list = score_details.get("tags", [])
 
+        # Escape roles and tags
+        roles_escaped = [html.escape(str(r)) for r in roles_list]
+        tags_escaped = [html.escape(str(t)) for t in tags_list]
+
         # Formatear para mostrar
-        roles_display = ", ".join(roles_list) if roles_list else "No especificado"
-        tags_display = ", ".join(tags_list) if tags_list else "No especificado"
+        roles_display = ", ".join(roles_escaped) if roles_escaped else "No especificado"
+        tags_display = ", ".join(tags_escaped) if tags_escaped else "No especificado"
+
+        def clean_and_escape(text):
+            return html.escape(clean_text(text))
 
         text = (
-            f"🌐 Fuente: <b>{clean_text(job.get('source', 'N/A'))}</b>\n"
-            f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b>\n"
-            f"🧭 Modalidad: {clean_text(job.get('modality', 'N/A'))}\n"
-            f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
+            f"🌐 Fuente: <b>{clean_and_escape(job.get('source', 'N/A'))}</b>\n"
+            f"💼 <b>{clean_and_escape(job.get('title', 'N/A'))}</b>\n"
+            f"🧭 Modalidad: {clean_and_escape(job.get('modality', 'N/A'))}\n"
+            f"🏢 Empresa: {clean_and_escape(job.get('company', 'N/A'))}\n"
             f"✨ Roles: <code>{roles_display}</code>\n"
             f"🏷️ Tags: <code>{tags_display}</code>\n"
         )
@@ -51,6 +59,7 @@ def clean_text(text):
     """Elimina HTML y exceso de espacios."""
     if not text:
         return ""
+    text = str(text) # Ensure string
     text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
