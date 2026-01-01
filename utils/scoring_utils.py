@@ -14,8 +14,8 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_POSITIVE_SENIORITY,
     _REGEX_EXCLUDED_SENIORITY,
     _REGEX_WEAK_SIGNALS,
+    COMPILED_EXPERIENCE_PATTERNS,
 )
-from filters_scoring_config.patterns import EXPERIENCE_PATTERNS
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
 # --- CONFIGURACIÓN DE PESOS ---
@@ -335,8 +335,8 @@ def has_senior_experience_requirement(text):
     Detecta si requiere experiencia senior (>= MIN_YEARS_SENIORITY).
     """
     years_found = []
-    for pattern in EXPERIENCE_PATTERNS:
-        matches = re.findall(pattern, text, re.IGNORECASE)
+    for compiled_pattern in COMPILED_EXPERIENCE_PATTERNS:
+        matches = compiled_pattern.findall(text)
         for match in matches:
             try:
                 if isinstance(match, tuple):

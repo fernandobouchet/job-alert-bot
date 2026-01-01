@@ -14,6 +14,7 @@ from filters_scoring_config.signals import (
     IT_CONTEXT_SIGNALS,
     WEAK_IT_SIGNALS,
 )
+from filters_scoring_config.patterns import EXPERIENCE_PATTERNS
 
 
 print("🔄 Compiling regex patterns from config...")
@@ -57,6 +58,10 @@ _REGEX_ALL_TECHS = re.compile(
     "|".join(r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in _ALL_TECHS_KEYWORDS),
     re.IGNORECASE | re.UNICODE,
 )
+
+COMPILED_EXPERIENCE_PATTERNS = [
+    re.compile(pattern, re.IGNORECASE) for pattern in EXPERIENCE_PATTERNS
+]
 
 
 print("✅ Regex patterns compiled")
