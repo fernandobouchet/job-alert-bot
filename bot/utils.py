@@ -14,9 +14,29 @@ async def send_jobs(bot, channel_id, jobs):
         roles_display = ", ".join(roles_list) if roles_list else "No especificado"
         tags_display = ", ".join(tags_list) if tags_list else "No especificado"
 
+        published_date = job.get("published_at")
+        date_display = ""
+        if published_date:
+            try:
+                # Handle pandas Timestamp or generic datetime objects
+                if hasattr(published_date, "strftime"):
+                    date_display = f"📅 Publicado: {published_date.strftime('%d/%m/%Y')}\n"
+                else:
+                    # Fallback if it's a string
+                    date_str = str(published_date).split('T')[0]
+                    # Try to convert YYYY-MM-DD to DD/MM/YYYY
+                    if "-" in date_str:
+                        parts = date_str.split("-")
+                        if len(parts) == 3:
+                            date_str = f"{parts[2]}/{parts[1]}/{parts[0]}"
+                    date_display = f"📅 Publicado: {date_str}\n"
+            except Exception:
+                pass
+
         text = (
             f"🌐 Fuente: <b>{clean_text(job.get('source', 'N/A'))}</b>\n"
             f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b>\n"
+            f"{date_display}"
             f"🧭 Modalidad: {clean_text(job.get('modality', 'N/A'))}\n"
             f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
             f"✨ Roles: <code>{roles_display}</code>\n"
