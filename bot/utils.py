@@ -1,5 +1,6 @@
 import asyncio
 import re
+import html
 from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 
 
@@ -15,12 +16,12 @@ async def send_jobs(bot, channel_id, jobs):
         tags_display = ", ".join(tags_list) if tags_list else "No especificado"
 
         text = (
-            f"🌐 Fuente: <b>{clean_text(job.get('source', 'N/A'))}</b>\n"
-            f"💼 <b>{clean_text(job.get('title', 'N/A'))}</b>\n"
-            f"🧭 Modalidad: {clean_text(job.get('modality', 'N/A'))}\n"
-            f"🏢 Empresa: {clean_text(job.get('company', 'N/A'))}\n"
-            f"✨ Roles: <code>{roles_display}</code>\n"
-            f"🏷️ Tags: <code>{tags_display}</code>\n"
+            f"🌐 Fuente: <b>{html.escape(clean_text(job.get('source', 'N/A')))}</b>\n"
+            f"💼 <b>{html.escape(clean_text(job.get('title', 'N/A')))}</b>\n"
+            f"🧭 Modalidad: {html.escape(clean_text(job.get('modality', 'N/A')))}\n"
+            f"🏢 Empresa: {html.escape(clean_text(job.get('company', 'N/A')))}\n"
+            f"✨ Roles: <code>{html.escape(roles_display)}</code>\n"
+            f"🏷️ Tags: <code>{html.escape(tags_display)}</code>\n"
         )
 
         keyboard = InlineKeyboardMarkup(
