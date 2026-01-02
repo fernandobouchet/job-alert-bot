@@ -1,9 +1,9 @@
-import re
 import asyncio
-import pandas as pd
 import zoneinfo
 from datetime import datetime, timedelta
 from collections import Counter
+import pandas as pd
+import numpy as np
 from config import (
     DAYS_OLD_THRESHOLD,
     JOBS_RETENTION_DAYS,
@@ -90,7 +90,7 @@ async def scrape(sources, channel_id, bot):
         return
 
     # 6. ENRICHMENT (solo para jobs nuevos)
-    df["modality"] = df["full_text_normalized"].apply(extract_job_modality)
+    df["modality"] = extract_job_modality_vectorized(df["full_text_normalized"])
 
     # Marcar fecha y hora del scraping
     df["date_scraped"] = datetime.now(zoneinfo.ZoneInfo(TIMEZONE)).isoformat()
@@ -161,41 +161,49 @@ async def scrape(sources, channel_id, bot):
         delete_old_documents("jobs", JOBS_RETENTION_DAYS)
 
 
-def extract_job_modality(text_for_extraction):
-    """Extrae modalidad de trabajo de un texto ya normalizado en minúsculas"""
-    # 100% presencial
-    if re.search(
-        r"\b(100%\s*(on-site|onsite|presencial)|exclusivamente\s*presencial)\b",
-        text_for_extraction,
-    ):
-        return "Presencial"
+# Regex constants for vectorized modality extraction
+REGEX_STRICT_ONSITE = r"\b(?:100%\s*(?:on-site|onsite|presencial)|exclusivamente\s*presencial)\b"
+REGEX_REMOTE = r"\b(?:remoto|remote|desde\s*casa|work\s*from\s*home|wfh|teletrabajo|anywhere)\b"
+REGEX_ONSITE = r"\b(?:presencial|on-site|onsite|oficina|sede|caba|buenos\s*aires|viajes)\b"
+REGEX_HYBRID = r"\b(?:híbrido|hybrid|mixto)\b"
 
-    # Términos remotos y presenciales
-    remote_terms = (
-        r"\b(remoto|remote|desde\s*casa|work\s*from\s*home|wfh|teletrabajo|anywhere)\b"
-    )
-    onsite_terms = (
-        r"\b(presencial|on-site|onsite|oficina|sede|caba|buenos\s*aires|viajes)\b"
-    )
 
-    is_remote_mentioned = re.search(remote_terms, text_for_extraction)
-    is_onsite_mentioned = re.search(onsite_terms, text_for_extraction)
+def extract_job_modality_vectorized(series: pd.Series) -> pd.Series:
+    """
+    Vectorized extraction of job modality from a normalized text series.
+    Optimized for performance using pandas/numpy operations instead of row-by-row apply.
+    """
+    # Use boolean masks with non-capturing groups
+    # na=False handles potential NaN values safely
+    mask_strict_onsite = series.str.contains(REGEX_STRICT_ONSITE, regex=True, na=False)
 
-    # Híbrido: explícitamente mencionado o ambos términos presentes
-    if re.search(r"\b(híbrido|hybrid|mixto)\b", text_for_extraction) or (
-        is_remote_mentioned and is_onsite_mentioned
-    ):
-        return "Híbrido"
+    mask_remote = series.str.contains(REGEX_REMOTE, regex=True, na=False)
+    mask_onsite = series.str.contains(REGEX_ONSITE, regex=True, na=False)
 
-    # Solo presencial
-    if is_onsite_mentioned:
-        return "Presencial"
+    mask_hybrid_keyword = series.str.contains(REGEX_HYBRID, regex=True, na=False)
+    mask_hybrid_mixed = mask_remote & mask_onsite
+    mask_hybrid = mask_hybrid_keyword | mask_hybrid_mixed
 
-    # Solo remoto
-    if is_remote_mentioned:
-        return "Remoto"
+    # Priority logic mimicking original if/else chain:
+    # 1. Strict Onsite ("Presencial")
+    # 2. Hybrid ("Híbrido")
+    # 3. Onsite ("Presencial")
+    # 4. Remote ("Remoto")
 
-    return "No especificada"
+    conditions = [
+        mask_strict_onsite,
+        mask_hybrid,
+        mask_onsite,
+        mask_remote
+    ]
+    choices = [
+        "Presencial",
+        "Híbrido",
+        "Presencial",
+        "Remoto"
+    ]
+
+    return np.select(conditions, choices, default="No especificada")
 
 
 def normalize_text_series(series: pd.Series):
