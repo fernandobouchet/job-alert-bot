@@ -11,6 +11,12 @@ from config import (
 )
 from constants import TIMEZONE
 from filters_scoring_config.scoring import MIN_FILTER_SCORE
+from filters_scoring_config.modality import (
+    REGEX_STRICT_ONSITE,
+    REGEX_REMOTE,
+    REGEX_ONSITE,
+    REGEX_HYBRID,
+)
 from utils.date_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring
 from bot.utils import send_jobs
@@ -159,13 +165,6 @@ async def scrape(sources, channel_id, bot):
     # 10. CLEANUP OLD DOCUMENTS
     if UPLOAD_TO_FIREBASE:
         delete_old_documents("jobs", JOBS_RETENTION_DAYS)
-
-
-# Regex constants for vectorized modality extraction
-REGEX_STRICT_ONSITE = r"\b(?:100%\s*(?:on-site|onsite|presencial)|exclusivamente\s*presencial)\b"
-REGEX_REMOTE = r"\b(?:remoto|remote|desde\s*casa|work\s*from\s*home|wfh|teletrabajo|anywhere)\b"
-REGEX_ONSITE = r"\b(?:presencial|on-site|onsite|oficina|sede|caba|buenos\s*aires|viajes)\b"
-REGEX_HYBRID = r"\b(?:híbrido|hybrid|mixto)\b"
 
 
 def extract_job_modality_vectorized(series: pd.Series) -> pd.Series:
