@@ -12,10 +12,10 @@ from config import (
 from constants import TIMEZONE
 from filters_scoring_config.scoring import MIN_FILTER_SCORE
 from filters_scoring_config.modality import (
-    REGEX_STRICT_ONSITE,
-    REGEX_REMOTE,
-    REGEX_ONSITE,
-    REGEX_HYBRID,
+    COMPILED_STRICT_ONSITE,
+    COMPILED_REMOTE,
+    COMPILED_ONSITE,
+    COMPILED_HYBRID,
 )
 from utils.date_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring
@@ -174,12 +174,12 @@ def extract_job_modality_vectorized(series: pd.Series) -> pd.Series:
     """
     # Use boolean masks with non-capturing groups
     # na=False handles potential NaN values safely
-    mask_strict_onsite = series.str.contains(REGEX_STRICT_ONSITE, regex=True, na=False)
+    mask_strict_onsite = series.str.contains(COMPILED_STRICT_ONSITE, regex=True, na=False)
 
-    mask_remote = series.str.contains(REGEX_REMOTE, regex=True, na=False)
-    mask_onsite = series.str.contains(REGEX_ONSITE, regex=True, na=False)
+    mask_remote = series.str.contains(COMPILED_REMOTE, regex=True, na=False)
+    mask_onsite = series.str.contains(COMPILED_ONSITE, regex=True, na=False)
 
-    mask_hybrid_keyword = series.str.contains(REGEX_HYBRID, regex=True, na=False)
+    mask_hybrid_keyword = series.str.contains(COMPILED_HYBRID, regex=True, na=False)
     mask_hybrid_mixed = mask_remote & mask_onsite
     mask_hybrid = mask_hybrid_keyword | mask_hybrid_mixed
 
