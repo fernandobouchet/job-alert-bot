@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 from filters_scoring_config.compiled_profiles import (
     COMPILED_PROFILES,
     TECH_REVERSE_MAP,
@@ -40,6 +39,7 @@ def pre_filter_jobs(df, verbose=True):
     Filtros aplicados:
     1. Área no-IT en título
     2. Seniority excluida en título (EXCEPTO si también menciona seniority positiva)
+    Optimizado con operaciones vectorizadas de pandas.
     """
     if df.empty:
         return df, pd.DataFrame()
@@ -48,40 +48,104 @@ def pre_filter_jobs(df, verbose=True):
     if verbose:
         print(f"\n🔍 Starting pre-filtering for {initial_count} jobs...")
 
-    rejected_indices = []
-    rejection_reasons = {}
+    titles = df["title_normalized"].fillna("")
 
-    for idx, row in df.iterrows():
-        title = row.get("title_normalized", "")
-        rejection_reason = None
+    # --- FILTRO 1: Área no-IT ---
+    # Trigger: coincide con AREA_PREFILTER
+    # Exception: coincide con ALL_ROLES o IT_SIGNALS
 
-        # FILTRO 1: Área no-IT
-        if _REGEX_AREA_PREFILTER.search(title):
-            # Excepción: no rechazar si contiene un rol IT fuerte Y señales IT
-            if not _REGEX_ALL_ROLES.search(title) and not _REGEX_IT_SIGNALS.search(
-                title
-            ):
-                matches = _REGEX_AREA_PREFILTER.findall(title)
-                rejection_reason = f"area: {', '.join(sorted(set(matches)))}"
+    # 1. Identificar filas que activan el filtro de Área (Candidatos a rechazo)
+    mask_area_trigger = titles.str.contains(_REGEX_AREA_PREFILTER, regex=True)
 
-        # FILTRO 2: Seniority (solo si pasó filtro de área)
-        elif _REGEX_EXCLUDED_SENIORITY.search(title):
-            if not _REGEX_POSITIVE_SENIORITY.search(title):
-                matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
-                rejection_reason = f"seniority: {', '.join(sorted(set(matches)))}"
+    # 2. Check excepciones solo para los que activaron el trigger
+    mask_reject_area = pd.Series(False, index=df.index)
 
-        if rejection_reason:
-            rejected_indices.append(idx)
-            rejection_reasons[idx] = rejection_reason
+    if mask_area_trigger.any():
+        trigger_indices = mask_area_trigger[mask_area_trigger].index
+        titles_subset = titles.loc[trigger_indices]
 
-    # Crear DataFrames
-    if rejected_indices:
-        df_rejected = df.loc[rejected_indices].copy()
-        df_rejected["rejection_reason"] = df_rejected.index.map(rejection_reasons)
-        df_filtered = df.drop(index=rejected_indices).copy()
-    else:
-        df_rejected = pd.DataFrame()
-        df_filtered = df.copy()
+        # Check Role Exception
+        mask_role_exception = titles_subset.str.contains(_REGEX_ALL_ROLES, regex=True)
+
+        # Si encuentra rol, NO es rechazado. Si NO encuentra rol, chequear señal IT.
+        indices_check_signal = mask_role_exception[~mask_role_exception].index
+
+        mask_signal_exception = pd.Series(False, index=titles_subset.index)
+
+        if not indices_check_signal.empty:
+            mask_signal_exception.loc[indices_check_signal] = (
+                titles.loc[indices_check_signal].str.contains(
+                    _REGEX_IT_SIGNALS, regex=True
+                )
+            )
+
+        # Exception es True si Role O Signal
+        mask_exception = mask_role_exception | mask_signal_exception
+
+        # Rechazar si Trigger Y NO Exception
+        mask_reject_area.loc[trigger_indices] = ~mask_exception
+
+    # --- FILTRO 2: Seniority ---
+    # Trigger: coincide con EXCLUDED_SENIORITY
+    # Exception: coincide con POSITIVE_SENIORITY
+    # Condición: Aplicar solo si NO fue rechazado por Área
+
+    mask_reject_seniority = pd.Series(False, index=df.index)
+
+    # Miramos seniority solo en filas válidas hasta ahora
+    valid_indices = mask_reject_area[~mask_reject_area].index
+
+    if not valid_indices.empty:
+        titles_valid = titles.loc[valid_indices]
+
+        # Check Excluded Seniority
+        mask_excluded = titles_valid.str.contains(
+            _REGEX_EXCLUDED_SENIORITY, regex=True
+        )
+
+        if mask_excluded.any():
+            excluded_indices = mask_excluded[mask_excluded].index
+            # Check Positive Seniority Exception solo en estos
+            mask_positive = titles.loc[excluded_indices].str.contains(
+                _REGEX_POSITIVE_SENIORITY, regex=True
+            )
+
+            # Rechazar si Excluded Y NO Positive
+            mask_reject_seniority.loc[excluded_indices] = ~mask_positive
+
+    # Máscara final de rechazo
+    rejected_mask = mask_reject_area | mask_reject_seniority
+
+    df_rejected = df[rejected_mask].copy()
+    df_filtered = df[~rejected_mask].copy()
+
+    # --- Generación de Razones de Rechazo ---
+    if not df_rejected.empty:
+        reasons = pd.Series(index=df_rejected.index, dtype=object)
+
+        # Rechazos por Área
+        area_indices = mask_reject_area[mask_reject_area].index
+        if not area_indices.empty:
+            def get_area_reason(text):
+                matches = _REGEX_AREA_PREFILTER.findall(text)
+                return f"area: {', '.join(sorted(set(matches)))}"
+            reasons.loc[area_indices] = (
+                df_rejected.loc[area_indices, "title_normalized"]
+                .apply(get_area_reason)
+            )
+
+        # Rechazos por Seniority
+        sen_indices = mask_reject_seniority[mask_reject_seniority].index
+        if not sen_indices.empty:
+            def get_seniority_reason(text):
+                matches = _REGEX_EXCLUDED_SENIORITY.findall(text)
+                return f"seniority: {', '.join(sorted(set(matches)))}"
+            reasons.loc[sen_indices] = (
+                df_rejected.loc[sen_indices, "title_normalized"]
+                .apply(get_seniority_reason)
+            )
+
+        df_rejected["rejection_reason"] = reasons
 
     if verbose:
         rejected_by_area = (
@@ -97,10 +161,12 @@ def pre_filter_jobs(df, verbose=True):
         print(f"   - Rejected by Area: {rejected_by_area} jobs")
         print(f"   - Rejected by Seniority: {rejected_by_seniority} jobs")
         print(
-            f"   -> Total rejected: {len(df_rejected)} ({len(df_rejected)/initial_count*100:.1f}%)"
+            f"   -> Total rejected: {len(df_rejected)} "
+            f"({len(df_rejected)/initial_count*100:.1f}%)"
         )
         print(
-            f"   -> Jobs remaining for scoring: {len(df_filtered)} ({len(df_filtered)/initial_count*100:.1f}%)"
+            f"   -> Jobs remaining for scoring: {len(df_filtered)} "
+            f"({len(df_filtered)/initial_count*100:.1f}%)"
         )
 
     return df_filtered, df_rejected
@@ -169,7 +235,7 @@ def calculate_job_score(row):
     # --- 3. Obtención de Tecnologías y Señales ---
     raw_tech_matches = set()
     raw_signal_matches = set()
-    
+
     if found_profiles:
         for profile_name in found_profiles:
             tech_matches = COMPILED_PROFILES[profile_name]["tech"].findall(full_text)
@@ -196,7 +262,7 @@ def calculate_job_score(row):
     is_it_job = bool(found_profiles) or (len(strong_tech_matches) >= 2 and bool(it_signals_found))
 
     # --- 4. Lógica de Puntuación (Bonus y Penalizaciones) ---
-    
+
     # 🚨 BLOQUEO CRÍTICO: SIN PERFIL NI SEÑALES IT
     if not is_it_job:
         if weak_tech_matches:
@@ -241,7 +307,7 @@ def calculate_job_score(row):
 
     # BONUS: Tecnologías encontradas (tech + signals for scoring)
     techs_for_bonus = raw_all_matches if found_profiles else strong_tech_matches
-    
+
     if len(techs_for_bonus) > 0:
         if found_profiles:
             bonus = min(len(techs_for_bonus) * WEIGHTS["profile_tech"], 25)
@@ -291,25 +357,26 @@ def calculate_job_score(row):
     # Decide if we should apply seniority penalty
     # 1. If years are explicitly high, we penalize UNLESS the title says Junior (strong override).
     #    We ignore "junior" in the body because it often refers to "mentoring juniors".
-    # 2. If title has negative seniority (Senior/Manager), we penalize UNLESS the title ALSO says Junior (contradiction/hybrid).
+    # 2. If title has negative seniority (Senior/Manager),
+    #    we penalize UNLESS the title ALSO says Junior (contradiction/hybrid).
 
     apply_seniority_penalty = False
 
     if should_penalize_years:
         if not has_positive_seniority_in_title:
-             apply_seniority_penalty = True
+            apply_seniority_penalty = True
     elif has_negative_seniority:
-         if not has_positive_seniority_in_title:
-             apply_seniority_penalty = True
+        if not has_positive_seniority_in_title:
+            apply_seniority_penalty = True
 
     if apply_seniority_penalty:
         penalty = WEIGHTS["senior_experience"]
         score -= penalty
-        
+
         meta_data = [years_required] if years_required else []
         if has_negative_seniority:
-             meta_data.extend(sorted(list(set(negative_seniority_matches))))
-        
+            meta_data.extend(sorted(list(set(negative_seniority_matches))))
+
         details["penalties"].append({
             "key": "senior_experience",
             "label": "Senior Experience Required",
@@ -405,10 +472,12 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
                 "meta": [reason]
             })
             return details
-        
+
         df_rejected_pre_filter["score"] = 0
         df_rejected_pre_filter["quality_tier"] = "reject"
-        df_rejected_pre_filter["score_details"] = df_rejected_pre_filter["rejection_reason"].apply(get_rejection_details)
+        df_rejected_pre_filter["score_details"] = df_rejected_pre_filter[
+            "rejection_reason"
+        ].apply(get_rejection_details)
 
     if df_pre_filtered.empty:
         if verbose:
@@ -457,13 +526,15 @@ def filter_jobs_with_scoring(df, min_score=60, verbose=True):
         print(f"   - Jobs passing score threshold (>={min_score}): {len(df_final)}")
         print(f"   - Jobs rejected by low score: {len(df_rejected_score)}")
         print(
-            f"   - Total rejected: {len(all_rejected)} ({len(all_rejected)/initial_total*100:.1f}%)"
+            f"   - Total rejected: {len(all_rejected)} "
+            f"({len(all_rejected)/initial_total*100:.1f}%)"
         )
 
         if not df_final.empty:
             print(f"\n📊 Score distribution:")
             print(
-                f"   - Excellent (75-100): {(df_final['quality_tier'] == 'excellent').sum()}"
+                f"   - Excellent (75-100): "
+                f"{(df_final['quality_tier'] == 'excellent').sum()}"
             )
             print(f"   - Good (60-74): {(df_final['quality_tier'] == 'good').sum()}")
             print(
