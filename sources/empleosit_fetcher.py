@@ -3,6 +3,7 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+from utils.security_utils import validate_url
 
 
 def fetch_empleosit(config):
@@ -57,6 +58,11 @@ def fetch_empleosit(config):
 
             if url and url != "N/A":
                 try:
+                    # Security Check: Validate URL before request
+                    if not validate_url(url, allowed_domains=["empleosit.com.ar"]):
+                        print(f"⚠️ URL insegura detectada y bloqueada: {url}")
+                        raise requests.RequestException("URL no segura")
+
                     detail_req = requests.get(url, timeout=config.get("timeout", 15))
                     detail_req.raise_for_status()
 
