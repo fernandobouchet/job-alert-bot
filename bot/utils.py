@@ -15,11 +15,19 @@ async def send_jobs(bot, channel_id, jobs):
         roles_display = ", ".join(roles_list) if roles_list else "No especificado"
         tags_display = ", ".join(tags_list) if tags_list else "No especificado"
 
+        published_at = job.get("published_at")
+        date_str = ""
+        if hasattr(published_at, "strftime"):
+            date_str = f"📅 Publicado: {published_at.strftime('%d/%m/%Y')}\n"
+        elif isinstance(published_at, str):
+            date_str = f"📅 Publicado: {html.escape(clean_text(published_at))}\n"
+
         text = (
             f"🌐 Fuente: <b>{html.escape(clean_text(job.get('source', 'N/A')))}</b>\n"
             f"💼 <b>{html.escape(clean_text(job.get('title', 'N/A')))}</b>\n"
             f"🧭 Modalidad: {html.escape(clean_text(job.get('modality', 'N/A')))}\n"
             f"🏢 Empresa: {html.escape(clean_text(job.get('company', 'N/A')))}\n"
+            f"{date_str}"
             f"✨ Roles: <code>{html.escape(roles_display)}</code>\n"
             f"🏷️ Tags: <code>{html.escape(tags_display)}</code>\n"
         )
