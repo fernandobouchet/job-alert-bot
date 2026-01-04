@@ -3,6 +3,7 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+from utils.security_utils import is_safe_url
 
 
 def fetch_empleosit(config):
@@ -57,25 +58,29 @@ def fetch_empleosit(config):
 
             if url and url != "N/A":
                 try:
-                    detail_req = requests.get(url, timeout=config.get("timeout", 15))
-                    detail_req.raise_for_status()
-
-                    detail_soup = BeautifulSoup(detail_req.text, "html.parser")
-                    main_container = detail_soup.select_one(
-                        "#col-wide > div.displayFieldBlock > div.displayField"
-                    )
-
-                    if main_container:
-                        full_text_raw = main_container.get_text(
-                            separator=" ", strip=True
-                        )
-
-                        description = full_text_raw
-                    else:
-                        print(
-                            f"No se encontró el contenedor principal (div.displayField) para: {title}"
-                        )
+                    if not is_safe_url(url):
+                        print(f"⚠️ URL insegura detectada y bloqueada: {url}")
                         description = descripcion_full
+                    else:
+                        detail_req = requests.get(url, timeout=config.get("timeout", 15))
+                        detail_req.raise_for_status()
+
+                        detail_soup = BeautifulSoup(detail_req.text, "html.parser")
+                        main_container = detail_soup.select_one(
+                            "#col-wide > div.displayFieldBlock > div.displayField"
+                        )
+
+                        if main_container:
+                            full_text_raw = main_container.get_text(
+                                separator=" ", strip=True
+                            )
+
+                            description = full_text_raw
+                        else:
+                            print(
+                                f"No se encontró el contenedor principal (div.displayField) para: {title}"
+                            )
+                            description = descripcion_full
 
                 except requests.RequestException as e:
                     print(f"⚠️ Error al obtener la página de detalle para {url}: {e}")
