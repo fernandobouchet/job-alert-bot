@@ -1,0 +1,4 @@
+## 2024-05-23 - SSRF Prevention in Job Fetcher
+**Vulnerability:** `sources/empleosit_fetcher.py` was extracting a URL from a scraped page and immediately making a GET request to it without validation. This creates a Server-Side Request Forgery (SSRF) vulnerability where a malicious job posting could direct the bot to scan internal networks or access local files (if protocol wrappers were enabled/supported).
+**Learning:** Even when scraping "trusted" public sites, the content (like links) can be user-generated or malicious. Always treat scraped URLs as untrusted input before making requests to them.
+**Prevention:** Implemented a `is_safe_url` utility that checks the URL scheme (http/https only) and resolves the hostname to ensure it doesn't point to private, loopback, or link-local IP addresses. Applied this check before fetching the job details.
