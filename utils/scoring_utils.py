@@ -217,6 +217,9 @@ def calculate_job_score(row):
     # --- 2. Categorización por Perfil y Roles ---
     found_profiles = []
     raw_role_matches = set()
+    # Cache profile tech matches to avoid re-scanning in step 3
+    profile_tech_cache = {}
+
     for profile_name, compiled_data in COMPILED_PROFILES.items():
         role_matches = compiled_data["roles"].findall(full_text)
         if role_matches:
@@ -225,6 +228,7 @@ def calculate_job_score(row):
             if profile_tech_matches:
                 found_profiles.append(profile_name)
                 raw_role_matches.update(role_matches)
+                profile_tech_cache[profile_name] = profile_tech_matches
 
     normalized_roles = {
         ROLE_REVERSE_MAP.get(role.lower(), role) for role in raw_role_matches
@@ -238,7 +242,8 @@ def calculate_job_score(row):
 
     if found_profiles:
         for profile_name in found_profiles:
-            tech_matches = COMPILED_PROFILES[profile_name]["tech"].findall(full_text)
+            # Reuse cached tech matches (optimization)
+            tech_matches = profile_tech_cache.get(profile_name, [])
             raw_tech_matches.update(tech_matches)
             signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
             raw_signal_matches.update(signal_matches)
