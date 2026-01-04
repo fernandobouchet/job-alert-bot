@@ -22,10 +22,22 @@ async def send_jobs(bot, channel_id, jobs):
         elif isinstance(published_at, str):
             date_str = f"📅 Publicado: {html.escape(clean_text(published_at))}\n"
 
+        # Modalidad Icon Mapping
+        modality_raw = clean_text(job.get('modality', 'N/A'))
+        modality_lower = modality_raw.lower()
+        if "remoto" in modality_lower:
+            modality_icon = "🏠"
+        elif "presencial" in modality_lower:
+            modality_icon = "🏢"
+        elif "híbrido" in modality_lower or "hibrido" in modality_lower:
+            modality_icon = "🌓"
+        else:
+            modality_icon = "🧭"
+
         text = (
             f"🌐 Fuente: <b>{html.escape(clean_text(job.get('source', 'N/A')))}</b>\n"
             f"💼 <b>{html.escape(clean_text(job.get('title', 'N/A')))}</b>\n"
-            f"🧭 Modalidad: {html.escape(clean_text(job.get('modality', 'N/A')))}\n"
+            f"{modality_icon} Modalidad: {html.escape(modality_raw)}\n"
             f"🏢 Empresa: {html.escape(clean_text(job.get('company', 'N/A')))}\n"
             f"{date_str}"
             f"✨ Roles: <code>{html.escape(roles_display)}</code>\n"
@@ -36,7 +48,7 @@ async def send_jobs(bot, channel_id, jobs):
             [
                 [
                     InlineKeyboardButton(
-                        text=f"Ver detalles en {clean_text(job.get('source', 'N/A'))}",
+                        text=f"🚀 Aplicar en {clean_text(job.get('source', 'N/A'))}",
                         url=clean_text(job.get("url", "#")),
                     )
                 ]
