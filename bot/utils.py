@@ -4,6 +4,11 @@ import html
 from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 
 
+# Pre-compile regex patterns for performance
+_REGEX_HTML_TAGS = re.compile(r"<[^>]+>")
+_REGEX_WHITESPACE = re.compile(r"\s+")
+
+
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
         # Obtener roles y tags
@@ -60,6 +65,7 @@ def clean_text(text):
     """Elimina HTML y exceso de espacios."""
     if not text:
         return ""
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
+    # Use pre-compiled regex patterns
+    text = _REGEX_HTML_TAGS.sub("", text)
+    text = _REGEX_WHITESPACE.sub(" ", text).strip()
     return text
