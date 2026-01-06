@@ -26,10 +26,15 @@ for profile_name, profile_data in PROFILES.items():
             for term in search_terms:
                 ROLE_REVERSE_MAP[term.lower()] = display_tag
 
-    roles_pattern = "|".join(
-        r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_roles_search_terms
-    )
-    compiled_roles = re.compile(roles_pattern, re.IGNORECASE | re.UNICODE)
+    # OPTIMIZATION: Use non-capturing group with single lookaround pair
+    # instead of repeating lookarounds for every term.
+    # From: (?<!\w)A(?!\w)|(?<!\w)B(?!\w)
+    # To:   (?<!\w)(?:A|B)(?!\w)
+    if profile_roles_search_terms:
+        roles_pattern = r"(?<!\w)(?:" + "|".join(re.escape(s) for s in profile_roles_search_terms) + r")(?!\w)"
+        compiled_roles = re.compile(roles_pattern, re.IGNORECASE | re.UNICODE)
+    else:
+        compiled_roles = re.compile(r"(?!.*)", re.IGNORECASE | re.UNICODE)
 
     # --- Compile tech regex from hybrid list for the current profile ---
     profile_tech_search_terms = []
@@ -46,10 +51,11 @@ for profile_name, profile_data in PROFILES.items():
             for term in search_terms:
                 TECH_REVERSE_MAP[term.lower()] = display_tag
 
-    tech_pattern = "|".join(
-        r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_tech_search_terms
-    )
-    compiled_tech = re.compile(tech_pattern, re.IGNORECASE | re.UNICODE)
+    if profile_tech_search_terms:
+        tech_pattern = r"(?<!\w)(?:" + "|".join(re.escape(s) for s in profile_tech_search_terms) + r")(?!\w)"
+        compiled_tech = re.compile(tech_pattern, re.IGNORECASE | re.UNICODE)
+    else:
+        compiled_tech = re.compile(r"(?!.*)", re.IGNORECASE | re.UNICODE)
 
     # --- Compile signals regex from hybrid list for the current profile ---
     profile_signals_search_terms = []
@@ -66,9 +72,7 @@ for profile_name, profile_data in PROFILES.items():
             for term in search_terms:
                 TECH_REVERSE_MAP[term.lower()] = display_tag 
     if profile_signals_search_terms:
-        signals_pattern = "|".join(
-            r"(?<!\w)" + re.escape(s) + r"(?!\w)" for s in profile_signals_search_terms
-        )
+        signals_pattern = r"(?<!\w)(?:" + "|".join(re.escape(s) for s in profile_signals_search_terms) + r")(?!\w)"
         compiled_signals = re.compile(signals_pattern, re.IGNORECASE | re.UNICODE)
     else:
         # Create empty regex that never matches
