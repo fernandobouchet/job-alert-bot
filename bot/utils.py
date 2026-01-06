@@ -8,6 +8,12 @@ from telegram import constants, InlineKeyboardMarkup, InlineKeyboardButton
 _REGEX_HTML_TAGS = re.compile(r"<[^>]+>")
 _REGEX_WHITESPACE = re.compile(r"\s+")
 
+MODALITY_EMOJIS = {
+    "Remoto": "🏠",
+    "Presencial": "🏢",
+    "Híbrido": "🌓",
+}
+
 
 async def send_jobs(bot, channel_id, jobs):
     for job in jobs:
@@ -27,10 +33,13 @@ async def send_jobs(bot, channel_id, jobs):
         elif isinstance(published_at, str):
             date_str = f"📅 Publicado: {html.escape(clean_text(published_at))}\n"
 
+        modality = clean_text(job.get("modality", "N/A"))
+        modality_emoji = MODALITY_EMOJIS.get(modality, "🧭")
+
         text = (
             f"🌐 Fuente: <b>{html.escape(clean_text(job.get('source', 'N/A')))}</b>\n"
             f"💼 <b>{html.escape(clean_text(job.get('title', 'N/A')))}</b>\n"
-            f"🧭 Modalidad: {html.escape(clean_text(job.get('modality', 'N/A')))}\n"
+            f"{modality_emoji} Modalidad: {html.escape(modality)}\n"
             f"🏢 Empresa: {html.escape(clean_text(job.get('company', 'N/A')))}\n"
             f"{date_str}"
             f"✨ Roles: <code>{html.escape(roles_display)}</code>\n"
@@ -41,7 +50,7 @@ async def send_jobs(bot, channel_id, jobs):
             [
                 [
                     InlineKeyboardButton(
-                        text=f"Ver detalles en {clean_text(job.get('source', 'N/A'))}",
+                        text=f"🚀 Aplicar en {clean_text(job.get('source', 'N/A'))}",
                         url=clean_text(job.get("url", "#")),
                     )
                 ]
