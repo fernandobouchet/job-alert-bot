@@ -3,6 +3,7 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+from utils.security_utils import is_safe_url
 
 
 def fetch_empleosit(config):
@@ -57,6 +58,10 @@ def fetch_empleosit(config):
 
             if url and url != "N/A":
                 try:
+                    if not is_safe_url(url):
+                        print(f"⚠️ URL insegura detectada (SSRF risk): {url}")
+                        raise requests.RequestException("Unsafe URL")
+
                     detail_req = requests.get(url, timeout=config.get("timeout", 15))
                     detail_req.raise_for_status()
 
