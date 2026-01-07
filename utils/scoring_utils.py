@@ -3,6 +3,7 @@ from filters_scoring_config.compiled_profiles import (
     COMPILED_PROFILES,
     TECH_REVERSE_MAP,
     ROLE_REVERSE_MAP,
+    ROLE_TO_PROFILE_MAP,
 )
 from filters_scoring_config.compiled_regex import (
     _REGEX_ALL_ROLES,
@@ -220,15 +221,38 @@ def calculate_job_score(row):
     # Cache profile tech matches to avoid re-scanning in step 3
     profile_tech_cache = {}
 
-    for profile_name, compiled_data in COMPILED_PROFILES.items():
-        role_matches = compiled_data["roles"].findall(full_text)
-        if role_matches:
-            # Profile Validation: Only keep profile if it has its specific tech
-            profile_tech_matches = compiled_data["tech"].findall(full_text)
-            if profile_tech_matches:
-                found_profiles.append(profile_name)
-                raw_role_matches.update(role_matches)
-                profile_tech_cache[profile_name] = profile_tech_matches
+    # OPTIMIZATION: Scan for ALL roles at once using the combined regex.
+    # This avoids iterating through every profile and running a separate regex search for each.
+    # Complexity reduction: O(num_profiles * text_len) -> O(text_len + matched_profiles * text_len)
+
+    all_role_matches = _REGEX_ALL_ROLES.findall(full_text)
+
+    # Identify potential profiles based on matches
+    potential_profiles = set()
+    for match in all_role_matches:
+        profiles = ROLE_TO_PROFILE_MAP.get(match.lower())
+        if profiles:
+            potential_profiles.update(profiles)
+
+    # Only validate potential profiles
+    for profile_name in potential_profiles:
+        compiled_data = COMPILED_PROFILES[profile_name]
+
+        # Profile Validation: Only keep profile if it has its specific tech
+        profile_tech_matches = compiled_data["tech"].findall(full_text)
+
+        if profile_tech_matches:
+            found_profiles.append(profile_name)
+            profile_tech_cache[profile_name] = profile_tech_matches
+
+            # Extract only the role matches relevant to this profile
+            # Since we already found ALL matches, we filter them for this profile.
+            # This is faster than re-running regex.
+            valid_roles_for_this_profile = [
+                m for m in all_role_matches
+                if profile_name in ROLE_TO_PROFILE_MAP.get(m.lower(), [])
+            ]
+            raw_role_matches.update(valid_roles_for_this_profile)
 
     normalized_roles = {
         ROLE_REVERSE_MAP.get(role.lower(), role) for role in raw_role_matches
