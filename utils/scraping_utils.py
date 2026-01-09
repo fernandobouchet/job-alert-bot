@@ -17,6 +17,10 @@ from filters_scoring_config.modality import (
     COMPILED_ONSITE,
     COMPILED_HYBRID,
 )
+from filters_scoring_config.compiled_regex import (
+    _REGEX_NORMALIZE_CLEANUP,
+    _REGEX_NORMALIZE_WHITESPACE,
+)
 from utils.date_utils import safe_parse_date_to_ISO
 from utils.scoring_utils import filter_jobs_with_scoring
 from bot.utils import send_jobs
@@ -216,8 +220,8 @@ def normalize_text_series(series: pd.Series):
 
     cleaned_series = series.fillna("").astype(str).str.lower()
 
-    cleaned_series = cleaned_series.str.replace(r"[^\w\s\+#\./]", " ", regex=True)
+    cleaned_series = cleaned_series.str.replace(_REGEX_NORMALIZE_CLEANUP, " ", regex=True)
 
-    cleaned_series = cleaned_series.str.replace(r"\s+", " ", regex=True).str.strip()
+    cleaned_series = cleaned_series.str.replace(_REGEX_NORMALIZE_WHITESPACE, " ", regex=True).str.strip()
 
     return cleaned_series

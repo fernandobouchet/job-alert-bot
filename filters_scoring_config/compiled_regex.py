@@ -66,5 +66,8 @@ COMPILED_EXPERIENCE_PATTERNS = [
     re.compile(pattern, re.IGNORECASE) for pattern in EXPERIENCE_PATTERNS
 ]
 
+_REGEX_NORMALIZE_CLEANUP = re.compile(r"[^\w\s\+#\./]", re.UNICODE)
+_REGEX_NORMALIZE_WHITESPACE = re.compile(r"\s+", re.UNICODE)
+
 
 print("✅ Regex patterns compiled")
