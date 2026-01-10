@@ -230,7 +230,8 @@ def calculate_job_score(row):
     # Identify potential profiles based on matches
     potential_profiles = set()
     for match in all_role_matches:
-        profiles = ROLE_TO_PROFILE_MAP.get(match.lower())
+        # OPTIMIZATION: match is already lowercase from full_text_normalized
+        profiles = ROLE_TO_PROFILE_MAP.get(match)
         if profiles:
             potential_profiles.update(profiles)
 
@@ -250,12 +251,12 @@ def calculate_job_score(row):
             # This is faster than re-running regex.
             valid_roles_for_this_profile = [
                 m for m in all_role_matches
-                if profile_name in ROLE_TO_PROFILE_MAP.get(m.lower(), [])
+                if profile_name in ROLE_TO_PROFILE_MAP.get(m, [])
             ]
             raw_role_matches.update(valid_roles_for_this_profile)
 
     normalized_roles = {
-        ROLE_REVERSE_MAP.get(role.lower(), role) for role in raw_role_matches
+        ROLE_REVERSE_MAP.get(role, role) for role in raw_role_matches
     }
     final_roles = sorted(list(normalized_roles))
 
@@ -283,7 +284,7 @@ def calculate_job_score(row):
     strong_tech_matches = raw_all_matches - weak_tech_matches
 
     normalized_tags = {
-        TECH_REVERSE_MAP.get(tag.lower(), tag) for tag in raw_tech_matches
+        TECH_REVERSE_MAP.get(tag, tag) for tag in raw_tech_matches
     }
     final_tags = sorted(list(normalized_tags))
 
