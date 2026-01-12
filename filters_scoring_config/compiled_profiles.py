@@ -90,6 +90,7 @@ for profile_name, profile_data in PROFILES.items():
         "roles": compiled_roles,
         "tech": compiled_tech,
         "signals": compiled_signals,
+        "tech_keywords": set(profile_tech_search_terms),
     }
 
 

@@ -236,24 +236,25 @@ def calculate_job_score(row):
         if profiles:
             potential_profiles.update(profiles)
 
+    # OPTIMIZATION: Scan for ALL techs at once.
+    # Instead of rescanning the full text for every potential profile (O(N_profiles * Text_len)),
+    # we scan once for all techs (O(Text_len)) and then check set intersections (O(1) lookups).
+    all_tech_matches = set(_REGEX_ALL_TECHS.findall(full_text))
+
     # Only validate potential profiles
     for profile_name in potential_profiles:
         compiled_data = COMPILED_PROFILES[profile_name]
 
-        # Profile Validation: Only keep profile if it has its specific tech
-        profile_tech_matches = compiled_data["tech"].findall(full_text)
+        # Profile Validation: Check intersection of found techs with profile tech keywords
+        # This replaces: profile_tech_matches = compiled_data["tech"].findall(full_text)
+        profile_tech_keywords = compiled_data["tech_keywords"]
+        profile_tech_matches = [t for t in all_tech_matches if t in profile_tech_keywords]
 
         if profile_tech_matches:
             found_profiles.append(profile_name)
             profile_tech_cache[profile_name] = profile_tech_matches
 
             # Extract only the role matches relevant to this profile
-            # Since we already found ALL matches, we filter them for this profile.
-            # This is faster than re-running regex.
-            # Use set(all_role_matches) here for checking to optimize if list is long?
-            # Actually, we need to add the matched terms to raw_role_matches.
-            # Since raw_role_matches is a set, duplicates don't matter,
-            # so iterating over unique matches is sufficient and faster.
             valid_roles_for_this_profile = [
                 m for m in set(all_role_matches)
                 if profile_name in ROLE_TO_PROFILE_MAP.get(m, [])
@@ -278,8 +279,8 @@ def calculate_job_score(row):
             signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
             raw_signal_matches.update(signal_matches)
     else:
-        tech_matches = _REGEX_ALL_TECHS.findall(full_text)
-        raw_tech_matches.update(tech_matches)
+        # If no profiles found, we already have all tech matches
+        raw_tech_matches.update(all_tech_matches)
 
     # Combine tech and signals for scoring purposes
     raw_all_matches = raw_tech_matches | raw_signal_matches
