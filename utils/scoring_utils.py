@@ -14,7 +14,7 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_POSITIVE_SENIORITY,
     _REGEX_EXCLUDED_SENIORITY,
     _REGEX_WEAK_SIGNALS,
-    COMPILED_EXPERIENCE_PATTERNS,
+    COMPILED_EXPERIENCE_REGEX,
 )
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
@@ -454,27 +454,42 @@ def calculate_job_score(row):
 def has_senior_experience_requirement(text):
     """
     Detecta si requiere experiencia senior (>= MIN_YEARS_SENIORITY).
+    Optimized: Uses a single combined regex scan instead of iterating multiple patterns.
     """
     years_found = []
-    for compiled_pattern in COMPILED_EXPERIENCE_PATTERNS:
-        matches = compiled_pattern.findall(text)
-        for match in matches:
+    # findall with combined regex returns a list of tuples (one group per capturing group in the whole regex)
+    matches = COMPILED_EXPERIENCE_REGEX.findall(text)
+
+    for match in matches:
+        nums = []
+        # Flatten the tuple and find all non-empty digit strings
+        if isinstance(match, tuple):
+            for group in match:
+                if group:
+                    try:
+                        nums.append(int(group))
+                    except ValueError:
+                        pass
+        elif match:  # Fallback if regex has only one group (though here it has many)
             try:
-                if isinstance(match, tuple):
-                    nums = [int(n) for n in match if n]
-                    if len(nums) == 2:
-                        min_years, max_years = nums
-                        if 1 <= min_years < max_years <= 50:
-                            years_found.append(min_years)
-                    elif len(nums) == 1:
-                        if 1 <= nums[0] <= 50:
-                            years_found.append(nums[0])
-                else:
-                    years = int(match)
-                    if 1 <= years <= 50:
-                        years_found.append(years)
-            except (ValueError, TypeError):
-                continue
+                nums.append(int(match))
+            except ValueError:
+                pass
+
+        if not nums:
+            continue
+
+        # Logic inference:
+        # If 2 numbers found -> Range (min-max). Use min.
+        # If 1 number found -> Single value (min/required). Use it.
+        if len(nums) == 2:
+            min_years, max_years = nums
+            if 1 <= min_years < max_years <= 50:
+                years_found.append(min_years)
+        elif len(nums) == 1:
+            if 1 <= nums[0] <= 50:
+                years_found.append(nums[0])
+
     if not years_found:
         return False, None
     max_years = max(years_found)

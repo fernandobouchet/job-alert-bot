@@ -62,6 +62,11 @@ _REGEX_ALL_TECHS = re.compile(
     re.UNICODE,
 )
 
+# OPTIMIZATION: Combine all experience patterns into a single regex for faster scanning.
+# Each pattern is wrapped in a non-capturing group to allow combining with OR.
+_COMBINED_EXPERIENCE_PATTERN = "|".join(f"(?:{p})" for p in EXPERIENCE_PATTERNS)
+COMPILED_EXPERIENCE_REGEX = re.compile(_COMBINED_EXPERIENCE_PATTERN, re.IGNORECASE)
+
 COMPILED_EXPERIENCE_PATTERNS = [
     re.compile(pattern, re.IGNORECASE) for pattern in EXPERIENCE_PATTERNS
 ]
