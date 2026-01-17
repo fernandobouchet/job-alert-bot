@@ -456,6 +456,8 @@ def has_senior_experience_requirement(text):
     Detecta si requiere experiencia senior (>= MIN_YEARS_SENIORITY).
     Optimized: Uses a single combined regex scan instead of iterating multiple patterns.
     """
+    # Ensure text is lowercase for the regex optimization
+    text = text.lower()
     years_found = []
     # findall with combined regex returns a list of tuples (one group per capturing group in the whole regex)
     matches = COMPILED_EXPERIENCE_REGEX.findall(text)
