@@ -25,7 +25,8 @@ class TestScoringExperience(unittest.TestCase):
 
         for text, expected_is_senior, expected_years in cases:
             with self.subTest(text=text):
-                is_senior, years = has_senior_experience_requirement(text)
+                # Ensure input is lowercase as expected by the optimized function
+                is_senior, years = has_senior_experience_requirement(text.lower())
                 self.assertEqual(years, expected_years, f"Years mismatch for '{text}': got {years}, expected {expected_years}")
                 self.assertEqual(is_senior, expected_is_senior, f"is_senior mismatch for '{text}': got {is_senior}, expected {expected_is_senior}")
 

@@ -212,8 +212,7 @@ def calculate_job_score(row):
     has_negative_seniority = bool(negative_seniority_matches)
 
     # Check positive seniority in TITLE specifically
-    positive_seniority_title_matches = _REGEX_POSITIVE_SENIORITY.findall(title)
-    has_positive_seniority_in_title = bool(positive_seniority_title_matches)
+    has_positive_seniority_in_title = bool(_REGEX_POSITIVE_SENIORITY.search(title))
 
     # --- 2. Categorización por Perfil y Roles ---
     found_profiles = []
@@ -455,9 +454,8 @@ def has_senior_experience_requirement(text):
     """
     Detecta si requiere experiencia senior (>= MIN_YEARS_SENIORITY).
     Optimized: Uses a single combined regex scan instead of iterating multiple patterns.
+    Assumes input text is already normalized to lowercase.
     """
-    # Ensure text is lowercase for the regex optimization
-    text = text.lower()
     years_found = []
     # findall with combined regex returns a list of tuples (one group per capturing group in the whole regex)
     matches = COMPILED_EXPERIENCE_REGEX.findall(text)

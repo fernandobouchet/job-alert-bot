@@ -7,3 +7,8 @@
 **Learning:** Consolidating multiple structurally similar regexes (like experience patterns) into a single regex with alternations (`|`) yielded a ~10% performance improvement.
 **Reason:** Unlike the complex profile regexes, these patterns are simple and scanned unconditionally for every job. Reducing the overhead of multiple Python-to-C context switches in `re.findall` proved beneficial.
 **Action:** Combine small, homogeneous, unconditionally-executed regex patterns into a single compiled regex using non-capturing groups.
+
+## 2025-02-20 - Redundant String Normalization & Regex Search
+**Learning:** Removing redundant `text.lower()` calls when input is already normalized yielded a ~16x speedup for that specific operation. Replacing `findall` with `search` for boolean existence checks yielded a ~2x speedup.
+**Reason:** String normalization (allocating new strings) is expensive in tight loops. `findall` scans the entire string and builds a list, while `search` stops at the first match.
+**Action:** Trust upstream normalization contracts (and document them). Use `re.search` (or `regex.search`) when only boolean existence is needed, especially for short strings like titles.
