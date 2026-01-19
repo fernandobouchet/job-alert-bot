@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 from filters_scoring_config.compiled_profiles import (
     COMPILED_PROFILES,
@@ -235,12 +236,29 @@ def calculate_job_score(row):
         if profiles:
             potential_profiles.update(profiles)
 
+    # OPTIMIZATION: Tokenize full_text once for fast O(1) existence checks of single-word terms.
+    # This avoids running regexes for hundreds of simple tech words (e.g. "java", "python").
+    # Use robust tokenization to handle punctuation (e.g. "java," -> "java").
+    # Non-alphanumeric terms (c++, node.js) are handled by the multi-word regex path.
+    text_tokens = set(re.findall(r'[a-z0-9]+', full_text))
+
     # Only validate potential profiles
     for profile_name in potential_profiles:
         compiled_data = COMPILED_PROFILES[profile_name]
 
         # Profile Validation: Only keep profile if it has its specific tech
-        profile_tech_matches = compiled_data["tech"].findall(full_text)
+        # Optimized: Check intersection with single-word tokens + regex for multi-word phrases.
+
+        # 1. Single-word matches (Fastest)
+        matched_single = text_tokens.intersection(compiled_data.get("tech_set", set()))
+        profile_tech_matches = list(matched_single)
+
+        # 2. Multi-word matches (Slower, only if needed or always to be complete?)
+        # We need all matches for bonuses, so we must check both.
+        # But if we just wanted validation, we could short-circuit.
+        # However, the logic calculates score based on count, so we need all.
+
+        profile_tech_matches.extend(compiled_data.get("tech_multi_regex", compiled_data["tech"]).findall(full_text))
 
         if profile_tech_matches:
             found_profiles.append(profile_name)
@@ -274,7 +292,13 @@ def calculate_job_score(row):
             # Reuse cached tech matches (optimization)
             tech_matches = profile_tech_cache.get(profile_name, [])
             raw_tech_matches.update(tech_matches)
-            signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
+
+            # Optimized signals matching
+            compiled_data = COMPILED_PROFILES[profile_name]
+            matched_single = text_tokens.intersection(compiled_data.get("signals_set", set()))
+            signal_matches = list(matched_single)
+            signal_matches.extend(compiled_data.get("signals_multi_regex", compiled_data["signals"]).findall(full_text))
+
             raw_signal_matches.update(signal_matches)
     else:
         tech_matches = _REGEX_ALL_TECHS.findall(full_text)
