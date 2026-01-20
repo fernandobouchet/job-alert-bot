@@ -21,6 +21,14 @@ class TestScoringExperience(unittest.TestCase):
             ("Some random text with number 5 but not related to years.", False, None),
             ("Experience: 2 years. Also knowledge of SQL.", False, 2),
             ("More than 7 years of experience required.", True, 7),
+
+            # Regression tests for regex optimization (limiting distance)
+            # Pathological case: "experience" ... [far away] ... "3-5 years"
+            # Should NOT match because distance > 100
+            ("Experience" + " " * 200 + "3-5 years", False, None),
+
+            # Valid case: "experience" ... [close] ... "3-5 years"
+            ("Experience" + " " * 50 + "3-5 years", True, 3),
         ]
 
         for text, expected_is_senior, expected_years in cases:

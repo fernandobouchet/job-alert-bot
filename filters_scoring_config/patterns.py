@@ -1,8 +1,10 @@
 EXPERIENCE_PATTERNS = [
     # Rangos: "3-5 años" o "de 3 a 5 años" + contexto de experiencia
     # ES/EN: experiencia/experience/exp
-    r"(?:exp\.?|experiencia|experience).*?(\d+)\s*(?:-|a|to|y)\s*(\d+)\s*(?:años|years)",
-    r"(\d+)\s*(?:-|a|to|y)\s*(\d+)\s*(?:años|years).*?(?:exp\.?|experiencia|experience)",
+    # Optimized: replaced .*? with .{0,100}? to prevent catastrophic backtracking and long-distance false positives
+    # usage of non-greedy quantifier (?) ensures we match the closest numbers
+    r"(?:exp\.?|experiencia|experience).{0,100}?(\d+)\s*(?:-|a|to|y)\s*(\d+)\s*(?:años|years)",
+    r"(\d+)\s*(?:-|a|to|y)\s*(\d+)\s*(?:años|years).{0,100}?(?:exp\.?|experiencia|experience)",
 
     # Número + años de experiencia: "5 años de experiencia" / "5 years of experience"
     # Supports "5+ years of exp"
