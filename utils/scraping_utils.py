@@ -216,8 +216,9 @@ def normalize_text_series(series: pd.Series):
 
     cleaned_series = series.fillna("").astype(str).str.lower()
 
-    cleaned_series = cleaned_series.str.replace(r"[^\w\s\+#\./]", " ", regex=True)
-
-    cleaned_series = cleaned_series.str.replace(r"\s+", " ", regex=True).str.strip()
+    # Optimization: Use a single regex to replace junk and collapse whitespace in one pass.
+    # [^\w\+#\./]+ matches sequences of characters that are NOT word, +, #, ., /
+    # This includes whitespace (\s), so consecutive spaces/junk are replaced by a single space.
+    cleaned_series = cleaned_series.str.replace(r"[^\w\+#\./]+", " ", regex=True).str.strip()
 
     return cleaned_series
