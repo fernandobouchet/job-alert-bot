@@ -216,8 +216,11 @@ def normalize_text_series(series: pd.Series):
 
     cleaned_series = series.fillna("").astype(str).str.lower()
 
-    cleaned_series = cleaned_series.str.replace(r"[^\w\s\+#\./]", " ", regex=True)
-
-    cleaned_series = cleaned_series.str.replace(r"\s+", " ", regex=True).str.strip()
+    # Optimize: Combine garbage removal and whitespace collapsing into one pass.
+    # [^\w\+#\./]+ matches any sequence of characters that are NOT word chars, +, #, ., /
+    # This INCLUDES whitespace characters (since \s is not in the negated set).
+    # Replacing this sequence with a single space effectively removes garbage AND
+    # collapses whitespace.
+    cleaned_series = cleaned_series.str.replace(r"[^\w\+#\./]+", " ", regex=True).str.strip()
 
     return cleaned_series
