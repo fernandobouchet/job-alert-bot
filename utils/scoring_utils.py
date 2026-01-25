@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 from filters_scoring_config.compiled_profiles import (
     COMPILED_PROFILES,
@@ -15,6 +16,12 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_EXCLUDED_SENIORITY,
     _REGEX_WEAK_SIGNALS,
     COMPILED_EXPERIENCE_REGEX,
+    _SET_IT_SIGNALS_SINGLE,
+    _REGEX_IT_SIGNALS_MULTI,
+    _SET_WEAK_SIGNALS_SINGLE,
+    _REGEX_WEAK_SIGNALS_MULTI,
+    _SET_ALL_TECHS_SINGLE,
+    _REGEX_ALL_TECHS_MULTI,
 )
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
 
@@ -32,6 +39,17 @@ WEIGHTS = {
     "ambiguous_no_context": 30,
     "weak_signal_only_penalty": 20,
 }
+
+
+def extract_keywords_optimized(tokens, text, single_set, multi_regex):
+    """
+    Optimized keyword extraction using pre-computed tokens for single-word matches
+    and regex for multi-word matches.
+    """
+    found = tokens.intersection(single_set)
+    if multi_regex:
+        found.update(multi_regex.findall(text))
+    return found
 
 
 def pre_filter_jobs(df, verbose=True):
@@ -200,8 +218,20 @@ def calculate_job_score(row):
     title = row.get("title_normalized", "")
     full_text = row.get("full_text_normalized", "")
 
+    # OPTIMIZATION: Tokenize once for fast set intersection
+    # This speeds up detection of single-word keywords (approx 80% of keywords)
+    # The tokenizer must match the set of characters allowed in normalize_text_series
+    # normalize_text_series keeps alphanumeric, +, #, ., /
+    # Our sets contain alphanumeric single words.
+    # regex pattern r'[a-z0-9]+' extracts alphanumeric tokens.
+    tokens = set(re.findall(r'[a-z0-9]+', full_text))
+
     # --- 1. Detección de Señales y Perfiles ---
-    it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
+    # it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
+    it_signals_found = extract_keywords_optimized(
+        tokens, full_text, _SET_IT_SIGNALS_SINGLE, _REGEX_IT_SIGNALS_MULTI
+    )
+
     ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
     has_ambiguous_role = bool(ambiguous_roles_found)
     positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
@@ -277,13 +307,19 @@ def calculate_job_score(row):
             signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
             raw_signal_matches.update(signal_matches)
     else:
-        tech_matches = _REGEX_ALL_TECHS.findall(full_text)
+        # tech_matches = _REGEX_ALL_TECHS.findall(full_text)
+        tech_matches = extract_keywords_optimized(
+            tokens, full_text, _SET_ALL_TECHS_SINGLE, _REGEX_ALL_TECHS_MULTI
+        )
         raw_tech_matches.update(tech_matches)
 
     # Combine tech and signals for scoring purposes
     raw_all_matches = raw_tech_matches | raw_signal_matches
 
-    weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+    # weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+    weak_tech_matches = extract_keywords_optimized(
+        tokens, full_text, _SET_WEAK_SIGNALS_SINGLE, _REGEX_WEAK_SIGNALS_MULTI
+    )
 
     strong_tech_matches = raw_all_matches - weak_tech_matches
 
