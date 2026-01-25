@@ -19,6 +19,15 @@ from filters_scoring_config.patterns import EXPERIENCE_PATTERNS
 
 print("🔄 Compiling regex patterns from config...")
 
+def split_keywords(keywords):
+    """Split keywords into single-word alphanumeric set and multi-word list."""
+    # Ensure keywords are lowercase for set intersection
+    # Only strictly alphanumeric keywords go to set (to match [a-z0-9]+ tokenization)
+    single = {k.lower() for k in keywords if k.isalnum()}
+    # Remaining keywords go to regex (preserved in original form, lowercased during compilation)
+    multi = [k for k in keywords if k.lower() not in single]
+    return single, multi
+
 # OPTIMIZATION: Use non-capturing group with single lookaround pair for all patterns
 # This significantly reduces regex compilation time and execution speed.
 
@@ -42,11 +51,24 @@ _REGEX_AMBIGUOUS_ROLES = re.compile(
     re.UNICODE,
 )
 
+# --- Optimized Signals (Set + Regex) ---
+_SET_IT_SIGNALS_SINGLE, _IT_SIGNALS_MULTI = split_keywords(IT_CONTEXT_SIGNALS)
+_REGEX_IT_SIGNALS_MULTI = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(_IT_SIGNALS_MULTI, key=len, reverse=True)) + r")(?!\w)",
+    re.UNICODE,
+)
+# Keep original for backward compatibility
 _REGEX_IT_SIGNALS = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(IT_CONTEXT_SIGNALS, key=len, reverse=True)) + r")(?!\w)",
     re.UNICODE,
 )
 
+_SET_WEAK_SIGNALS_SINGLE, _WEAK_SIGNALS_MULTI = split_keywords(WEAK_IT_SIGNALS)
+_REGEX_WEAK_SIGNALS_MULTI = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(_WEAK_SIGNALS_MULTI, key=len, reverse=True)) + r")(?!\w)",
+    re.UNICODE,
+)
+# Keep original for backward compatibility
 _REGEX_WEAK_SIGNALS = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(WEAK_IT_SIGNALS, key=len, reverse=True)) + r")(?!\w)",
     re.UNICODE,
@@ -57,6 +79,13 @@ _REGEX_ALL_ROLES = re.compile(
     re.UNICODE,
 )
 
+# --- Optimized Techs (Set + Regex) ---
+_SET_ALL_TECHS_SINGLE, _ALL_TECHS_MULTI = split_keywords(_ALL_TECHS_KEYWORDS)
+_REGEX_ALL_TECHS_MULTI = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(_ALL_TECHS_MULTI, key=len, reverse=True)) + r")(?!\w)",
+    re.UNICODE,
+)
+# Keep original for backward compatibility
 _REGEX_ALL_TECHS = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(_ALL_TECHS_KEYWORDS, key=len, reverse=True)) + r")(?!\w)",
     re.UNICODE,
