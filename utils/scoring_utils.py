@@ -8,7 +8,6 @@ from filters_scoring_config.compiled_profiles import (
 from filters_scoring_config.compiled_regex import (
     _REGEX_ALL_ROLES,
     _REGEX_ALL_TECHS,
-    _REGEX_AMBIGUOUS_ROLES,
     _REGEX_AREA_PREFILTER,
     _REGEX_IT_SIGNALS,
     _REGEX_POSITIVE_SENIORITY,
@@ -202,14 +201,12 @@ def calculate_job_score(row):
 
     # --- 1. Detección de Señales y Perfiles ---
     it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
-    ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
-    has_ambiguous_role = bool(ambiguous_roles_found)
-    positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
-    # Negative Seniority: Search ONLY in Title to avoid false positives in body
-    negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
 
-    has_positive_seniority = bool(positive_seniority_matches)
-    has_negative_seniority = bool(negative_seniority_matches)
+    # OPTIMIZATION: Use search for boolean checks to avoid expensive findall on full text
+    has_positive_seniority = bool(_REGEX_POSITIVE_SENIORITY.search(full_text))
+
+    # Negative Seniority: Search ONLY in Title to avoid false positives in body
+    has_negative_seniority = bool(_REGEX_EXCLUDED_SENIORITY.search(title))
 
     # Check positive seniority in TITLE specifically
     has_positive_seniority_in_title = bool(_REGEX_POSITIVE_SENIORITY.search(title))
@@ -321,6 +318,7 @@ def calculate_job_score(row):
 
     # BONUS: Seniority Jr/Trainee
     if has_positive_seniority and is_it_job:
+        positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
         score += WEIGHTS["positive_seniority"]
         details["bonuses"].append({
             "key": "positive_seniority",
@@ -409,6 +407,7 @@ def calculate_job_score(row):
 
         meta_data = [years_required] if years_required else []
         if has_negative_seniority:
+            negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
             meta_data.extend(sorted(list(set(negative_seniority_matches))))
 
         details["penalties"].append({
@@ -416,17 +415,6 @@ def calculate_job_score(row):
             "label": "Senior Experience Required",
             "value": -penalty,
             "meta": meta_data
-        })
-
-    # Penalización por rol ambiguo sin suficiente contexto
-    if has_ambiguous_role and not (found_profiles or len(strong_tech_matches) > 0):
-        penalty = WEIGHTS["ambiguous_no_context"]
-        score -= penalty
-        details["penalties"].append({
-            "key": "ambiguous_no_context",
-            "label": "Ambiguous Role",
-            "value": -penalty,
-            "meta": sorted(set(ambiguous_roles_found))
         })
 
     # --- 5. Finalización ---
