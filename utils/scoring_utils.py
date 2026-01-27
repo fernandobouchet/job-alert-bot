@@ -283,9 +283,15 @@ def calculate_job_score(row):
     # Combine tech and signals for scoring purposes
     raw_all_matches = raw_tech_matches | raw_signal_matches
 
-    weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+    # OPTIMIZATION: Lazy calculation of weak signals
+    # If we found profiles, the job is valid and we calculate bonuses based on raw_all_matches.
+    # We only need weak_tech_matches to filter strong_tech_matches when NO profile is found.
+    weak_tech_matches = set()
+    strong_tech_matches = set()
 
-    strong_tech_matches = raw_all_matches - weak_tech_matches
+    if not found_profiles:
+        weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+        strong_tech_matches = raw_all_matches - weak_tech_matches
 
     normalized_tags = {
         TECH_REVERSE_MAP.get(tag, tag) for tag in raw_tech_matches
