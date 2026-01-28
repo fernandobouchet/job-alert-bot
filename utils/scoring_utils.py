@@ -269,6 +269,10 @@ def calculate_job_score(row):
     raw_tech_matches = set()
     raw_signal_matches = set()
 
+    # Lazy initialization for weak/strong matches (optimization)
+    weak_tech_matches = set()
+    strong_tech_matches = set()
+
     if found_profiles:
         for profile_name in found_profiles:
             # Reuse cached tech matches (optimization)
@@ -276,16 +280,19 @@ def calculate_job_score(row):
             raw_tech_matches.update(tech_matches)
             signal_matches = COMPILED_PROFILES[profile_name]["signals"].findall(full_text)
             raw_signal_matches.update(signal_matches)
+
+        # Combine tech and signals for scoring purposes
+        raw_all_matches = raw_tech_matches | raw_signal_matches
     else:
         tech_matches = _REGEX_ALL_TECHS.findall(full_text)
         raw_tech_matches.update(tech_matches)
 
-    # Combine tech and signals for scoring purposes
-    raw_all_matches = raw_tech_matches | raw_signal_matches
+        # Combine tech and signals for scoring purposes
+        raw_all_matches = raw_tech_matches | raw_signal_matches
 
-    weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
-
-    strong_tech_matches = raw_all_matches - weak_tech_matches
+        # Only check weak signals if no profile was found (optimization)
+        weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+        strong_tech_matches = raw_all_matches - weak_tech_matches
 
     normalized_tags = {
         TECH_REVERSE_MAP.get(tag, tag) for tag in raw_tech_matches
