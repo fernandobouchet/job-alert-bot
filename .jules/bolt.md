@@ -12,3 +12,8 @@
 **Learning:** Removing redundant `text.lower()` calls when input is already normalized yielded a ~16x speedup for that specific operation. Replacing `findall` with `search` for boolean existence checks yielded a ~2x speedup.
 **Reason:** String normalization (allocating new strings) is expensive in tight loops. `findall` scans the entire string and builds a list, while `search` stops at the first match.
 **Action:** Trust upstream normalization contracts (and document them). Use `re.search` (or `regex.search`) when only boolean existence is needed, especially for short strings like titles.
+
+## 2025-02-21 - Heterogeneous Regex Consolidation vs Set Intersection
+**Learning:** Combining heterogeneous regexes (Roles, IT Signals, Seniority) into a single Unified Scanner with longest-match precedence was faster (~1.24x) than multiple passes. Conversely, switching to `set.intersection` for single-word terms was SLOWER (0.57x).
+**Reason:** The overhead of Python-side tokenization and set operations outweighed the benefit of reducing regex size, especially since many terms are multi-word. The C-based regex engine is extremely efficient at single-pass scanning even with many alternations.
+**Action:** Consolidate unconditional regex passes into a single unified regex when possible, using a map to disambiguate matches. Avoid moving logic to Python (sets/tokenization) unless the set is significantly larger than the regex component.

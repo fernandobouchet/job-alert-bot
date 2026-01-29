@@ -73,4 +73,41 @@ COMPILED_EXPERIENCE_PATTERNS = [
 ]
 
 
+# OPTIMIZATION: Combine Role, IT, Seniority, and Weak signals into a single unified scanner
+# to reduce the number of passes over the full text.
+# Conflict resolution: Longest match wins (handled by sorting).
+# Overlap handling: Precedence is implicit in the map.
+# Priority: ROLE > IT > SENIORITY > WEAK
+
+print("🔄 Compiling unified scanner...")
+
+_TERM_TYPE_MAP = {}
+
+# Populate map with priority
+# WEAK first (lowest priority, will be overwritten)
+for term in WEAK_IT_SIGNALS:
+    _TERM_TYPE_MAP[term.lower()] = "WEAK"
+
+# SENIORITY second
+for term in POSITIVE_SENIORITY_TERMS:
+    _TERM_TYPE_MAP[term.lower()] = "SEN"
+
+# IT third
+for term in IT_CONTEXT_SIGNALS:
+    _TERM_TYPE_MAP[term.lower()] = "IT"
+
+# ROLE last (highest priority)
+for term in _ALL_ROLES_KEYWORDS:
+    _TERM_TYPE_MAP[term.lower()] = "ROLE"
+
+_ALL_UNIFIED_TERMS = sorted(_TERM_TYPE_MAP.keys(), key=len, reverse=True)
+
+_REGEX_UNIFIED_SCANNER = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s) for s in _ALL_UNIFIED_TERMS) + r")(?!\w)",
+    re.UNICODE,
+)
+
+print("✅ Unified scanner compiled")
+
+
 print("✅ Regex patterns compiled")
