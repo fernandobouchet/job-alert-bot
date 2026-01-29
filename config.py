@@ -2,6 +2,7 @@ import os
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
+from sources.google_fetcher import fetch_google
 from sources.empleosit_fetcher import fetch_empleosit
 
 UPLOAD_TO_FIREBASE = True
@@ -34,6 +35,7 @@ AVAILABLE_SOURCES = {
     "getonboard": fetch_getonboard,
     "educacionit": fetch_educacionit,
     "jobspy": fetch_jobspy,
+    "google": fetch_google,
     "empleosit": fetch_empleosit,
 }
 
@@ -63,6 +65,15 @@ FETCHER_CONFIG = {
         "results_wanted": 50,
         "hours_old": JOBSPY_HOURS_OLD,
         "linkedin_fetch_description": True,
+        "search_terms": JOBSPY_SEARCH_TERMS,
+    },
+    "google": {
+        "name": "Google Jobs",
+        "base_url": "https://www.google.com/search",
+        "site_name": ["google"],
+        "location": "Argentina",
+        "results_wanted": 50,
+        "hours_old": JOBSPY_HOURS_OLD,
         "search_terms": JOBSPY_SEARCH_TERMS,
     },
     "educacionit": {
