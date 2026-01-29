@@ -34,6 +34,7 @@ AVAILABLE_SOURCES = {
     "getonboard": fetch_getonboard,
     "educacionit": fetch_educacionit,
     "jobspy": fetch_jobspy,
+    "google": fetch_jobspy,
     "empleosit": fetch_empleosit,
 }
 
@@ -63,6 +64,14 @@ FETCHER_CONFIG = {
         "results_wanted": 50,
         "hours_old": JOBSPY_HOURS_OLD,
         "linkedin_fetch_description": True,
+        "search_terms": JOBSPY_SEARCH_TERMS,
+    },
+    "google": {
+        "name": "Google Jobs",
+        "site_name": ["google"],
+        "location": "Argentina",
+        "results_wanted": 50,
+        "hours_old": JOBSPY_HOURS_OLD,
         "search_terms": JOBSPY_SEARCH_TERMS,
     },
     "educacionit": {
