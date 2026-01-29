@@ -14,6 +14,8 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_POSITIVE_SENIORITY,
     _REGEX_EXCLUDED_SENIORITY,
     _REGEX_WEAK_SIGNALS,
+    _REGEX_UNIFIED_SCANNER,
+    _TERM_TYPE_MAP,
     COMPILED_EXPERIENCE_REGEX,
 )
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
@@ -201,10 +203,31 @@ def calculate_job_score(row):
     full_text = row.get("full_text_normalized", "")
 
     # --- 1. Detección de Señales y Perfiles ---
-    it_signals_found = set(_REGEX_IT_SIGNALS.findall(full_text))
+
+    # OPTIMIZATION: Use unified scanner for single-pass extraction
+    # This replaces 4 separate regex passes (_REGEX_IT_SIGNALS, _REGEX_POSITIVE_SENIORITY,
+    # _REGEX_ALL_ROLES, _REGEX_WEAK_SIGNALS) with one.
+    unified_matches = _REGEX_UNIFIED_SCANNER.findall(full_text)
+
+    it_signals_found = set()
+    positive_seniority_matches = []
+    all_role_matches = []
+    weak_tech_matches = set()
+
+    for match in unified_matches:
+        term_type = _TERM_TYPE_MAP.get(match)
+        if term_type == "IT":
+            it_signals_found.add(match)
+        elif term_type == "SEN":
+            positive_seniority_matches.append(match)
+        elif term_type == "ROLE":
+            all_role_matches.append(match)
+        elif term_type == "WEAK":
+            weak_tech_matches.add(match)
+
     ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
     has_ambiguous_role = bool(ambiguous_roles_found)
-    positive_seniority_matches = _REGEX_POSITIVE_SENIORITY.findall(full_text)
+
     # Negative Seniority: Search ONLY in Title to avoid false positives in body
     negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
 
@@ -219,12 +242,6 @@ def calculate_job_score(row):
     raw_role_matches = set()
     # Cache profile tech matches to avoid re-scanning in step 3
     profile_tech_cache = {}
-
-    # OPTIMIZATION: Scan for ALL roles at once using the combined regex.
-    # This avoids iterating through every profile and running a separate regex search for each.
-    # Complexity reduction: O(num_profiles * text_len) -> O(text_len + matched_profiles * text_len)
-
-    all_role_matches = _REGEX_ALL_ROLES.findall(full_text)
 
     # Identify potential profiles based on matches
     potential_profiles = set()
@@ -283,7 +300,7 @@ def calculate_job_score(row):
     # Combine tech and signals for scoring purposes
     raw_all_matches = raw_tech_matches | raw_signal_matches
 
-    weak_tech_matches = set(_REGEX_WEAK_SIGNALS.findall(full_text))
+    # weak_tech_matches is already populated by unified scanner
 
     strong_tech_matches = raw_all_matches - weak_tech_matches
 
@@ -386,22 +403,20 @@ def calculate_job_score(row):
     # PENALIZACIONES
 
     # Penalización por experiencia senior explícita
-    should_penalize_years, years_required = has_senior_experience_requirement(full_text)
+    should_penalize_years = False
+    years_required = None
+
+    # OPTIMIZATION: Lazy check. Only run expensive experience regex if we are NOT
+    # already protected by positive seniority in title.
+    if not has_positive_seniority_in_title:
+        should_penalize_years, years_required = has_senior_experience_requirement(full_text)
 
     # Decide if we should apply seniority penalty
-    # 1. If years are explicitly high, we penalize UNLESS the title says Junior (strong override).
-    #    We ignore "junior" in the body because it often refers to "mentoring juniors".
-    # 2. If title has negative seniority (Senior/Manager),
-    #    we penalize UNLESS the title ALSO says Junior (contradiction/hybrid).
-
     apply_seniority_penalty = False
 
-    if should_penalize_years:
-        if not has_positive_seniority_in_title:
-            apply_seniority_penalty = True
-    elif has_negative_seniority:
-        if not has_positive_seniority_in_title:
-            apply_seniority_penalty = True
+    if not has_positive_seniority_in_title:
+         if should_penalize_years or has_negative_seniority:
+             apply_seniority_penalty = True
 
     if apply_seniority_penalty:
         penalty = WEIGHTS["senior_experience"]
