@@ -2,6 +2,7 @@ import os
 from sources.getonboard_fetcher import fetch_getonboard
 from sources.educacionit_fetcher import fetch_educacionit
 from sources.jobspy_fetcher import fetch_jobspy
+from sources.google_fetcher import fetch_google
 from sources.empleosit_fetcher import fetch_empleosit
 
 UPLOAD_TO_FIREBASE = True
@@ -34,7 +35,7 @@ AVAILABLE_SOURCES = {
     "getonboard": fetch_getonboard,
     "educacionit": fetch_educacionit,
     "jobspy": fetch_jobspy,
-    "google": fetch_jobspy,
+    "google": fetch_google,
     "empleosit": fetch_empleosit,
 }
 
