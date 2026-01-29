@@ -69,6 +69,7 @@ FETCHER_CONFIG = {
     },
     "google": {
         "name": "Google Jobs",
+        "base_url": "https://www.google.com/search",
         "site_name": ["google"],
         "location": "Argentina",
         "results_wanted": 50,
