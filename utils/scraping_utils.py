@@ -167,42 +167,62 @@ async def scrape(sources, channel_id, bot):
         delete_old_documents("jobs", JOBS_RETENTION_DAYS)
 
 
-def extract_job_modality_vectorized(series: pd.Series) -> pd.Series:
+def extract_job_modality_vectorized(series: pd.Series) -> np.ndarray:
     """
     Vectorized extraction of job modality from a normalized text series.
-    Optimized for performance using pandas/numpy operations instead of row-by-row apply.
+    Optimized for performance using cascading filters to minimize regex execution.
+    Returns a numpy array of modality strings.
     """
-    # Use boolean masks with non-capturing groups
-    # na=False handles potential NaN values safely
-    mask_strict_onsite = series.str.contains(COMPILED_STRICT_ONSITE, regex=True, na=False)
+    # 1. Initialize result with default
+    result = np.full(len(series), "No especificada", dtype=object)
 
-    mask_remote = series.str.contains(COMPILED_REMOTE, regex=True, na=False)
-    mask_onsite = series.str.contains(COMPILED_ONSITE, regex=True, na=False)
+    # 2. Strict Onsite (Highest Priority)
+    # Check all rows
+    mask_strict = series.str.contains(COMPILED_STRICT_ONSITE, regex=True, na=False)
+    # Assign matches
+    result[mask_strict] = "Presencial"
 
-    mask_hybrid_keyword = series.str.contains(COMPILED_HYBRID, regex=True, na=False)
-    mask_hybrid_mixed = mask_remote & mask_onsite
-    mask_hybrid = mask_hybrid_keyword | mask_hybrid_mixed
+    # Identify remaining rows (indices) to check
+    remaining_indices = np.where(~mask_strict)[0]
 
-    # Priority logic mimicking original if/else chain:
-    # 1. Strict Onsite ("Presencial")
-    # 2. Hybrid ("Híbrido")
-    # 3. Onsite ("Presencial")
-    # 4. Remote ("Remoto")
+    if len(remaining_indices) == 0:
+        return result
 
-    conditions = [
-        mask_strict_onsite,
-        mask_hybrid,
-        mask_onsite,
-        mask_remote
-    ]
-    choices = [
-        "Presencial",
-        "Híbrido",
-        "Presencial",
-        "Remoto"
-    ]
+    # 3. Hybrid Keyword
+    # Run regex ONLY on remaining rows
+    subset_series_1 = series.iloc[remaining_indices]
+    mask_hybrid_subset = subset_series_1.str.contains(COMPILED_HYBRID, regex=True, na=False).values
 
-    return np.select(conditions, choices, default="No especificada")
+    # Map matches back to result array
+    hybrid_update_indices = remaining_indices[mask_hybrid_subset]
+    result[hybrid_update_indices] = "Híbrido"
+
+    # Identify remaining rows for next step
+    remaining_indices_2 = remaining_indices[~mask_hybrid_subset]
+
+    if len(remaining_indices_2) == 0:
+        return result
+
+    # 4. Remote / Onsite / Mixed
+    # Run regex ONLY on remaining rows
+    subset_series_2 = series.iloc[remaining_indices_2]
+
+    mask_remote_subset = subset_series_2.str.contains(COMPILED_REMOTE, regex=True, na=False).values
+    mask_onsite_subset = subset_series_2.str.contains(COMPILED_ONSITE, regex=True, na=False).values
+
+    # Mixed = Remote AND Onsite
+    mask_mixed = mask_remote_subset & mask_onsite_subset
+    result[remaining_indices_2[mask_mixed]] = "Híbrido"
+
+    # Onsite Only
+    mask_onsite_only = mask_onsite_subset & ~mask_mixed
+    result[remaining_indices_2[mask_onsite_only]] = "Presencial"
+
+    # Remote Only
+    mask_remote_only = mask_remote_subset & ~mask_mixed
+    result[remaining_indices_2[mask_remote_only]] = "Remoto"
+
+    return result
 
 
 def normalize_text_series(series: pd.Series):
