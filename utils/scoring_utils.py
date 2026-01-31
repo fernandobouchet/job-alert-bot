@@ -10,6 +10,7 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_ALL_TECHS,
     _REGEX_AMBIGUOUS_ROLES,
     _REGEX_AREA_PREFILTER,
+    _REGEX_AREA_EXCEPTION,
     _REGEX_IT_SIGNALS,
     _REGEX_POSITIVE_SENIORITY,
     _REGEX_EXCLUDED_SENIORITY,
@@ -67,23 +68,9 @@ def pre_filter_jobs(df, verbose=True):
         trigger_indices = mask_area_trigger[mask_area_trigger].index
         titles_subset = titles.loc[trigger_indices]
 
-        # Check Role Exception
-        mask_role_exception = titles_subset.str.contains(_REGEX_ALL_ROLES, regex=True)
-
-        # Si encuentra rol, NO es rechazado. Si NO encuentra rol, chequear señal IT.
-        indices_check_signal = mask_role_exception[~mask_role_exception].index
-
-        mask_signal_exception = pd.Series(False, index=titles_subset.index)
-
-        if not indices_check_signal.empty:
-            mask_signal_exception.loc[indices_check_signal] = (
-                titles.loc[indices_check_signal].str.contains(
-                    _REGEX_IT_SIGNALS, regex=True
-                )
-            )
-
-        # Exception es True si Role O Signal
-        mask_exception = mask_role_exception | mask_signal_exception
+        # Optimization: Check Role OR Signal in one pass
+        # This replaces sequential checks for Role then Signal
+        mask_exception = titles_subset.str.contains(_REGEX_AREA_EXCEPTION, regex=True)
 
         # Rechazar si Trigger Y NO Exception
         mask_reject_area.loc[trigger_indices] = ~mask_exception

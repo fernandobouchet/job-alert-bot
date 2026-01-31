@@ -27,6 +27,13 @@ _REGEX_AREA_PREFILTER = re.compile(
     re.UNICODE,
 )
 
+# Combined regex for Area Exception (Role OR IT Signal)
+_EXCEPTION_KEYWORDS = _ALL_ROLES_KEYWORDS.union(IT_CONTEXT_SIGNALS)
+_REGEX_AREA_EXCEPTION = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(_EXCEPTION_KEYWORDS, key=len, reverse=True)) + r")(?!\w)",
+    re.UNICODE,
+)
+
 _REGEX_EXCLUDED_SENIORITY = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(EXCLUDED_SENIORITY_TERMS, key=len, reverse=True)) + r")(?!\w)",
     re.UNICODE,

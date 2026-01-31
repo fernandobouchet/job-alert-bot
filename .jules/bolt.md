@@ -17,3 +17,8 @@
 **Learning:** Combining heterogeneous regexes (Roles, IT Signals, Seniority) into a single Unified Scanner with longest-match precedence was faster (~1.24x) than multiple passes. Conversely, switching to `set.intersection` for single-word terms was SLOWER (0.57x).
 **Reason:** The overhead of Python-side tokenization and set operations outweighed the benefit of reducing regex size, especially since many terms are multi-word. The C-based regex engine is extremely efficient at single-pass scanning even with many alternations.
 **Action:** Consolidate unconditional regex passes into a single unified regex when possible, using a map to disambiguate matches. Avoid moving logic to Python (sets/tokenization) unless the set is significantly larger than the regex component.
+
+## 2025-02-22 - Combined Regex for Exception Handling
+**Learning:** Combining "Role" and "IT Signal" regexes into a single "Exception" regex for the Area Pre-filter improved performance by ~7.5%.
+**Reason:** In the "reject" path (which is the common case for this filter), checking `Role OR Signal` previously required two separate regex passes (both failing). Combining them allows a single pass to determine if any exception exists.
+**Action:** When filtering based on `A OR B` conditions, especially in "reject" paths, combine A and B into a single regex to minimize scans.
