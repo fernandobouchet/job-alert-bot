@@ -10,7 +10,7 @@ sys.modules["utils.firestore_utils"] = MagicMock()
 import pandas as pd
 import numpy as np
 # Now it is safe to import
-from utils.scraping_utils import normalize_text_series
+from utils.scraping_utils import normalize_text_series, extract_job_modality_vectorized
 
 class TestScrapingUtils(unittest.TestCase):
     def test_normalize_text_series_basics(self):
@@ -97,6 +97,39 @@ class TestScrapingUtils(unittest.TestCase):
         # So 123 becomes 123.0, and astype(str) makes it "123.0".
         expected_num = pd.Series(["123.0", "45.67"])
         pd.testing.assert_series_equal(result_num, expected_num)
+
+    def test_extract_job_modality_vectorized(self):
+        """Test optimized job modality extraction."""
+        data = [
+            "exclusivamente presencial en oficina",  # Strict Onsite -> Presencial
+            "trabajo híbrido 3 dias",                 # Hybrid Keyword -> Híbrido
+            "trabajo remoto desde casa",              # Remote -> Remoto
+            "trabajo presencial en sede",             # Onsite -> Presencial
+            "posibilidad de remoto y presencial",     # Mixed (Remote + Onsite) -> Híbrido
+            "trabajo normal sin especificar",         # None -> No especificada
+            123,                                      # Non-string -> No especificada
+            None,                                     # None -> No especificada
+            np.nan                                    # NaN -> No especificada
+        ]
+        series = pd.Series(data)
+        result = extract_job_modality_vectorized(series)
+        expected = pd.Series([
+            "Presencial",
+            "Híbrido",
+            "Remoto",
+            "Presencial",
+            "Híbrido",
+            "No especificada",
+            "No especificada",
+            "No especificada",
+            "No especificada"
+        ])
+        # Note: Depending on the implementation, result could be numpy array or Series.
+        # If it returns numpy array, we need to convert to Series for comparison.
+        if isinstance(result, np.ndarray):
+            result = pd.Series(result)
+
+        pd.testing.assert_series_equal(result, expected)
 
 if __name__ == '__main__':
     unittest.main()
