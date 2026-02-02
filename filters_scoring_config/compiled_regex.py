@@ -27,6 +27,13 @@ _REGEX_AREA_PREFILTER = re.compile(
     re.UNICODE,
 )
 
+# OPTIMIZATION: Combine Roles and IT Signals into a single exception regex for Area filtering.
+# This avoids sequential regex scans in the critical pre-filtering path.
+_REGEX_AREA_EXCEPTION = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(list(_ALL_ROLES_KEYWORDS | IT_CONTEXT_SIGNALS), key=len, reverse=True)) + r")(?!\w)",
+    re.UNICODE,
+)
+
 _REGEX_EXCLUDED_SENIORITY = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(s.lower()) for s in sorted(EXCLUDED_SENIORITY_TERMS, key=len, reverse=True)) + r")(?!\w)",
     re.UNICODE,
