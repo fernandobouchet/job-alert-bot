@@ -62,6 +62,15 @@ _REGEX_ALL_TECHS = re.compile(
     re.UNICODE,
 )
 
+_REGEX_AREA_EXCEPTION = re.compile(
+    r"(?<!\w)(?:" +
+    "|".join(re.escape(s.lower()) for s in sorted(_ALL_ROLES_KEYWORDS, key=len, reverse=True)) +
+    "|" +
+    "|".join(re.escape(s.lower()) for s in sorted(IT_CONTEXT_SIGNALS, key=len, reverse=True)) +
+    r")(?!\w)",
+    re.UNICODE,
+)
+
 # OPTIMIZATION: Combine all experience patterns into a single regex for faster scanning.
 # Each pattern is wrapped in a non-capturing group to allow combining with OR.
 # Note: Input text is always normalized to lowercase, so re.IGNORECASE is not needed.
