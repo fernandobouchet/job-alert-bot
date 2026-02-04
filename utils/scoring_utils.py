@@ -16,6 +16,8 @@ from filters_scoring_config.compiled_regex import (
     _REGEX_WEAK_SIGNALS,
     _REGEX_UNIFIED_SCANNER,
     _TERM_TYPE_MAP,
+    _REGEX_TITLE_SCANNER,
+    _TITLE_TERM_TYPE_MAP,
     COMPILED_EXPERIENCE_REGEX,
 )
 from filters_scoring_config.scoring import MIN_YEARS_SENIORITY
@@ -225,17 +227,28 @@ def calculate_job_score(row):
         elif term_type == "WEAK":
             weak_tech_matches.add(match)
 
-    ambiguous_roles_found = _REGEX_AMBIGUOUS_ROLES.findall(title)
+    # OPTIMIZATION: Use title scanner for single-pass extraction on title
+    # This replaces 3 separate regex passes (_REGEX_AMBIGUOUS_ROLES, _REGEX_EXCLUDED_SENIORITY,
+    # _REGEX_POSITIVE_SENIORITY) with one.
+    title_matches = _REGEX_TITLE_SCANNER.findall(title)
+
+    ambiguous_roles_found = []
+    negative_seniority_matches = []
+    has_positive_seniority_in_title = False
+
+    for match in title_matches:
+        # Use simple list check for "types" (pre-computed in compiled_regex)
+        types = _TITLE_TERM_TYPE_MAP.get(match, [])
+        if "AMBIGUOUS" in types:
+            ambiguous_roles_found.append(match)
+        if "NEG_SEN" in types:
+            negative_seniority_matches.append(match)
+        if "POS_SEN" in types:
+            has_positive_seniority_in_title = True
+
     has_ambiguous_role = bool(ambiguous_roles_found)
-
-    # Negative Seniority: Search ONLY in Title to avoid false positives in body
-    negative_seniority_matches = _REGEX_EXCLUDED_SENIORITY.findall(title)
-
     has_positive_seniority = bool(positive_seniority_matches)
     has_negative_seniority = bool(negative_seniority_matches)
-
-    # Check positive seniority in TITLE specifically
-    has_positive_seniority_in_title = bool(_REGEX_POSITIVE_SENIORITY.search(title))
 
     # --- 2. Categorización por Perfil y Roles ---
     found_profiles = []
@@ -479,13 +492,10 @@ def has_senior_experience_requirement(text):
         nums = []
         # Flatten the tuple and find all non-empty digit strings
         if isinstance(match, tuple):
-            for group in match:
-                if group:
-                    try:
-                        nums.append(int(group))
-                    except ValueError:
-                        pass
-        elif match:  # Fallback if regex has only one group (though here it has many)
+            # OPTIMIZATION: Use list comprehension and avoid try/except block
+            # Regex patterns guarantee that captured groups are digits (\d+)
+            nums = [int(g) for g in match if g]
+        elif match:  # Fallback if regex has only one group
             try:
                 nums.append(int(match))
             except ValueError:
