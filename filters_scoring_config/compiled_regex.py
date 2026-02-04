@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 
 from filters_scoring_config.areas import EXCLUDED_AREA_TERMS_TITLE
 from filters_scoring_config.compiled_profiles import (
@@ -109,5 +110,30 @@ _REGEX_UNIFIED_SCANNER = re.compile(
 
 print("✅ Unified scanner compiled")
 
+# OPTIMIZATION: Create a specialized Title Scanner to handle Ambiguous, Negative Seniority,
+# and Positive Seniority terms in a single pass.
+# This replaces 3 separate regex passes on the title.
+
+print("🔄 Compiling title scanner...")
+
+_TITLE_TERM_TYPE_MAP = defaultdict(list)
+
+for term in AMBIGUOUS_ROLES:
+    _TITLE_TERM_TYPE_MAP[term.lower()].append("AMBIGUOUS")
+
+for term in EXCLUDED_SENIORITY_TERMS:
+    _TITLE_TERM_TYPE_MAP[term.lower()].append("NEG_SEN")
+
+for term in POSITIVE_SENIORITY_TERMS:
+    _TITLE_TERM_TYPE_MAP[term.lower()].append("POS_SEN")
+
+_ALL_TITLE_TERMS = sorted(_TITLE_TERM_TYPE_MAP.keys(), key=len, reverse=True)
+
+_REGEX_TITLE_SCANNER = re.compile(
+    r"(?<!\w)(?:" + "|".join(re.escape(s) for s in _ALL_TITLE_TERMS) + r")(?!\w)",
+    re.UNICODE,
+)
+
+print("✅ Title scanner compiled")
 
 print("✅ Regex patterns compiled")
